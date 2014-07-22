@@ -1,2 +1,4 @@
-*.md  text
-*.txt text
+.gitattributes text
+COPYING        text
+*.md           text
+*.txt          text
