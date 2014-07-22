@@ -15,11 +15,30 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required (VERSION 3.0.0)
-project (ftw7)
-enable_testing ()
+set (
+  mhook_sources
+  disasm-lib/cpu.c
+  disasm-lib/cpu.h
+  disasm-lib/disasm.c
+  disasm-lib/disasm.h
+  disasm-lib/disasm_x86.c
+  disasm-lib/disasm_x86.h
+  disasm-lib/disasm_x86_tables.h
+  disasm-lib/misc.c
+  disasm-lib/misc.h
+  mhook-lib/mhook.cpp
+  mhook-lib/mhook.h
+)
 
-add_definitions (-DUNICODE)
-add_definitions (-D_UNICODE)
+set (
+  mhook-test_sources
+  mhook-test.cpp
+  stdafx.cpp
+  stdafx.h
+)
 
-add_subdirectory (mhook)
+add_library (mhook ${mhook_sources})
+
+add_executable (mhook-test ${mhook-test_sources})
+target_link_libraries (mhook-test mhook)
+add_test (mhook-test mhook-test)
