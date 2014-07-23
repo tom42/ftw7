@@ -23,4 +23,4 @@ add_definitions (-DUNICODE)
 add_definitions (-D_UNICODE)
 
 add_subdirectory (argp)
-add_subdirectory (mhook-2.3)
+add_subdirectory (mhook)
