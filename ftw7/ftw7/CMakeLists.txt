@@ -15,11 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
-# Put all ftw7 specific binaries below this directory into a shared
-# output directory. This simplifies running and debugging ftw7.
-set (FTW7_SHARED_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
+set (
+  ftw7_sources
+  main.cpp
+)
 
-add_subdirectory (ftw7)
+add_executable (ftw7 ${ftw7_sources})
