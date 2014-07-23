@@ -19,5 +19,35 @@
 #ifndef ARGP_COMPAT_H_INCLUDED
 #define ARGP_COMPAT_H_INCLUDED
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <stdlib.h>
+
+#if defined(HAVE_MEMPCPY) && !HAVE_MEMPCPY
+void* argp_compat_mempcpy(void* out, const void* in, size_t n);
+#define mempcpy argp_compat_mempcpy
+#endif
+
+#if defined(HAVE_SLEEP) && !HAVE_SLEEP
+void argp_compat_sleep(unsigned int seconds);
+#define sleep argp_compat_sleep
+#endif
+
+#if defined(HAVE_STRCASECMP) && !HAVE_STRCASECMP
+int argp_compat_strcasecmp(const char* s1, const char* s2);
+#define strcasecmp argp_compat_strcasecmp
+#endif
+
+#if defined(HAVE_STRCHRNUL) && !HAVE_STRCHRNUL
+const char* argp_compat_strchrnul(const char* s, int c);
+#define strchrnul argp_compat_strchrnul
+#endif
+
+#if defined(HAVE_STRNDUP) && !HAVE_STRNDUP
+char* argp_compat_strndup(const char* s, size_t n);
+#define strndup argp_compat_strndup
+#endif
 
 #endif
