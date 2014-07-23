@@ -29,9 +29,11 @@
 # else
 #  ifdef _AIX
 #pragma alloca
+#  elif defined(_MSC_VER) && defined(WIN32)
+#    define alloca _alloca
 #  else
 #   ifndef alloca /* predefined by HP cc +Olibcalls */
-char *alloca ();
+char *alloca();
 #   endif
 #  endif
 # endif
@@ -43,7 +45,7 @@ char *alloca ();
 # include <unistd.h>
 #endif
 #include <limits.h>
-#include "argp-getopt.h""
+#include "argp-getopt.h"
 #include "argp-getopt_int.h"
 
 #ifndef _
@@ -67,6 +69,7 @@ char *alloca ();
 
 #include "argp.h"
 #include "argp-namefrob.h"
+#include "argp-compat.h"
 
 /* Getopt return values.  */
 #define KEY_END (-1)		/* The end of the options.  */
@@ -508,9 +511,19 @@ parser_init (struct parser *parser, const struct argp *argp,
     return ENOMEM;
 
   parser->groups = parser->storage;
+#ifdef _MSC_VER
+  /* Fix for compilers that don't support void pointer arithmetics. */
+  {
+      char* p = parser->storage;
+      parser->child_inputs = (void*) (p + GLEN);
+      parser->long_opts = (void*)(p + GLEN + CLEN);
+      parser->short_opts = (void*)(p + GLEN + CLEN + LLEN);
+  }
+#else
   parser->child_inputs = parser->storage + GLEN;
   parser->long_opts = parser->storage + GLEN + CLEN;
   parser->short_opts = parser->storage + GLEN + CLEN + LLEN;
+#endif
   parser->opt_data = opt_data;
 
   memset (parser->child_inputs, 0, szs.num_child_inputs * sizeof (void *));
