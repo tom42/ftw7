@@ -48,7 +48,9 @@ check_symbol_exists (strerror_r string.h HAVE_DECL_STRERROR_R)
 check_symbol_exists (strerror string.h HAVE_DECL_STRERROR)
 
 # Miscellaneous functions
+check_function_exists (asprintf HAVE_ASPRINTF)
 check_function_exists (mempcpy HAVE_MEMPCPY)
+check_function_exists (random HAVE_RANDOM)
 check_function_exists (sleep HAVE_SLEEP)
 check_function_exists (strcasecmp HAVE_STRCASECMP)
 check_function_exists (strchrnul HAVE_STRCHRNUL)
@@ -85,6 +87,16 @@ set (
 if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_WARNINGS)
 endif ()
-
 include_directories ("${PROJECT_SOURCE_DIR}/include/argp")
 add_library (argp ${argp_sources})
+
+################################################################################
+# Tests
+################################################################################
+
+if (MSVC)
+  add_definitions (-D_CRT_NONSTDC_NO_WARNINGS)
+endif ()
+add_executable (argp-test src/argp-test.c)
+target_link_libraries (argp-test argp)
+add_test (argp-test argp-test)

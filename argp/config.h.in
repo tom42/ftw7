@@ -36,7 +36,9 @@
 #cmakedefine01 HAVE_DECL_STRERROR
 
 /* Miscellaneous functions */
+#cmakedefine01 HAVE_ASPRINTF
 #cmakedefine01 HAVE_MEMPCPY
+#cmakedefine01 HAVE_RANDOM
 #cmakedefine01 HAVE_SLEEP
 #cmakedefine01 HAVE_STRCASECMP
 #cmakedefine01 HAVE_STRCHRNUL
