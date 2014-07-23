@@ -26,9 +26,15 @@
 #ifndef _ARGP_FMTSTREAM_H
 #define _ARGP_FMTSTREAM_H
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+#if defined(HAVE_SYSEXITS_H) && HAVE_SYSEXITS_H
+# include <unistd.h>
+#endif
 
 #ifndef __attribute__
 /* This feature is available in gcc versions 2.5 and later.  */
@@ -90,6 +96,12 @@ typedef FILE *argp_fmtstream_t;
 
 #else /* !ARGP_FMTSTREAM_USE_LINEWRAP */
 /* Guess we have to define our own version.  */
+
+#if defined(_MSC_VER) && defined(WIN32)
+# define WIN32_LEAN_AND_MEAN
+# include <Windows.h>
+  typedef SSIZE_T ssize_t;
+#endif
 
 #ifndef __const
 #define __const const
