@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
+cmake_minimum_required (VERSION 3.0.0)
+project (mhook)
+enable_testing ()
+
 set (
   mhook_sources
   disasm-lib/cpu.c
