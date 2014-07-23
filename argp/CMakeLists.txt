@@ -86,3 +86,7 @@ endif ()
 
 include_directories ("${PROJECT_SOURCE_DIR}/include/argp")
 add_library (argp ${argp_sources})
+
+add_executable (argp-test src/argp-test.c)
+target_link_libraries (argp-test argp)
+add_test (argp-test argp-test)
