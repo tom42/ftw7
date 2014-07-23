@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
+cmake_minimum_required (VERSION 3.0.0)
+project (argp)
+enable_testing ()
+
 set (
   argp_sources
   src/argp-ba.c
@@ -30,4 +34,5 @@ set (
   src/argp-xinl.c
 )
 
+include_directories ("${PROJECT_SOURCE_DIR}/include/argp")
 add_library (argp ${argp_sources})
