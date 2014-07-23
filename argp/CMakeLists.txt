@@ -67,5 +67,9 @@ set (
   src/argp-xinl.c
 )
 
+if (MSVC)
+  add_definitions (-D_CRT_SECURE_NO_WARNINGS)
+endif ()
+
 include_directories ("${PROJECT_SOURCE_DIR}/include/argp")
 add_library (argp ${argp_sources})
