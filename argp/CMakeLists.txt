@@ -15,12 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required (VERSION 3.0.0)
-project (ftw7)
-enable_testing ()
+set (
+  argp_sources
+  src/argp-ba.c
+  src/argp-ba.c
+  src/argp-eexst.c
+  src/argp-fmtstream.c
+  src/argp-fs-xinl.c
+  src/argp-help.c
+  src/argp-parse.c
+  src/argp-pv.c
+  src/argp-pvh.c
+  src/argp-test.c
+  src/argp-xinl.c
+)
 
-add_definitions (-DUNICODE)
-add_definitions (-D_UNICODE)
-
-add_subdirectory (argp)
-add_subdirectory (mhook-2.3)
+add_library (argp ${argp_sources})
