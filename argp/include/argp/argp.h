@@ -22,7 +22,6 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#include <getopt.h>
 #include <limits.h>
 
 #define __need_error_t
