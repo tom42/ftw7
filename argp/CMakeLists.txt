@@ -19,7 +19,9 @@ cmake_minimum_required (VERSION 3.0.0)
 project (argp)
 enable_testing ()
 
+include (CheckFunctionExists)
 include (CheckIncludeFile)
+include (CheckSymbolExists)
 
 ################################################################################
 # config.h
@@ -32,6 +34,13 @@ check_include_file (strchrnul.h HAVE_STRCHRNUL_H)
 check_include_file (strndup.h HAVE_STRNDUP_H)
 check_include_file (sysexits.h HAVE_SYSEXITS_H)
 check_include_file (unistd.h HAVE_UNISTD_H)
+
+# strerror_r and strerror.
+# We only check for functions and their declarations here.
+# The decision which one to use is made in the argp sources.
+check_function_exists (strerror_r HAVE_STRERROR_R)
+check_symbol_exists (strerror_r string.h HAVE_DECL_STRERROR_R)
+check_symbol_exists (strerror string.h HAVE_DECL_STRERROR)
 
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"

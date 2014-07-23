@@ -24,3 +24,8 @@
 #cmakedefine01 HAVE_STRNDUP_H
 #cmakedefine01 HAVE_SYSEXITS_H
 #cmakedefine01 HAVE_UNISTD_H
+
+/* strerror_r and strerror */
+#cmakedefine01 HAVE_STRERROR_R
+#cmakedefine01 HAVE_DECL_STRERROR_R
+#cmakedefine01 HAVE_DECL_STRERROR
