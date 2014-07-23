@@ -49,6 +49,8 @@ char *alloca ();
 #include <stdarg.h>
 #include <ctype.h>
 #include <limits.h>
+#include <stdint.h>
+#include <stdbool.h>
 #ifdef _LIBC
 # include <../libio/libioP.h>
 # include <wchar.h>
