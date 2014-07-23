@@ -1,5 +1,5 @@
 /* Name frobnication for compiling argp outside of glibc
-   Copyright (C) 1997-2014 Free Software Foundation, Inc.
+   Copyright (C) 1997, 2003 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Miles Bader <miles@gnu.ai.mit.edu>.
 
@@ -14,17 +14,14 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
+   License along with the GNU C Library; if not, write to the Free
+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+   02111-1307 USA.  */
 
 #if !_LIBC
 /* This code is written for inclusion in gnu-libc, and uses names in the
    namespace reserved for libc.  If we're not compiling in libc, define those
    names to be the normal ones instead.  */
-
-#if HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 /* argp-parse functions */
 #undef __argp_parse
@@ -80,18 +77,10 @@
 #undef __argp_fmtstream_wmargin
 #define __argp_fmtstream_wmargin argp_fmtstream_wmargin
 
-#if defined(HAVE_MEMPCPY_H) && HAVE_MEMPCPY_H
-# include "mempcpy.h"
-#endif
-#if defined(HAVE_STRCASE_H) && HAVE_STRCASE_H
-# include "strcase.h"
-#endif
-#if defined(HAVE_STRCHRNUL_H) && HAVE_STRCHRNUL_H
-# include "strchrnul.h"
-#endif
-#if defined(HAVE_STRNDUP_H) && HAVE_STRNDUP_H
-# include "strndup.h"
-#endif
+#include "mempcpy.h"
+#include "strcase.h"
+#include "strchrnul.h"
+#include "strndup.h"
 
 /* normal libc functions we call */
 #undef __flockfile

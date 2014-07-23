@@ -1,5 +1,6 @@
 /* Hierarchial argument parsing help output
-   Copyright (C) 1995-2014 Free Software Foundation, Inc.
+   Copyright (C) 1995-2003, 2004, 2005, 2006, 2007
+   Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Miles Bader <miles@gnu.ai.mit.edu>.
 
@@ -14,8 +15,9 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
+   License along with the GNU C Library; if not, write to the Free
+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+   02111-1307 USA.  */
 
 #ifndef _GNU_SOURCE
 # define _GNU_SOURCE	1
@@ -40,7 +42,6 @@ char *alloca ();
 # endif
 #endif
 
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,7 +61,7 @@ char *alloca ();
 #  ifdef _LIBC
 #   undef dgettext
 #   define dgettext(domain, msgid) \
-  __dcgettext (domain, msgid, LC_MESSAGES)
+  INTUSE(__dcgettext) (domain, msgid, LC_MESSAGES)
 #  endif
 # else
 #  define dgettext(domain, msgid) (msgid)
@@ -160,7 +161,7 @@ static const struct uparam_name uparam_names[] =
 };
 #define nuparam_names (sizeof (uparam_names) / sizeof (uparam_names[0]))
 
-/* Read user options from the environment, and fill in UPARAMS appropriately.  */
+/* Read user options from the environment, and fill in UPARAMS appropiately.  */
 static void
 fill_in_uparams (const struct argp_state *state)
 {
@@ -275,11 +276,11 @@ fill_in_uparams (const struct argp_state *state)
      -xARG, -yARG, --long1=ARG, --long2=ARG        Documentation...
 
    Where ARG will be omitted if there's no argument, for this option, or
-   will be surrounded by "[" and "]" appropriately if the argument is
-   optional.  The documentation string is word-wrapped appropriately, and if
+   will be surrounded by "[" and "]" appropiately if the argument is
+   optional.  The documentation string is word-wrapped appropiately, and if
    the list of options is long enough, it will be started on a separate line.
    If there are no short options for a given option, the first long option is
-   indented slightly in a way that's supposed to make most long options appear
+   indented slighly in a way that's supposed to make most long options appear
    to be in a separate column.
 
    For example, the following output (from ps):
@@ -311,13 +312,13 @@ fill_in_uparams (const struct argp_state *state)
      {"no-parent", 'P',	      0,     0, "Include processes without parents"},
      {0,           'x',       0,     OPTION_ALIAS},
      {"all-fields",'Q',       0,     0, "Don't elide unusable fields (normally"
-					" if there's some reason ps can't"
+                                        " if there's some reason ps can't"
 					" print a field for any process, it's"
-					" removed from the output entirely)" },
+                                        " removed from the output entirely)" },
      {"reverse",   'r',       0,     0, "Reverse the order of any sort"},
      {"gratuitously-long-reverse-option", 0, 0, OPTION_ALIAS},
      {"session",   OPT_SESS,  "SID", OPTION_ARG_OPTIONAL,
-					"Add the processes from the session"
+                                        "Add the processes from the session"
 					" SID (which defaults to the sid of"
 					" the current process)" },
 
@@ -357,7 +358,7 @@ struct hol_entry
   /* A pointers into the HOL's short_options field, to the first short option
      letter for this entry.  The order of the characters following this point
      corresponds to the order of options pointed to by OPT, and there are at
-     most NUM.  A short option recorded in an option following OPT is only
+     most NUM.  A short option recorded in a option following OPT is only
      valid if it occurs in the right place in SHORT_OPTIONS (otherwise it's
      probably been shadowed by some other entry).  */
   char *short_options;
@@ -736,12 +737,12 @@ hol_entry_cmp (const struct hol_entry *entry1,
   if (entry1->cluster != entry2->cluster)
     {
       /* The entries are not within the same cluster, so we can't compare them
-	 directly, we have to use the appropriate clustering level too.  */
+	 directly, we have to use the appropiate clustering level too.  */
       if (! entry1->cluster)
 	/* ENTRY1 is at the `base level', not in a cluster, so we have to
 	   compare it's group number with that of the base cluster in which
 	   ENTRY2 resides.  Note that if they're in the same group, the
-	   clustered option always comes last.  */
+	   clustered option always comes laster.  */
 	return group_cmp (group1, hol_cluster_base (entry2->cluster)->group, -1);
       else if (! entry2->cluster)
 	/* Likewise, but ENTRY2's not in a cluster.  */
@@ -998,7 +999,7 @@ filter_doc (const char *doc, int key, const struct argp *argp,
     return doc;
 }
 
-/* Prints STR as a header line, with the margin lines set appropriately, and
+/* Prints STR as a header line, with the margin lines set appropiately, and
    notes the fact that groups should be separated with a blank line.  ARGP is
    the argp that should dictate any user doc filtering to take place.  Note
    that the previous wrap margin isn't restored, but the left margin is reset
@@ -1873,9 +1874,11 @@ __argp_failure (const struct argp_state *state, int status, int errnum,
 #endif
 	    }
 
+#ifdef USE_IN_LIBIO
 	  if (_IO_fwide (stream, 0) > 0)
 	    putwc_unlocked (L'\n', stream);
 	  else
+#endif
 	    putc_unlocked ('\n', stream);
 
 #if _LIBC || (HAVE_FLOCKFILE && HAVE_FUNLOCKFILE)

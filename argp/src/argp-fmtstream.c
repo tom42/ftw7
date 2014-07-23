@@ -1,5 +1,5 @@
 /* Word-wrapping and line-truncating streams
-   Copyright (C) 1997-2014 Free Software Foundation, Inc.
+   Copyright (C) 1997-1999,2001,2002,2003,2005 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Miles Bader <miles@gnu.ai.mit.edu>.
 
@@ -14,8 +14,9 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
+   License along with the GNU C Library; if not, write to the Free
+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+   02111-1307 USA.  */
 
 /* This package emulates glibc `line_wrap_stream' semantics for systems that
    don't have that.  */
@@ -39,7 +40,7 @@
 #define isblank(ch) ((ch)==' ' || (ch)=='\t')
 #endif
 
-#ifdef _LIBC
+#if defined _LIBC && defined USE_IN_LIBIO
 # include <wchar.h>
 # include <libio/libioP.h>
 # define __vsnprintf(s, l, f, a) _IO_vsnprintf (s, l, f, a)
@@ -100,7 +101,11 @@ __argp_fmtstream_free (argp_fmtstream_t fs)
   __argp_fmtstream_update (fs);
   if (fs->p > fs->buf)
     {
+#ifdef USE_IN_LIBIO
       __fxprintf (fs->stream, "%.*s", (int) (fs->p - fs->buf), fs->buf);
+#else
+      fwrite_unlocked (fs->buf, 1, fs->p - fs->buf, fs->stream);
+#endif
     }
   free (fs->buf);
   free (fs);
@@ -145,9 +150,11 @@ __argp_fmtstream_update (argp_fmtstream_t fs)
 	      size_t i;
 	      for (i = 0; i < pad; i++)
 		{
+#ifdef USE_IN_LIBIO
 		  if (_IO_fwide (fs->stream, 0) > 0)
 		    putwc_unlocked (L' ', fs->stream);
 		  else
+#endif
 		    putc_unlocked (' ', fs->stream);
 		}
 	    }
@@ -308,9 +315,11 @@ __argp_fmtstream_update (argp_fmtstream_t fs)
 	      *nl++ = ' ';
 	  else
 	    for (i = 0; i < fs->wmargin; ++i)
+#ifdef USE_IN_LIBIO
 	      if (_IO_fwide (fs->stream, 0) > 0)
 		putwc_unlocked (L' ', fs->stream);
 	      else
+#endif
 		putc_unlocked (' ', fs->stream);
 
 	  /* Copy the tail of the original buffer into the current buffer
