@@ -19,6 +19,27 @@ cmake_minimum_required (VERSION 3.0.0)
 project (argp)
 enable_testing ()
 
+include (CheckIncludeFile)
+
+################################################################################
+# config.h
+################################################################################
+
+# Headers
+check_include_file (sysexits.h HAVE_SYSEXITS_H)
+check_include_file (unistd.h HAVE_UNISTD_H)
+
+configure_file (
+  "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config.h"
+)
+include_directories ("${CMAKE_CURRENT_BINARY_DIR}")
+add_definitions (-DHAVE_CONFIG_H)
+
+################################################################################
+# Standalone argp library
+################################################################################
+
 set (
   argp_sources
   src/argp-ba.c
@@ -30,7 +51,6 @@ set (
   src/argp-parse.c
   src/argp-pv.c
   src/argp-pvh.c
-  src/argp-test.c
   src/argp-xinl.c
 )
 
