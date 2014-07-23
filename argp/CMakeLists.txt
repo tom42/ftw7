@@ -78,6 +78,8 @@ set (
   src/argp-pv.c
   src/argp-pvh.c
   src/argp-xinl.c
+  src/getopt.c
+  src/getopt1.c
 )
 
 if (MSVC)
