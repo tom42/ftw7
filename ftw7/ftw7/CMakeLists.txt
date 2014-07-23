@@ -20,4 +20,6 @@ set (
   main.cpp
 )
 
+include_directories ("${PROJECT_SOURCE_DIR}/argp/include")
 add_executable (ftw7 ${ftw7_sources})
+target_link_libraries (ftw7 argp)
