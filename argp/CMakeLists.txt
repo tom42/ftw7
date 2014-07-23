@@ -47,6 +47,13 @@ check_function_exists (strerror_r HAVE_STRERROR_R)
 check_symbol_exists (strerror_r string.h HAVE_DECL_STRERROR_R)
 check_symbol_exists (strerror string.h HAVE_DECL_STRERROR)
 
+# Miscellaneous functions
+check_function_exists (mempcpy HAVE_MEMPCPY)
+check_function_exists (sleep HAVE_SLEEP)
+check_function_exists (strcasecmp HAVE_STRCASECMP)
+check_function_exists (strchrnul HAVE_STRCHRNUL)
+check_function_exists (strndup HAVE_STRNDUP)
+
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
   "${CMAKE_CURRENT_BINARY_DIR}/config.h"
@@ -62,6 +69,7 @@ set (
   argp_sources
   src/argp-ba.c
   src/argp-ba.c
+  src/argp-compat.c
   src/argp-eexst.c
   src/argp-fmtstream.c
   src/argp-fs-xinl.c

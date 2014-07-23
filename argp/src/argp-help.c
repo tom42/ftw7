@@ -85,6 +85,7 @@ char *strerror (int errnum);
 #include "argp.h"
 #include "argp-fmtstream.h"
 #include "argp-namefrob.h"
+#include "argp-compat.h"
 
 #ifndef SIZE_MAX
 # define SIZE_MAX ((size_t) -1)

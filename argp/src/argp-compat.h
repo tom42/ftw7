@@ -16,28 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef ARGP_COMPAT_H_INCLUDED
+#define ARGP_COMPAT_H_INCLUDED
 
-/* Headers */
-#cmakedefine01 HAVE_MEMPCPY_H
-#cmakedefine01 HAVE_STRCASE_H
-#cmakedefine01 HAVE_STRCHRNUL_H
-#cmakedefine01 HAVE_STRNDUP_H
-#cmakedefine01 HAVE_SYSEXITS_H
-#cmakedefine01 HAVE_UNISTD_H
 
-/* Unlocked variants of stdio functions. */
-#cmakedefine01 HAVE_DECL_PUTC_UNLOCKED
-#cmakedefine01 HAVE_DECL_FPUTS_UNLOCKED
-#cmakedefine01 HAVE_DECL_FWRITE_UNLOCKED
-
-/* strerror_r and strerror */
-#cmakedefine01 HAVE_STRERROR_R
-#cmakedefine01 HAVE_DECL_STRERROR_R
-#cmakedefine01 HAVE_DECL_STRERROR
-
-/* Miscellaneous functions */
-#cmakedefine01 HAVE_MEMPCPY
-#cmakedefine01 HAVE_SLEEP
-#cmakedefine01 HAVE_STRCASECMP
-#cmakedefine01 HAVE_STRCHRNUL
-#cmakedefine01 HAVE_STRNDUP
+#endif
