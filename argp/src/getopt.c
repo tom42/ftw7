@@ -31,6 +31,23 @@
 # include <config.h>
 #endif
 
+/* AIX requires this to be the first thing in the file.  */
+#ifndef __GNUC__
+# if HAVE_ALLOCA_H || defined _LIBC
+#  include <alloca.h>
+# else
+#  ifdef _AIX
+#pragma alloca
+#  elif defined(_MSC_VER) && defined(WIN32)
+#    define alloca _alloca
+#  else
+#   ifndef alloca /* predefined by HP cc +Olibcalls */
+char *alloca();
+#   endif
+#  endif
+# endif
+#endif
+
 #include <stdio.h>
 
 /* Comment out all this code if we are using the GNU C Library, and are not
@@ -70,8 +87,9 @@
 #ifdef _LIBC
 # include <libintl.h>
 #else
-# include "gettext.h"
-# define _(msgid) gettext (msgid)
+/*# include "gettext.h"
+# define _(msgid) gettext (msgid)*/
+# define _(msgid) msgid
 #endif
 
 #if defined _LIBC && defined USE_IN_LIBIO
@@ -96,8 +114,8 @@
    GNU application programs can use a third alternative mode in which
    they can distinguish the relative order of options and other arguments.  */
 
-#include "getopt.h"
-#include "getopt_int.h"
+#include "argp-getopt.h"
+#include "argp-getopt_int.h"
 
 /* For communication from `getopt' to the caller.
    When `getopt' finds an option that takes an argument,
