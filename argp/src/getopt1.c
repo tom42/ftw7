@@ -24,9 +24,9 @@
 #ifdef _LIBC
 # include <getopt.h>
 #else
-# include "getopt.h"
+# include "argp-getopt.h"
 #endif
-#include "getopt_int.h"
+#include "argp-getopt_int.h"
 
 #include <stdio.h>
 
