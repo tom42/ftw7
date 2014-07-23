@@ -43,8 +43,8 @@ char *alloca ();
 # include <unistd.h>
 #endif
 #include <limits.h>
-#include <getopt.h>
-#include <getopt_int.h>
+#include "argp-getopt.h""
+#include "argp-getopt_int.h"
 
 #ifndef _
 /* This is for other GNU distributions with internationalized messages.
