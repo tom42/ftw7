@@ -20,9 +20,16 @@
 #include <iostream>
 #include "argp/argp.h"
 
+const char* argp_program_version = "ftw7 0.0.1";
+const char* argp_program_bug_address = "/dev/null";
+static const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
+static const char args_doc[] = "DEMO-EXECUTABLE";
+
+static const struct argp argp = { nullptr, nullptr, args_doc, doc };
+
 static void parse_command_line(int argc, char *argv[])
 {
-    argp_parse(nullptr, argc, argv, 0, nullptr, nullptr);
+    argp_parse(&argp, argc, argv, 0, nullptr, nullptr);
 }
 
 int main(int argc, char *argv[])
