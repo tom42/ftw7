@@ -568,8 +568,7 @@ hol_entry_short_iterate (const struct hol_entry *entry,
   return val;
 }
 
-static inline int
-__attribute__ ((always_inline))
+static int
 hol_entry_long_iterate (const struct hol_entry *entry,
 			int (*func)(const struct argp_option *opt,
 				    const struct argp_option *real,
@@ -593,7 +592,7 @@ hol_entry_long_iterate (const struct hol_entry *entry,
 }
 
 /* Iterator that returns true for the first short option.  */
-static inline int
+static int
 until_short (const struct argp_option *opt, const struct argp_option *real,
 	     const char *domain, void *cookie)
 {
