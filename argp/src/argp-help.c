@@ -1860,7 +1860,9 @@ __argp_failure (const struct argp_state *state, int status, int errnum,
 
 	  if (errnum)
 	    {
+#if defined(_LIBC) || (defined(HAVE_STRERROR_R) && HAVE_STRERROR_R)
 	      char buf[200];
+#endif
 
 #ifdef _LIBC
 	      __fxprintf (stream, ": %s",
