@@ -35,6 +35,11 @@ check_include_file (strndup.h HAVE_STRNDUP_H)
 check_include_file (sysexits.h HAVE_SYSEXITS_H)
 check_include_file (unistd.h HAVE_UNISTD_H)
 
+# Check for unlocked variants of stdio functions.
+check_symbol_exists (putc_unlocked stdio.h HAVE_DECL_PUTC_UNLOCKED)
+check_symbol_exists (fputs_unlocked stdio.h HAVE_DECL_FPUTS_UNLOCKED)
+check_symbol_exists (fwrite_unlocked stdio.h HAVE_DECL_FWRITE_UNLOCKED)
+
 # strerror_r and strerror.
 # We only check for functions and their declarations here.
 # The decision which one to use is made in the argp sources.
