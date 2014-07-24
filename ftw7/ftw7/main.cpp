@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
     try
     {
-        ftw7::parse_command_line(argc, argv);
+        auto args = ftw7::parse_command_line(argc, argv);
     }
     catch (const std::exception& e)
     {

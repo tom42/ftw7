@@ -37,6 +37,7 @@ namespace
 
 error_t parse_option(int key, char* arg, struct argp_state* state)
 {
+    auto& args = *static_cast<command_line_arguments*>(state->input);
     switch (key)
     {
     case ARGP_KEY_ARG:
@@ -44,6 +45,7 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         {
             argp_error(state, "More than one demo given");
         }
+        args.demo_executable_path = arg;
         return 0;
     case ARGP_KEY_END:
         if (state->arg_num < 1)
@@ -72,10 +74,12 @@ error_t parse_option_stub(int key, char* arg, struct argp_state* state)
 
 }
 
-void parse_command_line(int argc, char* argv[])
+command_line_arguments parse_command_line(int argc, char* argv[])
 {
+    command_line_arguments args;
     static const struct argp argp = { options, parse_option_stub, args_doc, doc };
-    argp_parse(&argp, argc, argv, 0, nullptr, nullptr);
+    argp_parse(&argp, argc, argv, 0, nullptr, &args);
+    return args;
 }
 
 }

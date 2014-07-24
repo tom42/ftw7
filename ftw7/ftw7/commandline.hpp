@@ -19,10 +19,18 @@
 #ifndef FTW7_COMMANDLINE_HPP_INCLUDED
 #define FTW7_COMMANDLINE_HPP_INCLUDED
 
+#include <string>
+
 namespace ftw7
 {
 
-void parse_command_line(int argc, char* argv[]);
+class command_line_arguments
+{
+public:
+    std::string demo_executable_path;
+};
+
+command_line_arguments parse_command_line(int argc, char* argv[]);
 
 }
 
