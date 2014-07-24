@@ -16,21 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#include <cstdlib>
-#include <iostream>
-#include "commandline.hpp"
-#include "ftw7_core/demo.hpp"
+#ifndef FTW7_CORE_DEMO_HPP_INCLUDED
+#define FTW7_CORE_DEMO_HPP_INCLUDED
 
-int main(int argc, char *argv[])
+#include <string>
+
+namespace ftw7_core
 {
-    try
-    {
-        auto args = ftw7::parse_command_line(argc, argv);
-        ftw7_core::run_demo(args.demo_executable_path);
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << argv[0] << ": " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+
+void run_demo(const std::string& demo_executable_path);
+
 }
+
+#endif

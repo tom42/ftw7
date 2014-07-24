@@ -34,4 +34,5 @@ if (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
 endif ()
 
+add_subdirectory (ftw7_core)
 add_subdirectory (ftw7)

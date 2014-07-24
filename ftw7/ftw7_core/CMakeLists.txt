@@ -16,12 +16,9 @@
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
 set (
-  ftw7_sources
-  commandline.cpp
-  main.cpp
+  ftw7_core_sources
+  src/demo.cpp
 )
 
-include_directories ("${PROJECT_SOURCE_DIR}/argp/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
-add_executable (ftw7 ${ftw7_sources})
-target_link_libraries (ftw7 argp ftw7_core)
+add_library (ftw7_core ${ftw7_core_sources})
