@@ -17,6 +17,7 @@
 
 set (
   ftw7_sources
+  commandline.cpp
   main.cpp
 )
 

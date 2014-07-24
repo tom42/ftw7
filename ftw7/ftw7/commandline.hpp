@@ -16,19 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#include <cstdlib>
-#include <iostream>
-#include "commandline.hpp"
+#ifndef FTW7_COMMANDLINE_HPP_INCLUDED
+#define FTW7_COMMANDLINE_HPP_INCLUDED
 
-int main(int argc, char *argv[])
+namespace ftw7
 {
-    try
-    {
-        ftw7::parse_command_line(argc, argv);
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << argv[0] << ": " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+
+void parse_command_line(int argc, char* argv[]);
+
 }
+
+#endif

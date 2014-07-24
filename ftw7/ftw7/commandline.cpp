@@ -16,19 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#include <cstdlib>
-#include <iostream>
+#include "argp/argp.h"
 #include "commandline.hpp"
 
-int main(int argc, char *argv[])
+const char* argp_program_version = "ftw7 0.0.1";
+const char* argp_program_bug_address = "/dev/null";
+static const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
+static const char args_doc[] = "DEMO-EXECUTABLE";
+static const struct argp argp = { nullptr, nullptr, args_doc, doc };
+
+namespace ftw7
 {
-    try
-    {
-        ftw7::parse_command_line(argc, argv);
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << argv[0] << ": " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
+
+void parse_command_line(int argc, char* argv[])
+{
+    argp_parse(&argp, argc, argv, 0, nullptr, nullptr);
+}
+
 }
