@@ -22,4 +22,16 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
 
+if (MSVC)
+  # Set warning level to 4 (/W4)
+  if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string (REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else ()
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif ()
+
+  # Treat warnings as errors
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+endif ()
+
 add_subdirectory (ftw7)

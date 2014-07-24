@@ -1,5 +1,3 @@
-* ftw7
-  * Set warning level to 4 and treat warnings as errors
 * argp
   * Raise warning level if possible, treat warnings as errors
 * mhook
