@@ -27,7 +27,7 @@ namespace ftw7
 class command_line_arguments
 {
 public:
-    std::string demo_executable_path;
+    std::wstring demo_executable_path;
 };
 
 command_line_arguments parse_command_line(int argc, char* argv[]);

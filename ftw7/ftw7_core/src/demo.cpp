@@ -21,7 +21,7 @@
 namespace ftw7_core
 {
 
-void run_demo(const std::string& /*demo_executable_path*/)
+void run_demo(const std::wstring& /*demo_executable_path*/)
 {
 }
 

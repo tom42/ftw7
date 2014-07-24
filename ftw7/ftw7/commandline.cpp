@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <Windows.h>
 #include <stdexcept>
+#include <vector>
 #include "argp/argp.h"
 #include "commandline.hpp"
 
@@ -35,6 +37,19 @@ namespace ftw7
 namespace
 {
 
+std::wstring to_wstring(const char* s)
+{
+    auto n_wchars = MultiByteToWideChar(CP_ACP, 0, s, -1, nullptr, 0);
+    // TODO: here we go...this can fail (return 0)...
+
+    std::vector<wchar_t> buf(n_wchars);
+
+    // TODO: here we go...this can fail too...
+    MultiByteToWideChar(CP_ACP, 0, s, -1, &buf[0], buf.size());
+
+    return std::wstring(&buf[0]);
+}
+
 error_t parse_option(int key, char* arg, struct argp_state* state)
 {
     auto& args = *static_cast<command_line_arguments*>(state->input);
@@ -45,7 +60,7 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         {
             argp_error(state, "More than one demo given");
         }
-        args.demo_executable_path = arg;
+        args.demo_executable_path = to_wstring(arg);
         return 0;
     case ARGP_KEY_END:
         if (state->arg_num < 1)
