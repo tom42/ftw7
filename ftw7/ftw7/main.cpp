@@ -21,16 +21,31 @@
 #include "commandline.hpp"
 #include "ftw7_core/demo.hpp"
 
+template <typename char_type>
+void print_error(const char* program_name, const char_type* message)
+{
+    std::wcerr << program_name << L": " << message << std::endl;
+}
+
+template <typename char_type>
+void print_error(const char* program_name, const std::basic_string<char_type>& message)
+{
+    print_error(message.c_str());
+}
+
 int main(int argc, char *argv[])
 {
     try
     {
         auto args = ftw7::parse_command_line(argc, argv);
         ftw7_core::run_demo(args.demo_executable_path);
+        return EXIT_SUCCESS;
     }
+    // TODO: handle logic_error separately?
+    // TODO: handle wruntime_error (need to print wwhat rather than what)
     catch (const std::exception& e)
     {
-        std::cerr << argv[0] << ": " << e.what() << std::endl;
-        return EXIT_FAILURE;
+        print_error(argv[0], e.what());
     }
+    return EXIT_FAILURE;
 }
