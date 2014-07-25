@@ -1,4 +1,4 @@
-* run_demo: from there on I'd really like to work with std::wstring or some unicode thingy, srsly.
-  * So the command line parser should in principle to some mbcs=>wstring conversion. Oh well.
+* string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
+* format_message: should reintroduce string trimming: windows error messages (often) have trailing newlines, which sucks
 * Add missing tests from prototype 2
   * format_message_test.cpp

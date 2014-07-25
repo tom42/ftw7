@@ -20,6 +20,7 @@
 #include <iostream>
 #include "commandline.hpp"
 #include "ftw7_core/demo.hpp"
+#include "ftw7_core/wexcept.hpp"
 
 template <typename char_type>
 void print_error(const char* program_name, const char_type* message)
@@ -41,10 +42,13 @@ int main(int argc, char *argv[])
         ftw7_core::run_demo(args.demo_executable_path);
         return EXIT_SUCCESS;
     }
-    // TODO: handle wruntime_error (need to print wwhat rather than what)
     catch (const std::logic_error& e)
     {
         print_error(argv[0], std::string("bug: ") + e.what());
+    }
+    catch (const ftw7_core::wruntime_error& e)
+    {
+        print_error(argv[0], e.wwhat());
     }
     catch (const std::exception& e)
     {
