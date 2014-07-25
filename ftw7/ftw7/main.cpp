@@ -30,7 +30,7 @@ void print_error(const char* program_name, const char_type* message)
 template <typename char_type>
 void print_error(const char* program_name, const std::basic_string<char_type>& message)
 {
-    print_error(message.c_str());
+    print_error(program_name, message.c_str());
 }
 
 int main(int argc, char *argv[])
@@ -41,8 +41,11 @@ int main(int argc, char *argv[])
         ftw7_core::run_demo(args.demo_executable_path);
         return EXIT_SUCCESS;
     }
-    // TODO: handle logic_error separately?
     // TODO: handle wruntime_error (need to print wwhat rather than what)
+    catch (const std::logic_error& e)
+    {
+        print_error(argv[0], std::string("bug: ") + e.what());
+    }
     catch (const std::exception& e)
     {
         print_error(argv[0], e.what());
