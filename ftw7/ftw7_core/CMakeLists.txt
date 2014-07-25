@@ -19,6 +19,7 @@ set (
   ftw7_core_sources
   src/demo.cpp
   src/format_message.cpp
+  src/string.cpp
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
