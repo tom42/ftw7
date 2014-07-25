@@ -25,6 +25,7 @@ namespace ftw7_core
 {
 
 std::wstring multibyte_to_wstring(const char* s);
+std::string wstring_to_multibyte(const wchar_t* s);
 
 }
 

@@ -24,8 +24,6 @@
 namespace ftw7_core
 {
 
-// TODO: optimize:
-// * This code finds the input string's length twice, which is stupid.
 std::wstring multibyte_to_wstring(const char* s)
 {
     // Find length of string
@@ -45,8 +43,29 @@ std::wstring multibyte_to_wstring(const char* s)
         throw windows_error(L"MultiByteToWideChar failed", error);
     }
 
-    // TODO: this is the simplest but slowest way to exclude the terminating zero from vector.
     return std::wstring(&buf[0]);
+}
+
+std::string wstring_to_multibyte(const wchar_t* s)
+{
+    // Find number of bytes required in output buffer
+    int n_bytes = WideCharToMultiByte(CP_ACP, 0, s, -1, nullptr, 0, nullptr, nullptr);
+    if (n_bytes <= 0)
+    {
+        auto error = GetLastError();
+        throw windows_error(L"WideCharToMultiByte failed", error);
+    }
+
+    // Allocate buffer and perform conversion
+    std::vector<char> buf(n_bytes);
+    int result = WideCharToMultiByte(CP_ACP, 0, s, -1, &buf[0], n_bytes, nullptr, nullptr);
+    if (result <= 0)
+    {
+        auto error = GetLastError();
+        throw windows_error(L"WideCharToMultiByte failed", error);
+    }
+
+    return std::string(&buf[0]);
 }
 
 }

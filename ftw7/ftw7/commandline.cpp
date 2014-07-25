@@ -20,6 +20,7 @@
 #include "argp/argp.h"
 #include "commandline.hpp"
 #include "ftw7_core/string.hpp"
+#include "ftw7_core/wexcept.hpp"
 
 const char* argp_program_version = "ftw7 0.0.1";
 const char* argp_program_bug_address = "/dev/null";
@@ -61,16 +62,20 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
 
 error_t parse_option_stub(int key, char* arg, struct argp_state* state)
 {
+    // Don't let exceptions propagate into argp.
     try
     {
         return parse_option(key, arg, state);
     }
+    catch (const ftw7_core::wruntime_error& e)
+    {
+        argp_failure(state, EXIT_FAILURE, 0, ftw7_core::wstring_to_multibyte(e.wwhat()).c_str());
+    }
     catch (const std::exception& e)
     {
-        // Don't let exceptions propagate into argp.
         argp_failure(state, EXIT_FAILURE, 0, e.what());
-        throw std::logic_error("calling argp_failure did not exit the program");
     }
+    throw std::logic_error("calling argp_failure did not exit the program");
 }
 
 }
