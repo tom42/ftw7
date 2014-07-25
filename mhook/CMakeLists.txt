@@ -41,6 +41,12 @@ set (
   stdafx.h
 )
 
+if (MSVC)
+  # Treat warnings as errors, but don't bother raising the warning level.
+  # Mhook won't build without any warnings on /W4
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+endif ()
+
 add_library (mhook ${mhook_sources})
 
 add_executable (mhook-test ${mhook-test_sources})

@@ -1,6 +1,2 @@
 * run_demo: from there on I'd really like to work with std::wstring or some unicode thingy, srsly.
   * So the command line parser should in principle to some mbcs=>wstring conversion. Oh well.
-* argp
-  * Raise warning level if possible, treat warnings as errors
-* mhook
-  * Raise warning level if possible, treat warnings as errors
