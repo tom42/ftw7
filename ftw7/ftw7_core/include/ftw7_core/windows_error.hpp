@@ -20,8 +20,8 @@
 #define FTW7_CORE_WINDOWS_ERROR_HPP_INCLUDED
 
 #include <Windows.h>
-#include <ftw7/wexcept.hpp>
-#include <ftw7/win32/format_message.hpp>
+#include "ftw7_core/wexcept.hpp"
+#include "ftw7_core/format_message.hpp"
 
 namespace ftw7_core
 {
