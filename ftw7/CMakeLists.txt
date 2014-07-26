@@ -35,4 +35,5 @@ if (MSVC)
 endif ()
 
 add_subdirectory (ftw7_core)
+add_subdirectory (ftw7_conemu)
 add_subdirectory (ftw7)
