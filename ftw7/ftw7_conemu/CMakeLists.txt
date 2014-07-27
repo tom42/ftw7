@@ -17,7 +17,8 @@
 
 set (
   ftw7_conemu_sources
-  dllmain.cpp
+  ftw7_conemu.def
+  main.cpp
 )
 
 add_library (ftw7_conemu SHARED ${ftw7_conemu_sources})
