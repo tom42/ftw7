@@ -26,6 +26,7 @@ set (
   ftw7_core_test_sources
   test/format_message_test.cpp
   test/main.cpp
+  test/object_test.cpp
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")

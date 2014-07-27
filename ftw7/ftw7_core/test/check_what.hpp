@@ -16,26 +16,39 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CORE_TEST_WSTRING_OSTREAM_HPP_INCLUDED
-#define FTW7_CORE_TEST_WSTRING_OSTREAM_HPP_INCLUDED
+#ifndef FTW7_CORE_TEST_CHECK_WHAT_HPP_INCLUDED
+#define FTW7_CORE_TEST_CHECK_WHAT_HPP_INCLUDED
 
-#include <iosfwd>
+#include <stdexcept>
 #include <string>
+#include "ftw7_core/wexcept.hpp"
 
-namespace std
+class check_what
 {
+public:
+    check_what(const std::string& expected_message)
+        : expected_message(expected_message) {}
 
-// Required to compare wstrings with Boost.Test.
-inline std::ostream& operator << (std::ostream& os, const std::wstring& s)
-{
-    // Low-tech wchar_t to char conversion.
-    for (auto i = s.begin(); i != s.end(); ++i)
+    bool operator () (const std::exception& e) const
     {
-        os << char(*i);
+        return !strcmp(expected_message.c_str(), e.what());
     }
-    return os;
-}
+private:
+    std::string expected_message;
+};
 
-}
+class check_wwhat
+{
+public:
+    check_wwhat(const std::wstring& expected_message)
+        : expected_message(expected_message) {}
+
+    bool operator () (const ftw7::wruntime_error& e) const
+    {
+        return !wcscmp(expected_message.c_str(), e.wwhat());
+    }
+private:
+    std::wstring expected_message;
+};
 
 #endif

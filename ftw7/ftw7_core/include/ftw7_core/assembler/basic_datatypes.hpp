@@ -16,8 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#define BOOST_TEST_MODULE ftw7_core_test
-#include <boost/test/unit_test.hpp>
+#ifndef FTW7_CORE_ASSEMBLER_BASIC_DATA_TYPES_HPP_INCLUDED
+#define FTW7_CORE_ASSEMBLER_BASIC_DATA_TYPES_HPP_INCLUDED
 
-// This file intentionally doesn't contain any tests.
-// Its sole purpose is to generate the test runner, that is, main().
+#include <cstdint>
+#include <vector>
+
+namespace ftw7_core
+{
+namespace assembler
+{
+
+typedef uint8_t byte_t;
+typedef uint16_t word_t;
+typedef uint32_t dword_t;
+
+typedef std::vector<byte_t> bytevector;
+
+}
+}
+
+#endif
