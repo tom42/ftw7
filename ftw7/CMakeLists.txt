@@ -15,6 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
+# Find Boost
+#
+# Currently we're using static libraries, mainly because we then don't have to
+# worry about Boost DLLs being visible to the loader when we want to run stuff.
+# There are Boost libraries you shouldn't link statically to, such as Boost.Thread,
+# but this doesn't really matter much to us as long as we're using Boost.Test only.
+set (Boost_USE_STATIC_LIBS      ON)
+set (Boost_USE_MULTITHREADED    ON)
+set (Boost_USE_STATIC_RUNTIME   OFF)
+find_package (Boost 1.55.0 COMPONENTS unit_test_framework)
+message (STATUS "Boost_INCLUDE_DIR: ${Boost_INCLUDE_DIR}")
+message (STATUS "Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
+
 # Put all ftw7 specific binaries below this directory into a shared
 # output directory. This simplifies running and debugging ftw7.
 set (FTW7_SHARED_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
