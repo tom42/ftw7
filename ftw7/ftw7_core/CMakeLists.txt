@@ -22,5 +22,18 @@ set (
   src/string.cpp
 )
 
+set (
+  ftw7_core_test_sources
+  test/main.cpp
+)
+
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 add_library (ftw7_core ${ftw7_core_sources})
+
+# Currently we're using autolinking, which means we don't need to specify the
+# Boost libraries using target_link_libraries. We must however ensure the
+# directory containing the Boost libraries is in the library search path.
+link_directories (${Boost_LIBRARY_DIRS})
+include_directories ("${Boost_INCLUDE_DIRS}")
+add_executable (ftw7_core_test ${ftw7_core_test_sources})
+add_test (ftw7_core_test "${FTW7_SHARED_OUTPUT_DIRECTORY}/ftw7_core_test")
