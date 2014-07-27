@@ -45,6 +45,8 @@ if (MSVC)
 
   # Treat warnings as errors
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+
+  add_definitions (-DNOMINMAX)
 endif ()
 
 add_subdirectory (ftw7_core)

@@ -43,7 +43,7 @@ public:
     check_wwhat(const std::wstring& expected_message)
         : expected_message(expected_message) {}
 
-    bool operator () (const ftw7::wruntime_error& e) const
+    bool operator () (const ftw7_core::wruntime_error& e) const
     {
         return !wcscmp(expected_message.c_str(), e.wwhat());
     }

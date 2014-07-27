@@ -19,11 +19,16 @@ set (
   ftw7_core_sources
   src/demo.cpp
   src/format_message.cpp
+  src/gpreg32.cpp
   src/string.cpp
 )
 
 set (
   ftw7_core_test_sources
+  test/asm86_directives_test.cpp
+  test/asm86_opcodes_test.cpp
+  test/asm86_reference_test.cpp
+  test/asm86_value_test.cpp
   test/format_message_test.cpp
   test/main.cpp
   test/object_test.cpp
