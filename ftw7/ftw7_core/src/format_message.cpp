@@ -18,6 +18,7 @@
  */
 #include <memory>
 #include <sstream>
+#include <boost/algorithm/string/trim.hpp>
 #include "ftw7_core/format_message.hpp"
 
 namespace ftw7_core
@@ -80,6 +81,7 @@ std::basic_string<char_type> format_message_allocate_buffer(DWORD dwFlags,
     // TCHARs excluding the terminating zero stored in the output buffer.
     // Construct a string from that and return it.
     std::basic_string<char_type> message(buf, buf + result);
+    boost::algorithm::trim_right(message);
     return message;
 }
 

@@ -1,4 +1,1 @@
 * string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
-* format_message: should reintroduce string trimming: windows error messages (often) have trailing newlines, which sucks
-* Add missing tests from prototype 2
-  * format_message_test.cpp
