@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 #include "ftw7_core/demo.hpp"
@@ -33,13 +34,27 @@ std::wstring build_command_line(const std::wstring& exe_path)
     return s.str();
 }
 
+std::wstring get_working_directory(const std::wstring& exe_path)
+{
+    return std::tr2::sys::wpath(exe_path).parent_path().external_directory_string();
+}
+
 }
 
 void run_demo(const std::wstring& demo_executable_path)
 {
+    // TODO: more stability?
+    // * Check whether we can find demo_executable at all
+    // * If so we can build an absolute path ourselves
+    // * From that we can derive a working directory
+    // * If the working directory is empty (because there's no parent for demo_executable_path)
+    //   this is not yet an error, but we should apparently not throw empty strings at
+    //   CreateProcess but use NULL instead. Need to investigate this.
     auto command_line = build_command_line(demo_executable_path);
+    auto working_directory = get_working_directory(demo_executable_path);
 
     std::wcout << L"Starting: " << command_line << std::endl;
+    std::wcout << L"Working directory: " << working_directory << std::endl;
 }
 
 }
