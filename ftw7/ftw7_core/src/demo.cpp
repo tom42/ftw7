@@ -16,13 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <iostream>
+#include <sstream>
 #include "ftw7_core/demo.hpp"
 
 namespace ftw7_core
 {
 
-void run_demo(const std::wstring& /*demo_executable_path*/)
+namespace
 {
+
+std::wstring build_command_line(const std::wstring& exe_path)
+{
+    std::wostringstream s;
+    s << L'"' << exe_path << L'"';
+    return s.str();
+}
+
+}
+
+void run_demo(const std::wstring& demo_executable_path)
+{
+    auto command_line = build_command_line(demo_executable_path);
+
+    std::wcout << L"Starting: " << command_line << std::endl;
 }
 
 }
