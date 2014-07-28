@@ -29,6 +29,7 @@ namespace
 
 std::wstring build_command_line(const std::wstring& exe_path)
 {
+    // TODO: quoting required here?
     std::wostringstream s;
     s << L'"' << exe_path << L'"';
     return s.str();
@@ -53,8 +54,9 @@ void run_demo(const std::wstring& demo_executable_path)
     auto command_line = build_command_line(demo_executable_path);
     auto working_directory = get_working_directory(demo_executable_path);
 
-    std::wcout << L"Starting: " << command_line << std::endl;
+    std::wcout << L"Attempting to run: " << demo_executable_path << std::endl;
     std::wcout << L"Working directory: " << working_directory << std::endl;
+    std::wcout << L"Command line: " << command_line << std::endl;
 }
 
 }
