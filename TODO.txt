@@ -1,2 +1,3 @@
 * Get rid of boost::noncopyable use (orly?)
 * string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
+* format_message_test.cpp: stupid test, as it obviously fails on non-english systems. Possible ways to fix: specify language ID
