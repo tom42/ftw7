@@ -21,10 +21,18 @@
 
 #include <Windows.h>
 #include <string>
+#include "ftw7_core/wexcept.hpp"
 #include "handle.hpp"
 
 namespace ftw7_core
 {
+
+class process_error : public wruntime_error
+{
+public:
+    process_error(const std::wstring& message) : wruntime_error(message) {}
+    virtual ~process_error() {}
+};
 
 class process
 {
@@ -35,6 +43,14 @@ public:
 private:
     process(const process&) = delete;
     process& operator = (const process&) = delete;
+    void create_process(const std::wstring& application_name,
+        const std::wstring& cmdline, const std::wstring& working_directory);
+    void kill_if_suspended();
+
+    bool m_is_resumed;
+    handle m_process_handle;
+    handle m_thread_handle;
+    DWORD m_process_id;
 };
 
 }
