@@ -30,6 +30,7 @@ set (
   test/asm86_reference_test.cpp
   test/asm86_value_test.cpp
   test/format_message_test.cpp
+  test/inserts_test.cpp
   test/main.cpp
   test/object_test.cpp
 )
