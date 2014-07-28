@@ -61,6 +61,7 @@ void run_demo(const std::wstring& demo_executable_path)
     std::wcout << L"Command line: " << command_line << std::endl;
 
     process process(demo_executable_path, command_line, working_directory);
+    std::wcout << L"Successfully created process (PID=" << process.process_id() << L')' << std::endl;
 }
 
 }
