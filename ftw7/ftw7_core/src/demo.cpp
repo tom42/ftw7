@@ -20,6 +20,7 @@
 #include <iostream>
 #include <sstream>
 #include "ftw7_core/demo.hpp"
+#include "process.hpp"
 
 namespace ftw7_core
 {
@@ -51,12 +52,15 @@ void run_demo(const std::wstring& demo_executable_path)
     // * If the working directory is empty (because there's no parent for demo_executable_path)
     //   this is not yet an error, but we should apparently not throw empty strings at
     //   CreateProcess but use NULL instead. Need to investigate this.
+    // * Ensure command line building is done correcty (quoting and that)
     auto command_line = build_command_line(demo_executable_path);
     auto working_directory = get_working_directory(demo_executable_path);
 
     std::wcout << L"Attempting to run: " << demo_executable_path << std::endl;
     std::wcout << L"Working directory: " << working_directory << std::endl;
     std::wcout << L"Command line: " << command_line << std::endl;
+
+    process process(demo_executable_path, command_line, working_directory);
 }
 
 }

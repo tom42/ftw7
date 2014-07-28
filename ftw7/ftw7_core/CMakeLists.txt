@@ -20,6 +20,7 @@ set (
   src/demo.cpp
   src/format_message.cpp
   src/gpreg32.cpp
+  src/process.cpp
   src/string.cpp
 )
 
