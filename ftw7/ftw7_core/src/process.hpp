@@ -21,6 +21,7 @@
 
 #include <Windows.h>
 #include <string>
+#include "handle.hpp"
 
 namespace ftw7_core
 {
