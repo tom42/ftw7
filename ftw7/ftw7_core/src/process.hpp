@@ -44,6 +44,7 @@ public:
     bool is_64bit();
     DWORD process_id() const { return m_process_id; }
     CONTEXT get_thread_context(DWORD context_flags);
+    void* virtual_alloc(size_t nbytes);
 private:
     process(const process&) = delete;
     process& operator = (const process&) = delete;

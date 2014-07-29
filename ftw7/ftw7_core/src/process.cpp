@@ -98,6 +98,23 @@ CONTEXT process::get_thread_context(DWORD context_flags)
     return ctx;
 }
 
+void* process::virtual_alloc(size_t nbytes)
+{
+    check_is_not_resumed(__FUNCTION__);
+
+    // TODO: can a 32 bit process do this on a 64 bit process?
+    //       And what about 64 -> 32 bit?
+    void* address = VirtualAllocEx(m_process_handle.get(), nullptr, nbytes,
+        MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    if (!address)
+    {
+        const DWORD error = GetLastError();
+        throw process_error(windows::wformat_message_from_system(
+            L"could not allocate memory for injected code", error));
+    }
+    return address;
+}
+
 void process::create_process(const std::wstring& application_name,
     const std::wstring& cmdline, const std::wstring& working_directory)
 {
