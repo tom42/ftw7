@@ -19,7 +19,7 @@
 #include <Windows.h>
 #include <vector>
 #include "ftw7_core/windows/string.hpp"
-#include "ftw7_core/windows_error.hpp"
+#include "ftw7_core/windows/windows_error.hpp"
 
 namespace ftw7_core
 {

@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CORE_WINDOWS_ERROR_HPP_INCLUDED
-#define FTW7_CORE_WINDOWS_ERROR_HPP_INCLUDED
+#ifndef FTW7_CORE_WINDOWS_WINDOWS_ERROR_HPP_INCLUDED
+#define FTW7_CORE_WINDOWS_WINDOWS_ERROR_HPP_INCLUDED
 
 #include <Windows.h>
 #include "ftw7_core/wexcept.hpp"
 #include "ftw7_core/windows/format_message.hpp"
 
 namespace ftw7_core
+{
+namespace windows
 {
 
 class windows_error : public wruntime_error
@@ -44,6 +46,7 @@ public:
     virtual ~windows_error() {}
 };
 
+}
 }
 
 #endif
