@@ -20,6 +20,7 @@
 #include "ftw7_core/windows/bitness.hpp"
 #include "ftw7_core/windows/format_message.hpp"
 #include "ftw7_core/windows/module.hpp"
+#include "ftw7_core/windows/windows_error.hpp"
 
 namespace ftw7_core
 {
@@ -33,8 +34,7 @@ bool is_wow64_process()
 
 bool is_wow64_process(HANDLE process)
 {
-    // TODO: use decltype and get a correct function pointer automatically?
-    typedef BOOL (WINAPI *IsWow64ProcessPtr)(HANDLE, PBOOL);
+    typedef decltype(::IsWow64Process)* IsWow64ProcessPtr;
     HMODULE kernel32 = get_module_handle(L"kernel32.dll");
 
     IsWow64ProcessPtr isWow64Process = 
@@ -50,9 +50,7 @@ bool is_wow64_process(HANDLE process)
     if (!isWow64Process(process, &iswow64))
     {
         const DWORD error = GetLastError();
-        // TODO: why not windows_error?
-        throw wruntime_error(L"IsWow64Process failed: " +
-            wformat_message_from_system(error));
+        throw windows_error(L"IsWow64Process failed", error);
     }
     return iswow64 ? true : false;
 }

@@ -62,6 +62,12 @@ void run_demo(const std::wstring& demo_executable_path)
 
     process process(demo_executable_path, command_line, working_directory);
     std::wcout << L"Successfully created process (PID=" << process.process_id() << L')' << std::endl;
+
+    if (process.is_64bit())
+    {
+        throw wruntime_error(L"cannot run 64 bit program '" + demo_executable_path + L"'");
+    }
+
 }
 
 }
