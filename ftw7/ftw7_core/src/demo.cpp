@@ -47,7 +47,6 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
 {
     // TODO: real implementation
     a.push(return_address);
-    a.int3();
     a.ret();
 }
 
@@ -106,6 +105,7 @@ void run_demo(const std::wstring& demo_executable_path)
 
     inject_emulation(process);
     // TODO: launch process, either free-running or wait for it to terminate
+    process.run();
 }
 
 }

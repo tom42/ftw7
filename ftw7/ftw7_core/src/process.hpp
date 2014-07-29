@@ -49,6 +49,7 @@ public:
         const size_t nbytes);
     void flush_instruction_cache(const void* base_address, size_t nbytes);
     void set_thread_context(const CONTEXT& ctx);
+    void run();
 private:
     process(const process&) = delete;
     process& operator = (const process&) = delete;

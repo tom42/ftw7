@@ -164,6 +164,33 @@ void process::set_thread_context(const CONTEXT& ctx)
     }
 }
 
+void process::run()
+{
+    check_is_not_resumed(__FUNCTION__);
+
+    const DWORD result = ResumeThread(m_thread_handle.get());
+    switch (result)
+    {
+    case 0:
+        // Should not happen unless somebody else already resumed the thread.
+        throw process_error(L"main thread was not suspended");
+        break;
+    case 1:
+        // OK: thread was suspended and is now running.
+        m_is_resumed = true;
+        m_thread_handle.close();
+        break;
+    case (DWORD)-1:
+        // TODO: shouldn't we supply a message prefix here?
+        throw process_error(windows::wformat_message_from_system(GetLastError()));
+        break;
+    default:
+        // Should not happen unless somebody else also suspended the thread.
+        throw process_error(L"main thread is still suspended");
+        break;
+    }
+}
+
 void process::create_process(const std::wstring& application_name,
     const std::wstring& cmdline, const std::wstring& working_directory)
 {
