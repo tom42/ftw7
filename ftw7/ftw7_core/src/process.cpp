@@ -115,6 +115,55 @@ void* process::virtual_alloc(size_t nbytes)
     return address;
 }
 
+void process::write_process_memory(void* base_address, const void* buffer,
+    const size_t nbytes)
+{
+    check_is_not_resumed(__FUNCTION__);
+
+    // TODO: can a 32 bit process do this on a 64 bit process?
+    //       And what about 64 -> 32 bit?
+    SIZE_T nbytes_written = 0;
+    if (!WriteProcessMemory(m_process_handle.get(), base_address, buffer, nbytes,
+        &nbytes_written))
+    {
+        const DWORD error = GetLastError();
+        throw process_error(L"WriteProcessMemory failed: " +
+            windows::wformat_message_from_system(error));
+    }
+
+    // This should never happen if we write to memory we allocated ourself
+    // and made writable. Being paranoid can't hurt, either.
+    if (nbytes_written != nbytes)
+    {
+        throw process_error(L"WriteProcessMemory failed: "
+            L"could not write specified number of bytes to remote process");
+    }
+}
+
+void process::flush_instruction_cache(const void* base_address, size_t nbytes)
+{
+    check_is_not_resumed(__FUNCTION__);
+
+    if (!FlushInstructionCache(m_process_handle.get(), base_address, nbytes))
+    {
+        const DWORD error = GetLastError();
+        throw process_error(L"FlushInstructionCache failed: " +
+            windows::wformat_message_from_system(error));
+    }
+}
+
+void process::set_thread_context(const CONTEXT& ctx)
+{
+    check_is_not_resumed(__FUNCTION__);
+
+    if (!SetThreadContext(m_thread_handle.get(), &ctx))
+    {
+        const DWORD error = GetLastError();
+        throw process_error(L"SetThreadContext failed: " +
+            windows::wformat_message_from_system(error));
+    }
+}
+
 void process::create_process(const std::wstring& application_name,
     const std::wstring& cmdline, const std::wstring& working_directory)
 {

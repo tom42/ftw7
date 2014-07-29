@@ -45,6 +45,10 @@ public:
     DWORD process_id() const { return m_process_id; }
     CONTEXT get_thread_context(DWORD context_flags);
     void* virtual_alloc(size_t nbytes);
+    void write_process_memory(void* base_address, const void* buffer,
+        const size_t nbytes);
+    void flush_instruction_cache(const void* base_address, size_t nbytes);
+    void set_thread_context(const CONTEXT& ctx);
 private:
     process(const process&) = delete;
     process& operator = (const process&) = delete;
