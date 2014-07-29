@@ -19,9 +19,11 @@
 #include <memory>
 #include <sstream>
 #include <boost/algorithm/string/trim.hpp>
-#include "ftw7_core/format_message.hpp"
+#include "ftw7_core/windows/format_message.hpp"
 
 namespace ftw7_core
+{
+namespace windows
 {
 
 namespace
@@ -129,4 +131,5 @@ std::wstring wformat_message_from_system(const std::wstring& message_prefix,
         errorcode);
 }
 
+}
 }

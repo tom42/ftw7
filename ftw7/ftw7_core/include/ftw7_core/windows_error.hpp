@@ -21,7 +21,7 @@
 
 #include <Windows.h>
 #include "ftw7_core/wexcept.hpp"
-#include "ftw7_core/format_message.hpp"
+#include "ftw7_core/windows/format_message.hpp"
 
 namespace ftw7_core
 {
@@ -30,15 +30,15 @@ class windows_error : public wruntime_error
 {
 public:
     windows_error(DWORD errorcode)
-        : wruntime_error(wformat_message_from_system(errorcode))
+        : wruntime_error(windows::wformat_message_from_system(errorcode))
     {}
 
     windows_error(const wchar_t* message_prefix, DWORD errorcode)
-        : wruntime_error(wformat_message_from_system(message_prefix, errorcode))
+        : wruntime_error(windows::wformat_message_from_system(message_prefix, errorcode))
     {}
 
     windows_error(const std::wstring& message_prefix, DWORD errorcode)
-        : wruntime_error(wformat_message_from_system(message_prefix, errorcode))
+        : wruntime_error(windows::wformat_message_from_system(message_prefix, errorcode))
     {}
 
     virtual ~windows_error() {}

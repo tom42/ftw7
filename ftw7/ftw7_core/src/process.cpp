@@ -17,7 +17,7 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include <vector>
-#include "ftw7_core/format_message.hpp"
+#include "ftw7_core/windows/format_message.hpp"
 #include "ftw7_core/windows/inserts.hpp"
 #include "process.hpp"
 
@@ -39,7 +39,7 @@ std::vector<wchar_t> to_vector(const std::wstring& s)
 std::wstring create_error_message_for_create_process(const DWORD errorcode,
     const std::wstring& application_name)
 {
-    std::wstring message = wformat_message_from_system(errorcode);
+    std::wstring message = windows::wformat_message_from_system(errorcode);
 
     // Replace inserts for known error codes.
     switch (errorcode)

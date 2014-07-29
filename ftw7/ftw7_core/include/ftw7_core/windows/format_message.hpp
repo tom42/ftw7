@@ -16,17 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CORE_STRING_HPP_INCLUDED
-#define FTW7_CORE_STRING_HPP_INCLUDED
+#ifndef FTW7_CORE_WINDOWS_FORMAT_MESSAGE_HPP_INCLUDED
+#define FTW7_CORE_WINDOWS_FORMAT_MESSAGE_HPP_INCLUDED
 
+#include <Windows.h>
 #include <string>
 
 namespace ftw7_core
 {
+namespace windows
+{
 
-std::wstring multibyte_to_wstring(const char* s);
-std::string wstring_to_multibyte(const wchar_t* s);
+std::string format_message_from_system(DWORD errorcode);
 
+std::wstring wformat_message_from_system(DWORD errorcode);
+std::wstring wformat_message_from_system(const wchar_t* message_prefix,
+    DWORD errorcode);
+std::wstring wformat_message_from_system(const std::wstring& message_prefix,
+    DWORD errorcode);
+
+}
 }
 
 #endif

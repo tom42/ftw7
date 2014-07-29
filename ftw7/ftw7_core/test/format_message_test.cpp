@@ -17,13 +17,13 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include <boost/test/unit_test.hpp>
-#include "ftw7_core/format_message.hpp"
+#include "ftw7_core/windows/format_message.hpp"
 #include "wstring_ostream.hpp"
 
 namespace
 {
 
-using namespace ftw7_core;
+using namespace ftw7_core::windows;
 
 BOOST_AUTO_TEST_SUITE(format_message_test)
 

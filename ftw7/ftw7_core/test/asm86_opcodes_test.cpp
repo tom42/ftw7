@@ -18,7 +18,7 @@
  */
 #include <Windows.h>
 #include <boost/test/unit_test.hpp>
-#include "ftw7_core/format_message.hpp"
+#include "ftw7_core/windows/format_message.hpp"
 #include "test_asm86.hpp"
 
 namespace
@@ -35,7 +35,7 @@ public:
         {
             DWORD error = GetLastError();
             throw std::runtime_error("VirtualAlloc failed: " +
-                ftw7_core::format_message_from_system(error));
+                ftw7_core::windows::format_message_from_system(error));
         }
 
         memcpy(mem, &program[0], program.size());
@@ -52,7 +52,7 @@ public:
             // with our code is very wrong and I'd like to know about it.
             DWORD error = GetLastError();
             throw std::runtime_error("VirtualFree failed: " +
-                ftw7_core::format_message_from_system(error));
+                ftw7_core::windows::format_message_from_system(error));
         }
     }
 
