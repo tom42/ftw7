@@ -20,6 +20,7 @@ set (
   src/demo.cpp
   src/format_message.cpp
   src/gpreg32.cpp
+  src/module.cpp
   src/process.cpp
   src/string.cpp
 )
@@ -33,6 +34,7 @@ set (
   test/format_message_test.cpp
   test/inserts_test.cpp
   test/main.cpp
+  test/module_test.cpp
   test/object_test.cpp
 )
 

@@ -1,5 +1,4 @@
-* Get rid of boost::noncopyable use (orly?)
-* OK, so we're reintroducing the win32 namespace (as windows) again. Move already imported stuff there:
-  * windows_error.hpp
 * string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
-* format_message_test.cpp: stupid test, as it obviously fails on non-english systems. Possible ways to fix: specify language ID
+* Improve language dependent unit tests:
+  * format_message_test.cpp: stupid test, as it obviously fails on non-english systems. Possible ways to fix: specify language ID
+  * module_test.cpp: stupid test, as it fails on non-english systems
