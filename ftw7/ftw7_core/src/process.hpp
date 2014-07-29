@@ -40,6 +40,7 @@ public:
     process(const std::wstring& application_name, const std::wstring& cmdline,
         const std::wstring& working_directory);
     ~process();
+    bool is_64bit();
     DWORD process_id() const { return m_process_id; }
 private:
     process(const process&) = delete;

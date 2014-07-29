@@ -57,5 +57,35 @@ bool is_wow64_process(HANDLE process)
     return iswow64 ? true : false;
 }
 
+bool is_64bit_os()
+{
+    if (is_64bit_process())
+    {
+        return true;
+    }
+
+    // If we're not a 64 bit process and we're a Wow64 process, then we're
+    // running on a 64 bit OS.
+    return is_wow64_process();
+}
+
+bool is_64bit_process()
+{
+#if defined(_WIN64)
+    return true;
+#else
+    return false;
+#endif
+}
+
+bool is_64bit_process(HANDLE process)
+{
+    if (!is_64bit_os())
+    {
+        return false;
+    }
+    return !is_wow64_process(process);
+}
+
 }
 }

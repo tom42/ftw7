@@ -17,6 +17,7 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include <vector>
+#include "ftw7_core/windows/bitness.hpp"
 #include "ftw7_core/windows/format_message.hpp"
 #include "ftw7_core/windows/inserts.hpp"
 #include "process.hpp"
@@ -75,6 +76,11 @@ process::process(const std::wstring& application_name, const std::wstring& cmdli
 process::~process()
 {
     kill_if_suspended();
+}
+
+bool process::is_64bit()
+{
+    return windows::is_64bit_process(m_process_handle.get());
 }
 
 void process::create_process(const std::wstring& application_name,
