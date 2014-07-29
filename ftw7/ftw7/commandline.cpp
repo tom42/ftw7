@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include "argp/argp.h"
 #include "commandline.hpp"
-#include "ftw7_core/string.hpp"
+#include "ftw7_core/windows/string.hpp"
 #include "ftw7_core/wexcept.hpp"
 
 const char* argp_program_version = "ftw7 0.0.1";
@@ -47,7 +47,7 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         {
             argp_error(state, "More than one demo given");
         }
-        args.demo_executable_path = ftw7_core::multibyte_to_wstring(arg);
+        args.demo_executable_path = ftw7_core::windows::multibyte_to_wstring(arg);
         return 0;
     case ARGP_KEY_END:
         if (state->arg_num < 1)
@@ -69,7 +69,7 @@ error_t parse_option_stub(int key, char* arg, struct argp_state* state)
     }
     catch (const ftw7_core::wruntime_error& e)
     {
-        argp_failure(state, EXIT_FAILURE, 0, ftw7_core::wstring_to_multibyte(e.wwhat()).c_str());
+        argp_failure(state, EXIT_FAILURE, 0, ftw7_core::windows::wstring_to_multibyte(e.wwhat()).c_str());
     }
     catch (const std::exception& e)
     {

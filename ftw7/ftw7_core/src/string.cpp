@@ -18,10 +18,12 @@
  */
 #include <Windows.h>
 #include <vector>
-#include "ftw7_core/string.hpp"
+#include "ftw7_core/windows/string.hpp"
 #include "ftw7_core/windows_error.hpp"
 
 namespace ftw7_core
+{
+namespace windows
 {
 
 std::wstring multibyte_to_wstring(const char* s)
@@ -68,4 +70,5 @@ std::string wstring_to_multibyte(const wchar_t* s)
     return std::string(&buf[0]);
 }
 
+}
 }
