@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(get_module_handle_test)
 {
     BOOST_CHECK(boost::algorithm::ends_with(
         get_module_filename(get_module_handle(nullptr)),
-        L"\\ftw7_unit_test.exe"));
+        L"\\ftw7_core_test.exe"));
 
     BOOST_CHECK_EQUAL(get_module_handle(L"kernel32.dll"),
         LoadLibraryW(L"kernel32.dll"));
