@@ -27,6 +27,7 @@
 namespace ftw7_core
 {
 
+// TODO: is anybody catching this? If not, remove it.
 class process_error : public wruntime_error
 {
 public:
@@ -42,12 +43,14 @@ public:
     ~process();
     bool is_64bit();
     DWORD process_id() const { return m_process_id; }
+    CONTEXT get_thread_context(DWORD context_flags);
 private:
     process(const process&) = delete;
     process& operator = (const process&) = delete;
     void create_process(const std::wstring& application_name,
         const std::wstring& cmdline, const std::wstring& working_directory);
     void kill_if_suspended();
+    void check_is_not_resumed(const char* calling_function) const;
 
     bool m_is_resumed;
     handle m_process_handle;

@@ -83,6 +83,21 @@ bool process::is_64bit()
     return windows::is_64bit_process(m_process_handle.get());
 }
 
+CONTEXT process::get_thread_context(DWORD context_flags)
+{
+    check_is_not_resumed(__FUNCTION__);
+
+    CONTEXT ctx = { context_flags };
+    if (!GetThreadContext(m_thread_handle.get(), &ctx))
+    {
+        const DWORD error = GetLastError();
+        throw process_error(L"could not get thread context: " +
+            windows::wformat_message_from_system(error));
+    }
+
+    return ctx;
+}
+
 void process::create_process(const std::wstring& application_name,
     const std::wstring& cmdline, const std::wstring& working_directory)
 {
@@ -128,6 +143,16 @@ void process::kill_if_suspended()
     if (!m_is_resumed && m_process_handle.is_available())
     {
         TerminateProcess(m_process_handle.get(), EXIT_FAILURE);
+    }
+}
+
+void process::check_is_not_resumed(const char* calling_function) const
+{
+    if (m_is_resumed)
+    {
+        std::string message(calling_function);
+        message += ": process already resumed";
+        throw std::logic_error(message);
     }
 }
 
