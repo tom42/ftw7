@@ -50,6 +50,7 @@ public:
     void flush_instruction_cache(const void* base_address, size_t nbytes);
     void set_thread_context(const CONTEXT& ctx);
     void run();
+    DWORD run_and_wait();
 private:
     process(const process&) = delete;
     process& operator = (const process&) = delete;
@@ -58,6 +59,8 @@ private:
         const std::wstring& working_directory);
     void kill_if_suspended();
     void check_is_not_resumed(const char* calling_function) const;
+    void wait();
+    DWORD get_exit_code();
 
     bool m_is_resumed;
     handle m_process_handle;

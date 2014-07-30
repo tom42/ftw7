@@ -28,10 +28,12 @@ class demo_settings
 {
 public:
     demo_settings()
-        : separate_console(false)
+        : separate_console(false),
+        wait_for_process(true)
     {}
 
     bool separate_console;
+    bool wait_for_process;
 };
 
 void run_demo(const std::wstring& demo_executable_path, const demo_settings& settings);

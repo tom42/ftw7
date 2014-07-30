@@ -114,8 +114,19 @@ void run_demo(const std::wstring& demo_executable_path, const demo_settings& set
     }
 
     inject_emulation(process);
-    // TODO: launch process, either free-running or wait for it to terminate
-    process.run();
+    std::wcout << L"Successfully injected console emulation library" << std::endl;
+
+    if (settings.wait_for_process)
+    {
+        std::wcout << L"Running demo and waiting for it to terminate" << std::endl;
+        const auto exitcode = process.run_and_wait();
+        std::wcout << L"Demo terminated with exit code " << exitcode << std::endl;
+    }
+    else
+    {
+        std::wcout << L"Running demo without waiting for it to terminate" << std::endl;
+        process.run();
+    }
 }
 
 }

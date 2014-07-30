@@ -191,6 +191,13 @@ void process::run()
     }
 }
 
+DWORD process::run_and_wait()
+{
+    run();
+    wait();
+    return get_exit_code();
+}
+
 void process::create_process(const std::wstring& application_name,
     const std::wstring& cmdline, DWORD creation_flags,
     const std::wstring& working_directory)
@@ -250,6 +257,29 @@ void process::check_is_not_resumed(const char* calling_function) const
         message += ": process already resumed";
         throw std::logic_error(message);
     }
+}
+
+void process::wait()
+{
+    const DWORD result = WaitForSingleObject(m_process_handle.get(), INFINITE);
+    if (result == WAIT_FAILED)
+    {
+        const DWORD errorcode = GetLastError();
+        throw process_error(windows::wformat_message_from_system(
+            L"could not wait for process", errorcode));
+    }
+}
+
+DWORD process::get_exit_code()
+{
+    DWORD exitcode;
+    if (!GetExitCodeProcess(m_process_handle.get(), &exitcode))
+    {
+        const DWORD errorcode = GetLastError();
+        throw process_error(windows::wformat_message_from_system(
+            L"could not get exit code from process", errorcode));
+    }
+    return exitcode;
 }
 
 }
