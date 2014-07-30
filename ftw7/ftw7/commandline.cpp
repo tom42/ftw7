@@ -24,18 +24,27 @@
 
 const char* argp_program_version = "ftw7 0.0.1";
 const char* argp_program_bug_address = "/dev/null";
-static const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
-static const char args_doc[] = "DEMO";
-
-static const struct argp_option options[] =
-{
-    {0}
-};
 
 namespace ftw7
 {
 namespace
 {
+
+enum
+{
+    force_the_following_options_out_of_the_ascii_range = 256,
+    OPT_SEPARATE_CONSOLE,
+};
+
+const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
+const char args_doc[] = "DEMO";
+
+const struct argp_option options[] =
+{
+    { 0, 0, 0, 0, "Options mainly useful for development" },
+    { "separate-console", OPT_SEPARATE_CONSOLE, 0, 0, "Run demo with a separate console window" },
+    { 0 }
+};
 
 error_t parse_option(int key, char* arg, struct argp_state* state)
 {
@@ -54,6 +63,9 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         {
             argp_error(state, "No demo given");
         }
+        return 0;
+    case OPT_SEPARATE_CONSOLE:
+        args.demo_settings.separate_console = true;
         return 0;
     default:
         return ARGP_ERR_UNKNOWN;

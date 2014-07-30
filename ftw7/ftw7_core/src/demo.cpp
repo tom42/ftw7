@@ -43,6 +43,16 @@ std::wstring get_working_directory(const std::wstring& exe_path)
     return std::tr2::sys::wpath(exe_path).parent_path().external_directory_string();
 }
 
+DWORD get_creation_flags(const demo_settings& settings)
+{
+    DWORD flags = 0;
+    if (settings.separate_console)
+    {
+        flags |= CREATE_NEW_CONSOLE;
+    }
+    return flags;
+}
+
 void create_injection_code(assembler::asm86& a, DWORD return_address)
 {
     // TODO: real implementation
@@ -74,7 +84,7 @@ void inject_emulation(process& process)
 
 }
 
-void run_demo(const std::wstring& demo_executable_path)
+void run_demo(const std::wstring& demo_executable_path, const demo_settings& settings)
 {
     // TODO: more stability? (A lot of this depends on how useful CreateProcess behaves)
     // * Check whether we can find demo_executable at all
@@ -95,7 +105,7 @@ void run_demo(const std::wstring& demo_executable_path)
     std::wcout << L"Working directory: " << working_directory << std::endl;
     std::wcout << L"Command line: " << command_line << std::endl;
 
-    process process(demo_executable_path, command_line, working_directory);
+    process process(demo_executable_path, command_line, get_creation_flags(settings), working_directory);
     std::wcout << L"Successfully created process (PID=" << process.process_id() << L')' << std::endl;
 
     if (process.is_64bit())

@@ -24,7 +24,17 @@
 namespace ftw7_core
 {
 
-void run_demo(const std::wstring& demo_executable_path);
+class demo_settings
+{
+public:
+    demo_settings()
+        : separate_console(false)
+    {}
+
+    bool separate_console;
+};
+
+void run_demo(const std::wstring& demo_executable_path, const demo_settings& settings);
 
 }
 

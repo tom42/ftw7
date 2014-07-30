@@ -20,6 +20,7 @@
 #define FTW7_COMMANDLINE_HPP_INCLUDED
 
 #include <string>
+#include "ftw7_core/demo.hpp"
 
 namespace ftw7
 {
@@ -28,6 +29,7 @@ class command_line_arguments
 {
 public:
     std::wstring demo_executable_path;
+    ftw7_core::demo_settings demo_settings;
 };
 
 command_line_arguments parse_command_line(int argc, char* argv[]);

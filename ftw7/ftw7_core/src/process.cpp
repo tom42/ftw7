@@ -56,7 +56,7 @@ std::wstring create_error_message_for_create_process(const DWORD errorcode,
 }
 
 process::process(const std::wstring& application_name, const std::wstring& cmdline,
-    const std::wstring& working_directory)
+    DWORD creation_flags, const std::wstring& working_directory)
     : m_is_resumed(false),
     m_process_handle("process"),
     m_thread_handle("thread"),
@@ -64,7 +64,7 @@ process::process(const std::wstring& application_name, const std::wstring& cmdli
 {
     try
     {
-        create_process(application_name, cmdline, working_directory);
+        create_process(application_name, cmdline, creation_flags, working_directory);
     }
     catch (...)
     {
@@ -192,7 +192,8 @@ void process::run()
 }
 
 void process::create_process(const std::wstring& application_name,
-    const std::wstring& cmdline, const std::wstring& working_directory)
+    const std::wstring& cmdline, DWORD creation_flags,
+    const std::wstring& working_directory)
 {
     // CreateProcess needs the command line in a writable buffer.
     auto cmdline_v = to_vector(cmdline);
@@ -200,13 +201,15 @@ void process::create_process(const std::wstring& application_name,
     STARTUPINFOW si = { sizeof(si) };
     PROCESS_INFORMATION pi = {};
 
+    creation_flags |= CREATE_SUSPENDED;
+
     const BOOL create_process_result = CreateProcessW(
         application_name.c_str(),   // lpApplicationName
         &cmdline_v[0],              // lpCommandLine
         nullptr,                    // lpProcessAttributes
         nullptr,                    // lpThreadAttributes
         FALSE,                      // bInheritHandles
-        CREATE_SUSPENDED,           // dwCreationFlags
+        creation_flags,             // dwCreationFlags
         nullptr,                    // lpEnvironment
         working_directory.c_str(),  // lpCurrentDirectory
         &si,                        // lpStartupInfo
