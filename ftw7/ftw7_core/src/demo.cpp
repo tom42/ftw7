@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <iostream>
 #include <sstream>
+#include <boost/io/ios_state.hpp>
 #include "ftw7_core/assembler/asm86.hpp"
 #include "ftw7_core/demo.hpp"
 #include "ftw7_core/ptr_to_int.hpp"
@@ -56,7 +57,16 @@ DWORD get_creation_flags(const demo_settings& settings)
 void create_injection_code(assembler::asm86& a, DWORD return_address)
 {
     // TODO: real implementation
+
+    // Push return address onto stack and save all registers.
     a.push(return_address);
+    a.pushf();
+    a.pusha();
+
+    // Success:
+    // Restore all registers and return to main thread's original entry point.
+    a.popa();
+    a.popf();
     a.ret();
 }
 
@@ -120,7 +130,8 @@ void run_demo(const std::wstring& demo_executable_path, const demo_settings& set
     {
         std::wcout << L"Running demo and waiting for it to terminate" << std::endl;
         const auto exitcode = process.run_and_wait();
-        std::wcout << L"Demo terminated with exit code " << exitcode << std::endl;
+        boost::io::ios_flags_saver ifs(std::wcout);
+        std::wcout << L"Demo terminated with exit code 0x" << std::hex << exitcode << std::endl;
     }
     else
     {
