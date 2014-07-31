@@ -126,11 +126,12 @@ std::wstring get_emulation_dll_path()
 
 void create_injection_code(assembler::asm86& a, DWORD return_address)
 {
-    // TODO: real implementation
     using namespace ftw7_core::assembler;
     using namespace ftw7_core::windows;
 
     const auto kernel32 = get_module_handle(L"kernel32.dll");
+    const auto GetProcAddress_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
+    const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
 
     // Push return address onto stack and save all registers.
     a.push(return_address);
@@ -139,13 +140,30 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
 
     // Load the emulation DLL.
     a.push("emulation_dll_path");
-    a.mov(eax, ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW")));
+    a.mov(eax, LoadLibraryW_ptr);
     a.call(eax);
-    a.mov(ebx, 0xf7f70000); // TODO: unhardcode exit codes.
+    a.mov(ebx, 0xf7f70000);                 // TODO: unhardcode exit codes.
     a.or(eax, eax);
     a.jnz("emulation_dll_loaded");
     a.jmp("exit_error");
     a.label("emulation_dll_loaded");
+
+    // TODO: check DLL version, somehow?
+
+    // Get address of ftw7_conemu_initialize()
+    a.push("ftw7_conemu_initialize_name");  // Push address of function name
+    a.push(eax);                            // Push emulation DLL's module handle
+    a.mov(eax, GetProcAddress_ptr);         // Call GetProcAddress()
+    a.call(eax);
+    a.mov(ebx, 0xf7f70001);                 // TODO: unhardcode exit codes
+    a.or(eax, eax);
+    a.jz("exit_error");
+
+    // Call ftw7_conemu_initialize()
+    a.call(eax);                            // Call ftw7_conemu_initialize
+    a.mov(ebx, eax);                        // EBX = error code from ftw7_conemu_initialize (if any)
+    a.or(eax, eax);
+    a.jnz("exit_error");
 
     // Success:
     // Restore all registers and return to main thread's original entry point.
@@ -162,6 +180,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
 
     // Data. Wide character strings must be aligned to even addresses.
     a.align(2).label("emulation_dll_path").wstring_z(get_emulation_dll_path());
+    a.align(2).label("ftw7_conemu_initialize_name").string_z("ftw7_conemu_initialize");
 }
 
 void inject_emulation(process& process)
