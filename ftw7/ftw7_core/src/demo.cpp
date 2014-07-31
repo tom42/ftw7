@@ -24,6 +24,7 @@
 #include <boost/io/ios_state.hpp>
 #include "ftw7_core/assembler/asm86.hpp"
 #include "ftw7_core/demo.hpp"
+#include "ftw7_core/windows/module.hpp"
 #include "ftw7_core/ptr_to_int.hpp"
 #include "process.hpp"
 
@@ -118,17 +119,41 @@ DWORD get_creation_flags(const demo_settings& settings)
 void create_injection_code(assembler::asm86& a, DWORD return_address)
 {
     // TODO: real implementation
+    using namespace ftw7_core::assembler;
+    using namespace ftw7_core::windows;
+
+    const auto kernel32 = get_module_handle(L"kernel32.dll");
 
     // Push return address onto stack and save all registers.
     a.push(return_address);
     a.pushf();
     a.pusha();
 
+    // Load the emulation DLL.
+    a.push("emulation_dll_path");
+    a.mov(eax, ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW")));
+    a.call(eax);
+    a.mov(ebx, 0xf7f70000); // TODO: unhardcode exit codes.
+    a.or(eax, eax);
+    a.jnz("emulation_dll_loaded");
+    a.jmp("exit_error");
+    a.label("emulation_dll_loaded");
+
     // Success:
     // Restore all registers and return to main thread's original entry point.
     a.popa();
     a.popf();
     a.ret();
+
+    // Error: call ExitProcess.
+    // When jumping to here, EBX must contain the exit status.
+    a.label("exit_error");
+    a.push(ebx);
+    a.mov(eax, ptr_to_int<dword_t>(get_proc_address(kernel32, "ExitProcess")));
+    a.call(eax);
+
+    // Data. Wide character strings must be aligned to even addresses.
+    a.align(2).label("emulation_dll_path").wstring_z(L"fnord.dll"); // TODO: real DLL name
 }
 
 void inject_emulation(process& process)
