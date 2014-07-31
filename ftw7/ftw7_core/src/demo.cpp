@@ -33,12 +33,71 @@ namespace ftw7_core
 namespace
 {
 
-std::wstring build_command_line(const std::wstring& exe_path)
+// Quote a command line argument, so that it can be properly processed by CreateProcessW.
+// Straight from here:
+// http://blogs.msdn.com/b/twistylittlepassagesallalike/archive/2011/04/23/everyone-quotes-arguments-the-wrong-way.aspx
+//
+// argument: argument to quote
+// command_line: string to append the quoted argument to
+// force: if true, arguments are quoted even if not necessary
+void argv_quote(const std::wstring& argument, std::wstring& command_line, bool force)
 {
-    // TODO: quoting required here?
-    std::wostringstream s;
-    s << L'"' << exe_path << L'"';
-    return s.str();
+    // Unless we're told otherwise, don't quote unless we actually
+    // need to do so --- hopefully avoid problems if programs won't
+    // parse quotes properly.
+    if ((force == false) && !argument.empty() && (argument.find_first_of(L" \t\n\v\"") == argument.npos))
+    {
+        command_line.append(argument);
+        return;
+    }
+
+    command_line.push_back(L'"');
+    for (auto i = argument.begin();; ++i)
+    {
+        unsigned n_backslashes = 0;
+        while ((i != argument.end()) && (*i == L'\\'))
+        {
+            ++i;
+            ++n_backslashes;
+        }
+
+        if (i == argument.end())
+        {
+            // Escape all backslashes, but let the terminating double quotation
+            // mark we add below be interpreted as a metacharacter.
+            command_line.append(n_backslashes * 2, L'\\');
+            break;
+        }
+        else if (*i == L'"')
+        {
+            // Escape all backslashes and the following double quotation mark.
+            command_line.append(n_backslashes * 2 + 1, L'\\');
+            command_line.push_back(*i);
+        }
+        else
+        {
+            // Backslashes aren't special here.
+            command_line.append(n_backslashes, L'\\');
+            command_line.push_back(*i);
+        }
+    }
+    command_line.push_back(L'"');
+}
+
+std::wstring build_command_line_string(const std::vector<std::wstring>& demo_command_line)
+{
+    std::wstring command_line_string;
+    bool is_first_argument = true;
+    for (const auto& arg : demo_command_line)
+    {
+        if (!is_first_argument)
+        {
+            command_line_string.push_back(L' ');
+        }
+        is_first_argument = false;
+        argv_quote(arg, command_line_string, false);
+    }
+    return command_line_string;
 }
 
 std::wstring get_working_directory(const std::wstring& exe_path)
@@ -114,7 +173,7 @@ std::wstring format_demo_duration(double duration_s)
 
 }
 
-void run_demo(const std::wstring& demo_executable_path, const demo_settings& settings)
+void run_demo(const std::vector<std::wstring>& demo_command_line, const demo_settings& settings)
 {
     // TODO: more stability? (A lot of this depends on how useful CreateProcess behaves)
     // * Check whether we can find demo_executable at all
@@ -128,14 +187,16 @@ void run_demo(const std::wstring& demo_executable_path, const demo_settings& set
     // * Ensure command line building is done correcty (quoting and that)
     // * Apparently CreateProcess returns before the image is fully loaded.
     //   Not sure this can become a problem.
-    auto command_line = build_command_line(demo_executable_path);
+    // * Should explicitly check demo_command_line contains at least one arg (the demo exe)
+    auto demo_executable_path = demo_command_line.at(0);
+    auto command_line_string = build_command_line_string(demo_command_line);
     auto working_directory = get_working_directory(demo_executable_path);
 
     std::wcout << L"Attempting to run: " << demo_executable_path << std::endl;
     std::wcout << L"Working directory: " << working_directory << std::endl;
-    std::wcout << L"Command line: " << command_line << std::endl;
+    std::wcout << L"Command line: " << command_line_string << std::endl;
 
-    process process(demo_executable_path, command_line, get_creation_flags(settings), working_directory);
+    process process(demo_executable_path, command_line_string, get_creation_flags(settings), working_directory);
     std::wcout << L"Successfully created process (PID=" << process.process_id() << L')' << std::endl;
 
     if (process.is_64bit())

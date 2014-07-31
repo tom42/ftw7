@@ -20,6 +20,7 @@
 #define FTW7_COMMANDLINE_HPP_INCLUDED
 
 #include <string>
+#include <vector>
 #include "ftw7_core/demo.hpp"
 
 namespace ftw7
@@ -28,7 +29,7 @@ namespace ftw7
 class command_line_arguments
 {
 public:
-    std::wstring demo_executable_path;
+    std::vector<std::wstring> demo_command_line;
     ftw7_core::demo_settings demo_settings;
 };
 

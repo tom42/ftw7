@@ -30,6 +30,9 @@ namespace ftw7
 namespace
 {
 
+using ftw7_core::windows::multibyte_to_wstring;
+using ftw7_core::windows::wstring_to_multibyte;
+
 enum
 {
     force_the_following_options_out_of_the_ascii_range = 256,
@@ -38,7 +41,7 @@ enum
 };
 
 const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
-const char args_doc[] = "DEMO";
+const char args_doc[] = "DEMO [-- DEMO COMMAND LINE ARGUMENTS]";
 
 const struct argp_option options[] =
 {
@@ -55,11 +58,7 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
     switch (key)
     {
     case ARGP_KEY_ARG:
-        if (state->arg_num >= 1)
-        {
-            argp_error(state, "More than one demo given");
-        }
-        args.demo_executable_path = ftw7_core::windows::multibyte_to_wstring(arg);
+        args.demo_command_line.push_back(multibyte_to_wstring(arg));
         return 0;
     case ARGP_KEY_END:
         if (state->arg_num < 1)
@@ -87,7 +86,7 @@ error_t parse_option_stub(int key, char* arg, struct argp_state* state)
     }
     catch (const ftw7_core::wruntime_error& e)
     {
-        argp_failure(state, EXIT_FAILURE, 0, ftw7_core::windows::wstring_to_multibyte(e.wwhat()).c_str());
+        argp_failure(state, EXIT_FAILURE, 0, wstring_to_multibyte(e.wwhat()).c_str());
     }
     catch (const std::exception& e)
     {

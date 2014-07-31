@@ -20,6 +20,7 @@
 #define FTW7_CORE_DEMO_HPP_INCLUDED
 
 #include <string>
+#include <vector>
 
 namespace ftw7_core
 {
@@ -36,7 +37,7 @@ public:
     bool wait_for_process;
 };
 
-void run_demo(const std::wstring& demo_executable_path, const demo_settings& settings);
+void run_demo(const std::vector<std::wstring>& demo_command_line, const demo_settings& settings);
 
 }
 

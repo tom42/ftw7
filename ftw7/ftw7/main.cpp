@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     try
     {
         auto args = ftw7::parse_command_line(argc, argv);
-        ftw7_core::run_demo(args.demo_executable_path, args.demo_settings);
+        ftw7_core::run_demo(args.demo_command_line, args.demo_settings);
         return EXIT_SUCCESS;
     }
     catch (const std::logic_error& e)
