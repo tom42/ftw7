@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <ctime>
 #include <filesystem>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <boost/io/ios_state.hpp>
@@ -92,6 +94,24 @@ void inject_emulation(process& process)
     process.set_thread_context(ctx);
 }
 
+std::wstring format_demo_duration(double duration_s)
+{
+    auto d = int64_t(duration_s);
+
+    const auto seconds = d % 60;
+    d /= 60;
+    const auto minutes = d % 60;
+    d /= 60;
+    const auto hours = d;
+
+    std::wstringstream s;
+    s.fill(L'0');
+    s << std::setw(2) << hours << L':' <<
+        std::setw(2) << minutes << L':' <<
+        std::setw(2) << seconds;
+    return s.str();
+}
+
 }
 
 void run_demo(const std::wstring& demo_executable_path, const demo_settings& settings)
@@ -129,8 +149,12 @@ void run_demo(const std::wstring& demo_executable_path, const demo_settings& set
     if (settings.wait_for_process)
     {
         std::wcout << L"Running demo and waiting for it to terminate" << std::endl;
+        auto start_time = time(nullptr);
         const auto exitcode = process.run_and_wait();
+        auto end_time = time(nullptr);
+        auto duration_s = difftime(end_time, start_time);
         boost::io::ios_flags_saver ifs(std::wcout);
+        std::wcout << L"Demo ran for " << duration_s << L" seconds (" << format_demo_duration(duration_s) << L')' << std::endl;
         std::wcout << L"Demo terminated with exit code 0x" << std::hex << exitcode << std::endl;
     }
     else
