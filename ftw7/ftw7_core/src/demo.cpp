@@ -116,6 +116,14 @@ DWORD get_creation_flags(const demo_settings& settings)
     return flags;
 }
 
+std::wstring get_emulation_dll_path()
+{
+    // TODO: unhardcode DLL name? Basically this comes straight from the build process, no?
+    auto directory = std::tr2::sys::wpath(windows::get_module_filename(nullptr)).parent_path();
+    directory /= L"ftw7_conemu.dll";
+    return directory.external_directory_string();
+}
+
 void create_injection_code(assembler::asm86& a, DWORD return_address)
 {
     // TODO: real implementation
@@ -153,7 +161,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     a.call(eax);
 
     // Data. Wide character strings must be aligned to even addresses.
-    a.align(2).label("emulation_dll_path").wstring_z(L"fnord.dll"); // TODO: real DLL name
+    a.align(2).label("emulation_dll_path").wstring_z(get_emulation_dll_path());
 }
 
 void inject_emulation(process& process)
