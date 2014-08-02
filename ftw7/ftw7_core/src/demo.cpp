@@ -24,6 +24,7 @@
 #include <boost/io/ios_state.hpp>
 #include "ftw7_core/assembler/asm86.hpp"
 #include "ftw7_core/demo.hpp"
+#include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_core/windows/module.hpp"
 #include "ftw7_core/ptr_to_int.hpp"
 #include "process.hpp"
@@ -130,6 +131,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     using namespace ftw7_core::windows;
 
     const auto kernel32 = get_module_handle(L"kernel32.dll");
+    const auto ExitProcess_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "ExitProcess"));
     const auto GetProcAddress_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
     const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
 
@@ -142,20 +144,16 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     a.push("emulation_dll_path");
     a.mov(eax, LoadLibraryW_ptr);
     a.call(eax);
-    a.mov(ebx, 0xf7f70000);                 // TODO: unhardcode exit codes.
+    a.mov(ebx, emulation::COULD_NOT_LOAD_EMULATION_DLL);
     a.or(eax, eax);
-    a.jnz("emulation_dll_loaded");
-    a.jmp("exit_error");
-    a.label("emulation_dll_loaded");
+    a.jz("exit_error");
 
-    // TODO: check DLL version, somehow?
-
-    // Get address of ftw7_conemu_initialize()
+     // Get address of ftw7_conemu_initialize()
     a.push("ftw7_conemu_initialize_name");  // Push address of function name
     a.push(eax);                            // Push emulation DLL's module handle
-    a.mov(eax, GetProcAddress_ptr);         // Call GetProcAddress()
+    a.mov(eax, GetProcAddress_ptr);
     a.call(eax);
-    a.mov(ebx, 0xf7f70001);                 // TODO: unhardcode exit codes
+    a.mov(ebx, emulation::COULD_NOT_GET_ADDRESS_OF_INIT);
     a.or(eax, eax);
     a.jz("exit_error");
 
@@ -175,7 +173,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     // When jumping to here, EBX must contain the exit status.
     a.label("exit_error");
     a.push(ebx);
-    a.mov(eax, ptr_to_int<dword_t>(get_proc_address(kernel32, "ExitProcess")));
+    a.mov(eax, ExitProcess_ptr);
     a.call(eax);
 
     // Data. Wide character strings must be aligned to even addresses.
