@@ -57,6 +57,7 @@ if (MSVC)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
 
   add_definitions (-DNOMINMAX)
+  add_definitions (-D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
 add_subdirectory (ftw7_core)

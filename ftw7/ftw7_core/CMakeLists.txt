@@ -19,6 +19,7 @@ set (
   ftw7_core_sources
   src/bitness.cpp
   src/demo.cpp
+  src/emulation.cpp
   src/format_message.cpp
   src/gpreg32.cpp
   src/module.cpp

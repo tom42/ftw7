@@ -16,32 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CORE_EMULATION_EMULATION_HPP_INCLUDED
-#define FTW7_CORE_EMULATION_EMULATION_HPP_INCLUDED
-
-#include <type_traits>
+#include <cstring>
+#include "ftw7_version.h"
+#include "ftw7_core/emulation/emulation.hpp"
 
 namespace ftw7_core
 {
 namespace emulation
 {
 
-enum error_codes
+void settings::initialize(settings& settings)
 {
-    COULD_NOT_LOAD_EMULATION_DLL = 0x0f7f7000,
-    COULD_NOT_GET_ADDRESS_OF_INIT,
-};
+    memset(&settings, 0, sizeof(settings));
+    settings.size = sizeof(settings);
 
-struct settings
-{
-    size_t size;
-    char magic_string[32];
-
-    static void initialize(settings& settings);
-};
-static_assert(std::is_pod<settings>::value, "settings must be a POD type");
+    // TODO: nasty, really.
+    // * We should either at compile or runtime ensure that PACKAGE_STRING fits
+    //   into magic_string. If not we fail compilation or execution. I can
+    //   totally live with both. Just clamping PACKAGE_STRING by using strncpy
+    //   is not nice, tho.
+    strncpy(settings.magic_string, PACKAGE_STRING, sizeof(settings.magic_string));
+}
 
 }
 }
-
-#endif

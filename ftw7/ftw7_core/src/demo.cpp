@@ -135,6 +135,16 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     const auto GetProcAddress_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
     const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
 
+    // TODO: not here (testcode). This needs to be passed all the way from run_demo, which
+    //       gets it from the application.
+    // TODO: copy settings structure into injected code, so that it ends up in the target process
+    // TODO: extend ftw7_conemu_initialize, so that it takes (and later checks) a settings argument
+    // TODO: possibly change ftw7_conemu_initialize to __cdecl, so that we in principle can even
+    //       defend against wrong number of args (since the caller pushes args and cleans up the stack)
+    // TODO: push address of settings structure onto stack before calling ftw7_conemu_initialize.
+    emulation::settings settings;
+    emulation::settings::initialize(settings);
+
     // Push return address onto stack and save all registers.
     a.push(return_address);
     a.pushf();
@@ -191,7 +201,6 @@ void inject_emulation(process& process)
     auto code_address = process.virtual_alloc(a.program_size());
 
     // Relocate injection code to address in injectee's address space.
-    // TODO: mrmpf: in principle, asm86 should do this conversion. Rationale: the assembler knows its address_type...
     auto code = a.link(ptr_to_int<assembler::asm86::address_type>(code_address));
 
     // Copy injection code into the injectee's address space.
