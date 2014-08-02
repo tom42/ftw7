@@ -35,6 +35,16 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${FTW7_SHARED_OUTPUT_DIRECTORY}")
 
+# Create version header
+set (PACKAGE_BUGREPORT "/dev/null")
+set (PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
+set (PACKAGE_VERSION "0.0.1")
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/ftw7_version.h.in"
+    "${PROJECT_BINARY_DIR}/ftw7_version.h"
+)
+include_directories ("${PROJECT_BINARY_DIR}")
+
 if (MSVC)
   # Set warning level to 4 (/W4)
   if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")

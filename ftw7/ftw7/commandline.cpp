@@ -21,9 +21,10 @@
 #include "commandline.hpp"
 #include "ftw7_core/windows/string.hpp"
 #include "ftw7_core/wexcept.hpp"
+#include "ftw7_version.h"
 
-const char* argp_program_version = "ftw7 0.0.1";
-const char* argp_program_bug_address = "/dev/null";
+const char* argp_program_version = PACKAGE_STRING;
+const char* argp_program_bug_address = PACKAGE_BUGREPORT;
 
 namespace ftw7
 {
