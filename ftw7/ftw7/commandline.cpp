@@ -16,9 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <algorithm>
 #include <stdexcept>
 #include "argp/argp.h"
 #include "commandline.hpp"
+#include "ftw7_core/log/log.hpp"
 #include "ftw7_core/windows/string.hpp"
 #include "ftw7_core/wexcept.hpp"
 #include "ftw7_version.h"
@@ -37,6 +39,7 @@ using ftw7_core::windows::wstring_to_multibyte;
 enum
 {
     force_the_following_options_out_of_the_ascii_range = 256,
+    OPT_LOG_LEVEL,
     OPT_NO_WAIT,
     OPT_SEPARATE_CONSOLE,
 };
@@ -49,9 +52,28 @@ const struct argp_option options[] =
     { 0, 0, 0, 0, "Options mainly useful for development" },
     { "separate-console", OPT_SEPARATE_CONSOLE, 0, 0, "Run demo with a separate console window" },
     { 0, 0, 0, 0, "Miscellaneous options" },
+    { "log-level", OPT_LOG_LEVEL, "level", 0, "Specify log level" },
     { "no-wait", OPT_NO_WAIT, 0, 0, "Do not wait for the demo to terminate" },
     { 0 }
 };
+
+void parse_log_level(char* arg, struct argp_state* state, command_line_arguments& args)
+{
+    using namespace ftw7_core::log;
+
+    auto found_level = std::find_if(log_level_info_begin(),
+        log_level_info_end(),
+        [&](const log_level_info& li) { return !strcmp(arg, li.display_name); });
+
+    if (found_level == log_level_info_end())
+    {
+        argp_failure(state, EXIT_FAILURE, 0, "`%s' is not a valid log level", arg);
+    }
+    else
+    {
+        args.demo_settings.emulation_settings.log_level = found_level->level;
+    }
+}
 
 error_t parse_option(int key, char* arg, struct argp_state* state)
 {
@@ -66,6 +88,9 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         {
             argp_error(state, "No demo given");
         }
+        return 0;
+    case OPT_LOG_LEVEL:
+        parse_log_level(arg, state, args);
         return 0;
     case OPT_NO_WAIT:
         args.demo_settings.wait_for_process = false;
