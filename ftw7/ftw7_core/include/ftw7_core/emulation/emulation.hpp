@@ -31,6 +31,7 @@ enum error_code
     no_error = 0,
     could_not_load_emulation_dll = 0x0f7f7000,
     could_not_get_address_of_init,
+    init_already_called,
     settings_pointer_must_not_be_null,
     settings_have_bad_size,
     wrong_magic_string_in_settings,

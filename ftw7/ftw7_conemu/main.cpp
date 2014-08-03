@@ -17,6 +17,7 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include <Windows.h>
+#include <atomic>
 #include "ftw7_core/emulation/emulation.hpp"
 
 namespace
@@ -57,6 +58,12 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
     // TODO: better error handling: catch known types of exceptions, log them, then exit.
     try
     {
+        static std::atomic<bool> is_initialized(false);
+        if (is_initialized.exchange(true))
+        {
+            return init_already_called;
+        }
+
         const auto settings_check_result = settings::check(settings);
         if (settings_check_result != no_error)
         {
