@@ -73,9 +73,9 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
 
         // TODO: initialize logging here (check for double initialization, btw? (perhaps, but don't fail...)
 
-        FTW7_LOG_INFO << "Starting up ftw7 console emulation" << std::endl;
+        FTW7_LOG_INFO << "Starting up ftw7 console emulation";
         FTW7_LOG_DEBUG << "Emulation DLL's module handle: " << emulation_dll_module_handle;
-        FTW7_LOG_DEBUG << "Main thread ID: " << GetCurrentThreadId() << std::endl;
+        FTW7_LOG_DEBUG << "Main thread ID: " << GetCurrentThreadId();
         return no_error;
     }
     catch (...)
