@@ -53,7 +53,7 @@ void parse_log_level(char* arg, struct argp_state* state, command_line_arguments
 
     auto found_level = std::find_if(log_level_info_begin(),
         log_level_info_end(),
-        [&](const log_level_info& li) { return !strcmp(arg, li.display_name); });
+        [&](const log_level_info& li) { return !strcmp(arg, li.console_display_name); });
 
     if (found_level == log_level_info_end())
     {
@@ -123,7 +123,7 @@ std::string create_log_level_doc()
             doc += ", ";
         }
         doc += '`';
-        doc += i->display_name;
+        doc += i->console_display_name;
         doc += '\'';
     }
     doc += '.';

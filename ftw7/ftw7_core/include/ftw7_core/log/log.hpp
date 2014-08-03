@@ -41,7 +41,7 @@ enum log_level
 struct log_level_info
 {
     log_level level;
-    const char* display_name;
+    const char* console_display_name;
     const char* log_name;
 };
 

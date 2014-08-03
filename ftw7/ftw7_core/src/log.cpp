@@ -35,11 +35,11 @@ const char BAD_LOG_LEVEL[] = "?????";
 // since values of type log_level are used as array index.
 const log_level_info log_levels[] =
 {
-    { log_level::off, "Off", BAD_LOG_LEVEL },
-    { log_level::error, "Error", "ERROR" },
-    { log_level::warn, "Warn", "WARN " },
-    { log_level::info, "Info", "INFO " },
-    { log_level::debug, "Debug", "DEBUG" },
+    { log_level::off,   "off",   BAD_LOG_LEVEL },
+    { log_level::error, "error", "ERROR" },
+    { log_level::warn,  "warn",  "WARN " },
+    { log_level::info,  "info",  "INFO " },
+    { log_level::debug, "debug", "DEBUG" },
 };
 const int n_log_levels = sizeof(log_levels) / sizeof(log_levels[0]);
 log_level current_log_level = log_level::off;
