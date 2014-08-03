@@ -17,8 +17,8 @@
 
 set (
   ftw7_conemu_sources
-  ftw7_conemu.def
-  main.cpp
+  src/ftw7_conemu.def
+  src/main.cpp
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
