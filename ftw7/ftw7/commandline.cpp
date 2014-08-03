@@ -47,16 +47,6 @@ enum
 const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
 const char args_doc[] = "DEMO [-- DEMO COMMAND LINE ARGUMENTS]";
 
-const struct argp_option options[] =
-{
-    { 0, 0, 0, 0, "Options mainly useful for development" },
-    { "separate-console", OPT_SEPARATE_CONSOLE, 0, 0, "Run demo with a separate console window" },
-    { 0, 0, 0, 0, "Miscellaneous options" },
-    { "log-level", OPT_LOG_LEVEL, "level", 0, "Specify log level" },
-    { "no-wait", OPT_NO_WAIT, 0, 0, "Do not wait for the demo to terminate" },
-    { 0 }
-};
-
 void parse_log_level(char* arg, struct argp_state* state, command_line_arguments& args)
 {
     using namespace ftw7_core::log;
@@ -121,12 +111,48 @@ error_t parse_option_stub(int key, char* arg, struct argp_state* state)
     throw std::logic_error("calling argp_failure did not exit the program");
 }
 
+std::string create_log_level_doc()
+{
+    using namespace ftw7_core::log;
+    std::string doc("Specify log level. Valid log levels are ");
+
+    for (auto i = log_level_info_begin(); i != log_level_info_end(); ++i)
+    {
+        if (i != log_level_info_begin())
+        {
+            doc += ", ";
+        }
+        doc += '`';
+        doc += i->display_name;
+        doc += '\'';
+    }
+    doc += '.';
+
+    return doc;
+}
+
 }
 
 command_line_arguments parse_command_line(int argc, char* argv[])
 {
+    // argp's help_filter mechanism is horrible. Among other things it requires the
+    // use of malloc. So we rather create dynamic argument documentation up-front,
+    // at the expense of using CPU time and memory to create and store these strings
+    // even if they might not be required because the help is not displayed.
+    const auto log_level_doc = create_log_level_doc();
+
+    const struct argp_option options[] =
+    {
+        { 0, 0, 0, 0, "Options mainly useful for development" },
+        { "separate-console", OPT_SEPARATE_CONSOLE, 0, 0, "Run demo with a separate console window" },
+        { 0, 0, 0, 0, "Miscellaneous options" },
+        { "log-level", OPT_LOG_LEVEL, "level", 0, log_level_doc.c_str() },
+        { "no-wait", OPT_NO_WAIT, 0, 0, "Do not wait for the demo to terminate" },
+        { 0 }
+    };
+    const struct argp argp = { options, parse_option_stub, args_doc, doc };
+
     command_line_arguments args;
-    static const struct argp argp = { options, parse_option_stub, args_doc, doc };
     argp_parse(&argp, argc, argv, 0, nullptr, &args);
     return args;
 }
