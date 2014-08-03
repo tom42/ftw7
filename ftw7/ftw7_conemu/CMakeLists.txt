@@ -21,4 +21,5 @@ set (
   main.cpp
 )
 
+include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 add_library (ftw7_conemu SHARED ${ftw7_conemu_sources})

@@ -119,7 +119,6 @@ DWORD get_creation_flags(const demo_settings& settings)
 
 std::wstring get_emulation_dll_path()
 {
-    // TODO: unhardcode DLL name? Basically this comes straight from the build process, no?
     auto directory = std::tr2::sys::wpath(windows::get_module_filename(nullptr)).parent_path();
     directory /= L"ftw7_conemu.dll";
     return directory.external_directory_string();
@@ -135,13 +134,8 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     const auto GetProcAddress_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
     const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
 
-    // TODO: not here (testcode). This needs to be passed all the way from run_demo, which
-    //       gets it from the application.
-    // TODO: copy settings structure into injected code, so that it ends up in the target process
+    // TODO: not here (testcode). This needs to be passed all the way from run_demo, which gets it from the application.
     // TODO: extend ftw7_conemu_initialize, so that it takes (and later checks) a settings argument
-    // TODO: possibly change ftw7_conemu_initialize to __cdecl, so that we in principle can even
-    //       defend against wrong number of args (since the caller pushes args and cleans up the stack)
-    // TODO: push address of settings structure onto stack before calling ftw7_conemu_initialize.
     emulation::settings settings;
     emulation::settings::initialize(settings);
 
@@ -168,6 +162,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     a.jz("exit_error");
 
     // Call ftw7_conemu_initialize()
+    a.push("emulation_settings");
     a.call(eax);                            // Call ftw7_conemu_initialize
     a.mov(ebx, eax);                        // EBX = error code from ftw7_conemu_initialize (if any)
     a.or(eax, eax);
@@ -189,6 +184,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     // Data. Wide character strings must be aligned to even addresses.
     a.align(2).label("emulation_dll_path").wstring_z(get_emulation_dll_path());
     a.align(2).label("ftw7_conemu_initialize_name").string_z("ftw7_conemu_initialize");
+    a.align(4).label("emulation_settings").data(&settings, sizeof(settings));
 }
 
 void inject_emulation(process& process)

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include "ftw7_core/emulation/emulation.hpp"
 
 // This function needs to be called by the injected code to bring up the console
 // emulation. Note that it mustn't propagate any C++ exceptions up to the caller;
@@ -29,9 +30,9 @@
 //
 // Because we're using a .def file anyway we can also omit the dllexport bit
 // here.
-extern "C" int __stdcall ftw7_conemu_initialize()
+extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::settings* /*settings*/)
 {
-    // TODO: initialize (logging, display)
+    // TODO: initialize (check settings, logging, display)
     // TODO: catch all exceptions
     return 0;
 }
