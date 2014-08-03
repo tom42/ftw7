@@ -25,3 +25,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/argp/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 add_executable (ftw7 ${ftw7_sources})
 target_link_libraries (ftw7 argp ftw7_core)
+
+# Ensure ftw7 finds an up to date ftw7_conemu in the output directory.
+# ftw7 has no link time dependencies on ftw7_conemu.
+target_link_libraries (ftw7 ftw7_conemu)
