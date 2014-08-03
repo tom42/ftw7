@@ -60,11 +60,11 @@ class log_message
 public:
     log_message() {}
     ~log_message();
-    std::ostringstream& buffer(log_level level);
+    std::wostringstream& buffer(log_level level);
 private:
     log_message(const log_message&) = delete;
     log_message& operator = (const log_message&) = delete;
-    std::ostringstream m_buffer;
+    std::wostringstream m_buffer;
 };
 
 }

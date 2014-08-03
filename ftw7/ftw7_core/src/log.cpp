@@ -88,7 +88,8 @@ log_message::~log_message()
 
         // The Visual Studio 2013 documentation states for both fwrite and fflush
         // that they lock the calling thread and are therefore thread-safe.
-        fwrite(message.c_str(), message.size(), 1, stdout);
+        // We only assume here that this is the case for fwprintf too.
+        fwprintf(stdout, L"%s", message.c_str());
         fflush(stdout);
     }
     catch (...)
@@ -96,7 +97,7 @@ log_message::~log_message()
     }
 }
 
-std::ostringstream& log_message::buffer(log_level level)
+std::wostringstream& log_message::buffer(log_level level)
 {
     const size_t timestamp_bufsize = 128;
     char timestamp_buf[timestamp_bufsize];
