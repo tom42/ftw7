@@ -27,7 +27,7 @@ namespace log
 {
 
 // Log levels must start at zero and have continuous numbering.
-enum class log_level
+enum log_level
 {
     // Special level intended to disable logging.
     // Should not be used as level for actual log messages.
