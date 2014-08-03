@@ -19,10 +19,11 @@
 #include <Windows.h>
 #include <atomic>
 #include "ftw7_core/emulation/emulation.hpp"
+#include "ftw7_core/log/log.hpp"
 
 namespace
 {
-HINSTANCE hinstance;
+HINSTANCE emulation_dll_module_handle;
 }
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID /*lpvReserved*/)
@@ -30,7 +31,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID /*lpvReserved*/)
     switch (fdwReason)
     {
     case DLL_PROCESS_ATTACH:
-        hinstance = hinstDLL;
+        emulation_dll_module_handle = hinstDLL;
         return TRUE;
     default:
         return TRUE;
@@ -70,6 +71,11 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
             return settings_check_result;
         }
 
+        // TODO: initialize logging here (check for double initialization, btw? (perhaps, but don't fail...)
+
+        FTW7_LOG_INFO << "Starting up ftw7 console emulation" << std::endl;
+        FTW7_LOG_DEBUG << "Emulation DLL's module handle: " << emulation_dll_module_handle;
+        FTW7_LOG_DEBUG << "Main thread ID: " << GetCurrentThreadId() << std::endl;
         return no_error;
     }
     catch (...)

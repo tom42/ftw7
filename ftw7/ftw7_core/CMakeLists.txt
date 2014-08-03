@@ -22,6 +22,7 @@ set (
   src/emulation.cpp
   src/format_message.cpp
   src/gpreg32.cpp
+  src/log.cpp
   src/module.cpp
   src/process.cpp
   src/string.cpp
