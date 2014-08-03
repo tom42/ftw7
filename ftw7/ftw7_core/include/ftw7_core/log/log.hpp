@@ -68,6 +68,9 @@ private:
 };
 
 }
+
+void initialize(log_level level);
+
 }
 }
 

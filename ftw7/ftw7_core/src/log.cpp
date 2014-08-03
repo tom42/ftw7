@@ -18,6 +18,7 @@
  */
 #include <Windows.h>
 #include <algorithm>
+#include <atomic>
 #include <ctime>
 #include "ftw7_core/log/log.hpp"
 
@@ -109,5 +110,15 @@ std::ostringstream& log_message::buffer(log_level level)
 }
 
 }
+
+void initialize(log_level level)
+{
+    static std::atomic<bool> is_initialized(false);
+    if (!is_initialized.exchange(true))
+    {
+        detail::current_log_level = level;
+    }
+}
+
 }
 }
