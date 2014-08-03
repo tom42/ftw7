@@ -20,6 +20,7 @@
 #include <atomic>
 #include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_core/log/log.hpp"
+#include "ftw7_core/wexcept.hpp"
 
 namespace
 {
@@ -55,7 +56,6 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
     using namespace ftw7_core::emulation;
 
     // TODO: initialize display/emulation
-    // TODO: better error handling: catch known types of exceptions, log them, then exit.
     try
     {
         static std::atomic<bool> is_initialized(false);
@@ -77,9 +77,17 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
         FTW7_LOG_DEBUG << "Main thread ID: " << GetCurrentThreadId();
         return no_error;
     }
+    catch (const ftw7_core::wruntime_error& e)
+    {
+        FTW7_LOG_ERROR << __FUNCTIONW__ << L": " << e.wwhat();
+    }
+    catch (const std::exception& e)
+    {
+        FTW7_LOG_ERROR << __FUNCTIONW__ << L": " << e.what();
+    }
     catch (...)
     {
-        // TODO: log this somehow, too.
-        return error_during_initialization;
+        FTW7_LOG_ERROR << __FUNCTIONW__ << L": unknown exception";
     }
+    return error_during_initialization;
 }
