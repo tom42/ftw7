@@ -43,6 +43,7 @@ public:
     ~process();
     bool is_64bit();
     DWORD process_id() const { return m_process_id; }
+    DWORD thread_id() const { return m_thread_id; }
     CONTEXT get_thread_context(DWORD context_flags);
     void* virtual_alloc(size_t nbytes);
     void write_process_memory(void* base_address, const void* buffer,
@@ -66,6 +67,7 @@ private:
     handle m_process_handle;
     handle m_thread_handle;
     DWORD m_process_id;
+    DWORD m_thread_id;
 };
 
 }

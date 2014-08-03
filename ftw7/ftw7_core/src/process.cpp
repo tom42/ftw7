@@ -60,7 +60,8 @@ process::process(const std::wstring& application_name, const std::wstring& cmdli
     : m_is_resumed(false),
     m_process_handle("process"),
     m_thread_handle("thread"),
-    m_process_id(0)
+    m_process_id(0),
+    m_thread_id(0)
 {
     try
     {
@@ -232,6 +233,7 @@ void process::create_process(const std::wstring& application_name,
     m_process_handle.set(pi.hProcess);
     m_thread_handle.set(pi.hThread);
     m_process_id = pi.dwProcessId;
+    m_thread_id = pi.dwThreadId;
 
     if (!create_process_result)
     {
