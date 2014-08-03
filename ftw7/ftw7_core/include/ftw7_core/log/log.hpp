@@ -69,6 +69,8 @@ private:
 
 }
 
+const log_level_info* log_level_info_begin();
+const log_level_info* log_level_info_end();
 void initialize(log_level level);
 
 }

@@ -111,6 +111,16 @@ std::ostringstream& log_message::buffer(log_level level)
 
 }
 
+const log_level_info* log_level_info_begin()
+{
+    return &detail::log_levels[0];
+}
+
+const log_level_info* log_level_info_end()
+{
+    return &detail::log_levels[detail::n_log_levels];
+}
+
 void initialize(log_level level)
 {
     static std::atomic<bool> is_initialized(false);
