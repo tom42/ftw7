@@ -34,7 +34,7 @@ void settings::initialize(settings& settings)
     strcpy(settings.magic_string, PACKAGE_STRING);
 }
 
-error_codes settings::check(const settings* settings)
+error_code settings::check(const settings* settings)
 {
     if (!settings)
     {

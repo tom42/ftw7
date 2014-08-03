@@ -26,7 +26,7 @@ namespace ftw7_core
 namespace emulation
 {
 
-enum error_codes
+enum error_code
 {
     NO_ERROR = 0,
     COULD_NOT_LOAD_EMULATION_DLL = 0x0f7f7000,
@@ -43,7 +43,7 @@ struct settings
     char magic_string[32];
 
     static void initialize(settings& settings);
-    static error_codes check(const settings* settings);
+    static error_code check(const settings* settings);
 };
 static_assert(std::is_pod<settings>::value, "settings must be a POD type");
 
