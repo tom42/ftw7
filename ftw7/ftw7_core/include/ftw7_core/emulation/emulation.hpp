@@ -20,6 +20,7 @@
 #define FTW7_CORE_EMULATION_EMULATION_HPP_INCLUDED
 
 #include <type_traits>
+#include "ftw7_core/log/log.hpp"
 
 namespace ftw7_core
 {
@@ -42,6 +43,7 @@ struct settings
 {
     size_t size;
     char magic_string[32];
+    log::log_level log_level;
 
     static void initialize(settings& settings);
     static error_code check(const settings* settings);

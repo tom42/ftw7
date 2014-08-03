@@ -54,7 +54,6 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
 {
     using namespace ftw7_core::emulation;
 
-    // TODO: initialize logging
     // TODO: initialize display/emulation
     // TODO: better error handling: catch known types of exceptions, log them, then exit.
     try
@@ -71,7 +70,7 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
             return settings_check_result;
         }
 
-        // TODO: initialize logging here (check for double initialization, btw? (perhaps, but don't fail...)
+        ftw7_core::log::initialize(settings->log_level);
 
         FTW7_LOG_INFO << "Starting up ftw7 console emulation";
         FTW7_LOG_DEBUG << "Emulation DLL's module handle: " << emulation_dll_module_handle;
