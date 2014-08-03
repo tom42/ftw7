@@ -251,7 +251,8 @@ void run_demo(const std::vector<std::wstring>& demo_command_line, const demo_set
     std::wcout << L"Command line: " << command_line_string << std::endl;
 
     process process(demo_executable_path, command_line_string, get_creation_flags(settings), working_directory);
-    std::wcout << L"Successfully created process (PID=" << process.process_id() << L')' << std::endl;
+    std::wcout << L"Successfully created process (PID=" << process.process_id() <<
+        L", TID=" << process.thread_id() << L')' << std::endl;
 
     if (process.is_64bit())
     {
