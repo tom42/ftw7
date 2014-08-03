@@ -28,8 +28,13 @@ namespace emulation
 
 enum error_codes
 {
+    NO_ERROR = 0,
     COULD_NOT_LOAD_EMULATION_DLL = 0x0f7f7000,
     COULD_NOT_GET_ADDRESS_OF_INIT,
+    SETTINGS_POINTER_MUST_NOT_BE_NULL,
+    SETTINGS_HAVE_BAD_SIZE,
+    WRONG_MAGIC_STRING_IN_SETTINGS,
+    ERROR_DURING_INITIALIZATION
 };
 
 struct settings
@@ -38,6 +43,7 @@ struct settings
     char magic_string[32];
 
     static void initialize(settings& settings);
+    static error_codes check(const settings* settings);
 };
 static_assert(std::is_pod<settings>::value, "settings must be a POD type");
 

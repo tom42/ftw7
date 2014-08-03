@@ -34,5 +34,22 @@ void settings::initialize(settings& settings)
     strcpy(settings.magic_string, PACKAGE_STRING);
 }
 
+error_codes settings::check(const settings* settings)
+{
+    if (!settings)
+    {
+        return SETTINGS_POINTER_MUST_NOT_BE_NULL;
+    }
+    if (settings->size != sizeof(*settings))
+    {
+        return SETTINGS_HAVE_BAD_SIZE;
+    }
+    if (strcmp(settings->magic_string, PACKAGE_STRING))
+    {
+        return WRONG_MAGIC_STRING_IN_SETTINGS;
+    }
+    return NO_ERROR;
+}
+
 }
 }

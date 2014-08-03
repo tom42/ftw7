@@ -30,9 +30,26 @@
 //
 // Because we're using a .def file anyway we can also omit the dllexport bit
 // here.
-extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::settings* /*settings*/)
+extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::settings* settings)
 {
-    // TODO: initialize (check settings, logging, display)
-    // TODO: catch all exceptions
-    return 0;
+    using namespace ftw7_core::emulation;
+
+    // TODO: initialize logging
+    // TODO: initialize display/emulation
+    // TODO: better error handling: catch known types of exceptions, log them, then exit.
+    try
+    {
+        const auto settings_check_result = settings::check(settings);
+        if (settings_check_result != NO_ERROR)
+        {
+            return settings_check_result;
+        }
+
+        return NO_ERROR;
+    }
+    catch (...)
+    {
+        // TODO: log this somehow, too.
+        return ERROR_DURING_INITIALIZATION;
+    }
 }

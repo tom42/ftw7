@@ -135,7 +135,6 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
 
     // TODO: not here (testcode). This needs to be passed all the way from run_demo, which gets it from the application.
-    // TODO: extend ftw7_conemu_initialize, so that it takes (and later checks) a settings argument
     emulation::settings settings;
     emulation::settings::initialize(settings);
 
