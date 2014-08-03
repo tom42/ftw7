@@ -21,6 +21,7 @@
 
 #include <string>
 #include <vector>
+#include "ftw7_core/emulation/emulation.hpp"
 
 namespace ftw7_core
 {
@@ -31,10 +32,13 @@ public:
     demo_settings()
         : separate_console(false),
         wait_for_process(true)
-    {}
+    {
+        emulation::settings::initialize(emulation_settings);
+    }
 
     bool separate_console;
     bool wait_for_process;
+    emulation::settings emulation_settings;
 };
 
 void run_demo(const std::vector<std::wstring>& demo_command_line, const demo_settings& settings);

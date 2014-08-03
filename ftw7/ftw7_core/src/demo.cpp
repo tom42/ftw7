@@ -124,7 +124,7 @@ std::wstring get_emulation_dll_path()
     return directory.external_directory_string();
 }
 
-void create_injection_code(assembler::asm86& a, DWORD return_address)
+void create_injection_code(assembler::asm86& a, DWORD return_address, const emulation::settings& settings)
 {
     using namespace ftw7_core::assembler;
     using namespace ftw7_core::windows;
@@ -133,10 +133,6 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     const auto ExitProcess_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "ExitProcess"));
     const auto GetProcAddress_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
     const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
-
-    // TODO: not here (testcode). This needs to be passed all the way from run_demo, which gets it from the application.
-    emulation::settings settings;
-    emulation::settings::initialize(settings);
 
     // Push return address onto stack and save all registers.
     a.push(return_address);
@@ -186,11 +182,11 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     a.align(4).label("emulation_settings").data(&settings, sizeof(settings));
 }
 
-void inject_emulation(process& process)
+void inject_emulation(process& process, const emulation::settings& settings)
 {
     auto ctx = process.get_thread_context(CONTEXT_CONTROL);
     assembler::asm86 a(4);
-    create_injection_code(a, ctx.Eip);
+    create_injection_code(a, ctx.Eip, settings);
 
     // Allocate memory for injection code in the injectee.
     auto code_address = process.virtual_alloc(a.program_size());
@@ -259,7 +255,7 @@ void run_demo(const std::vector<std::wstring>& demo_command_line, const demo_set
         throw wruntime_error(L"cannot run 64 bit program '" + demo_executable_path + L"'");
     }
 
-    inject_emulation(process);
+    inject_emulation(process, settings.emulation_settings);
     std::wcout << L"Successfully injected console emulation library" << std::endl;
 
     if (settings.wait_for_process)
