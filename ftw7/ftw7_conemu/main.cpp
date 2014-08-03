@@ -16,7 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <Windows.h>
 #include "ftw7_core/emulation/emulation.hpp"
+
+namespace
+{
+HINSTANCE hinstance;
+}
+
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID /*lpvReserved*/)
+{
+    switch (fdwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+        hinstance = hinstDLL;
+        return TRUE;
+    default:
+        return TRUE;
+    }
+}
 
 // This function needs to be called by the injected code to bring up the console
 // emulation. Note that it mustn't propagate any C++ exceptions up to the caller;
