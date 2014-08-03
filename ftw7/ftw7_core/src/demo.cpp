@@ -147,7 +147,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     a.push("emulation_dll_path");
     a.mov(eax, LoadLibraryW_ptr);
     a.call(eax);
-    a.mov(ebx, emulation::COULD_NOT_LOAD_EMULATION_DLL);
+    a.mov(ebx, emulation::could_not_load_emulation_dll);
     a.or(eax, eax);
     a.jz("exit_error");
 
@@ -156,7 +156,7 @@ void create_injection_code(assembler::asm86& a, DWORD return_address)
     a.push(eax);                            // Push emulation DLL's module handle
     a.mov(eax, GetProcAddress_ptr);
     a.call(eax);
-    a.mov(ebx, emulation::COULD_NOT_GET_ADDRESS_OF_INIT);
+    a.mov(ebx, emulation::could_not_get_address_of_init);
     a.or(eax, eax);
     a.jz("exit_error");
 

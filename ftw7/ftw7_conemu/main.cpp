@@ -40,16 +40,16 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
     try
     {
         const auto settings_check_result = settings::check(settings);
-        if (settings_check_result != NO_ERROR)
+        if (settings_check_result != no_error)
         {
             return settings_check_result;
         }
 
-        return NO_ERROR;
+        return no_error;
     }
     catch (...)
     {
         // TODO: log this somehow, too.
-        return ERROR_DURING_INITIALIZATION;
+        return error_during_initialization;
     }
 }

@@ -28,13 +28,13 @@ namespace emulation
 
 enum error_code
 {
-    NO_ERROR = 0,
-    COULD_NOT_LOAD_EMULATION_DLL = 0x0f7f7000,
-    COULD_NOT_GET_ADDRESS_OF_INIT,
-    SETTINGS_POINTER_MUST_NOT_BE_NULL,
-    SETTINGS_HAVE_BAD_SIZE,
-    WRONG_MAGIC_STRING_IN_SETTINGS,
-    ERROR_DURING_INITIALIZATION
+    no_error = 0,
+    could_not_load_emulation_dll = 0x0f7f7000,
+    could_not_get_address_of_init,
+    settings_pointer_must_not_be_null,
+    settings_have_bad_size,
+    wrong_magic_string_in_settings,
+    error_during_initialization
 };
 
 struct settings

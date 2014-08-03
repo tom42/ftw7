@@ -38,17 +38,17 @@ error_code settings::check(const settings* settings)
 {
     if (!settings)
     {
-        return SETTINGS_POINTER_MUST_NOT_BE_NULL;
+        return settings_pointer_must_not_be_null;
     }
     if (settings->size != sizeof(*settings))
     {
-        return SETTINGS_HAVE_BAD_SIZE;
+        return settings_have_bad_size;
     }
     if (strcmp(settings->magic_string, PACKAGE_STRING))
     {
-        return WRONG_MAGIC_STRING_IN_SETTINGS;
+        return wrong_magic_string_in_settings;
     }
-    return NO_ERROR;
+    return no_error;
 }
 
 }
