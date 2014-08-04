@@ -16,26 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CORE_PTR_TO_INT_HPP_INCLUDED
-#define FTW7_CORE_PTR_TO_INT_HPP_INCLUDED
+#include <cstdlib>
+#include <boost/test/unit_test.hpp>
+#include "ftw7_core/pointer.hpp"
 
-#include <type_traits>
-
-namespace ftw7_core
+namespace
 {
 
-template <typename int_type>
-int_type ptr_to_int(void* ptr)
+using ftw7_core::is_function_pointer;
+
+BOOST_AUTO_TEST_SUITE(pointer_test)
+
+BOOST_AUTO_TEST_CASE(is_function_pointer_test)
 {
-    static_assert(std::is_integral<int_type>::value,
-        "target type is non-integral");
+    BOOST_CHECK(!is_function_pointer<int>::value);
+    BOOST_CHECK(!is_function_pointer<bool*>::value);
+    BOOST_CHECK(!is_function_pointer<decltype(::qsort)>::value);
 
-    static_assert(sizeof(int_type) == sizeof(ptr),
-        "size of target type differs from size of pointer");
-
-    return reinterpret_cast<int_type>(ptr);
+    typedef void(*some_function_pointer)();
+    BOOST_CHECK(is_function_pointer<some_function_pointer>::value);
 }
 
-}
+BOOST_AUTO_TEST_SUITE_END()
 
-#endif
+}

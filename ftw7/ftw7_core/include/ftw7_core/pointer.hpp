@@ -36,6 +36,15 @@ int_type pointer_to_int(void* ptr)
     return reinterpret_cast<int_type>(ptr);
 }
 
+template <typename T>
+struct is_function_pointer
+{
+    static const bool value =
+        std::is_pointer<T>::value ?
+        std::is_function<typename std::remove_pointer<T>::type>::value :
+        false;
+};
+
 }
 
 #endif

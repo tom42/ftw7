@@ -39,6 +39,7 @@ set (
   test/main.cpp
   test/module_test.cpp
   test/object_test.cpp
+  test/pointer_test.cpp
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
