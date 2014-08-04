@@ -24,6 +24,8 @@
 #include "ftw7_core/pointer.hpp"
 #include "mhook-lib/mhook.h"
 
+namespace ftw7_core
+{
 namespace mhookpp
 {
 
@@ -40,6 +42,7 @@ bool set_hook(TPSystemFunction* pp_system_function, TPHookFunction p_hookfunctio
     return Mhook_SetHook(reinterpret_cast<PVOID*>(pp_system_function), p_hookfunction) ? true : false;
 }
 
+}
 }
 
 #endif
