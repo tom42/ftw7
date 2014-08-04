@@ -23,8 +23,11 @@
 
 inline bool is_english()
 {
-    const auto langid = GetUserDefaultLangID();
-    return PRIMARYLANGID(langid) == LANG_ENGLISH;
+    // GetUserDefaultUILanguage gets the current user's language selection.
+    // This is basically the language the OS menus and dialogs are displayed
+    // in and is what we need to use, particularly on systems that allow
+    // UI language selection.
+    return PRIMARYLANGID(GetUserDefaultUILanguage()) == LANG_ENGLISH;
 }
 
 #endif
