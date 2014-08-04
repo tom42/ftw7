@@ -27,6 +27,13 @@ namespace
 {
 
 using namespace ftw7_core::windows;
+using boost::algorithm::ends_with;
+
+bool is_english()
+{
+    const auto langid = GetUserDefaultLangID();
+    return PRIMARYLANGID(langid) == LANG_ENGLISH;
+}
 
 BOOST_AUTO_TEST_SUITE(module_test)
 
@@ -36,50 +43,68 @@ BOOST_AUTO_TEST_CASE(get_module_filename_test)
     // Hard to test, since we need to know our own exe's location, which is a
     // problem in itself. Simply check whether the path ends with the right
     // filename.
-    BOOST_CHECK(boost::algorithm::ends_with(
-        get_module_filename(nullptr), L"\\ftw7_core_test.exe"));
+    BOOST_CHECK(ends_with(get_module_filename(nullptr), L"\\ftw7_core_test.exe"));
 
     // Another module. Use kernel32.dll, since that is guaranteed to exist.
     // Also simply check whether the path ends with the right filename.
     // Getting the full path right is non-trivial. We don't know where Windows
     // is installed, and on 64 bit systems we'd also have to distinguish between
     // native and WoW64 DLLs.
-    BOOST_CHECK(boost::algorithm::ends_with(
-        get_module_filename(LoadLibraryW(L"kernel32.dll")), L"\\kernel32.dll"));
+    BOOST_CHECK(ends_with(get_module_filename(LoadLibraryW(L"kernel32.dll")), L"\\kernel32.dll"));
 
     // Invalid module handle.
-    BOOST_CHECK_EXCEPTION(get_module_filename((HMODULE)-1),
-        ftw7_core::wruntime_error, check_wwhat_equals(
-            L"could not obtain module file name of module FFFFFFFF: "
-            L"The specified module could not be found."));
+    const std::wstring expected_start(L"could not obtain module file name of module FFFFFFFF: ");
+    const std::wstring expected_end(L"The specified module could not be found.");
+    if (is_english())
+    {
+        BOOST_CHECK_EXCEPTION(get_module_filename((HMODULE)-1), windows_error,
+            check_wwhat_equals(expected_start + expected_end));
+    }
+    else
+    {
+        BOOST_CHECK_EXCEPTION(get_module_filename((HMODULE)-1), windows_error,
+            check_wwhat_starts_with(expected_start));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(get_module_handle_test)
 {
-    BOOST_CHECK(boost::algorithm::ends_with(
-        get_module_filename(get_module_handle(nullptr)),
-        L"\\ftw7_core_test.exe"));
+    BOOST_CHECK(ends_with(get_module_filename(get_module_handle(nullptr)), L"\\ftw7_core_test.exe"));
+    BOOST_CHECK_EQUAL(get_module_handle(L"kernel32.dll"), LoadLibraryW(L"kernel32.dll"));
 
-    BOOST_CHECK_EQUAL(get_module_handle(L"kernel32.dll"),
-        LoadLibraryW(L"kernel32.dll"));
+    const std::wstring expected_start(L"could not obtain module handle of `not_loaded.dll': ");
+    const std::wstring expected_end(L"The specified module could not be found.");
+    if (is_english())
+    {
+        BOOST_CHECK_EXCEPTION(get_module_handle(L"not_loaded.dll"),
+            windows_error, check_wwhat_equals(expected_start + expected_end));
+    }
+    else
+    {
+        BOOST_CHECK_EXCEPTION(get_module_handle(L"not_loaded.dll"),
+            windows_error, check_wwhat_starts_with(expected_start));
 
-    BOOST_CHECK_EXCEPTION(get_module_handle(L"not_loaded.dll"),
-        windows_error, check_wwhat_equals(
-            L"could not obtain module handle of `not_loaded.dll': "
-            L"The specified module could not be found."));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(get_proc_address_test)
 {
     HMODULE kernel32 = LoadLibraryW(L"kernel32.dll");
 
-    BOOST_CHECK_EQUAL(get_proc_address(kernel32, "ExitProcess"),
-        GetProcAddress(kernel32, "ExitProcess"));
+    BOOST_CHECK_EQUAL(get_proc_address(kernel32, "ExitProcess"), GetProcAddress(kernel32, "ExitProcess"));
 
-    BOOST_CHECK_EXCEPTION(get_proc_address(nullptr, "does_not_exist"),
-        windows_error, check_wwhat_equals(
-            L"could not obtain address of `does_not_exist' from module 00000000: "
-            L"The specified procedure could not be found."));
+    const std::wstring expected_start(L"could not obtain address of `does_not_exist' from module 00000000: ");
+    const std::wstring expected_end(L"The specified procedure could not be found.");
+    if (is_english())
+    {
+        BOOST_CHECK_EXCEPTION(get_proc_address(nullptr, "does_not_exist"),
+            windows_error, check_wwhat_equals(expected_start + expected_end));
+    }
+    else
+    {
+        BOOST_CHECK_EXCEPTION(get_proc_address(nullptr, "does_not_exist"),
+            windows_error, check_wwhat_starts_with(expected_start));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
