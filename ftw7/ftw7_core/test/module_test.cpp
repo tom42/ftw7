@@ -22,18 +22,13 @@
 #include "ftw7_core/windows/module.hpp"
 #include "ftw7_core/windows/windows_error.hpp"
 #include "check_what.hpp"
+#include "language.hpp"
 
 namespace
 {
 
 using namespace ftw7_core::windows;
 using boost::algorithm::ends_with;
-
-bool is_english()
-{
-    const auto langid = GetUserDefaultLangID();
-    return PRIMARYLANGID(langid) == LANG_ENGLISH;
-}
 
 BOOST_AUTO_TEST_SUITE(module_test)
 
