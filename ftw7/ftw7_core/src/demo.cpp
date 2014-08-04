@@ -26,7 +26,7 @@
 #include "ftw7_core/demo.hpp"
 #include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_core/windows/module.hpp"
-#include "ftw7_core/ptr_to_int.hpp"
+#include "ftw7_core/pointer.hpp"
 #include "process.hpp"
 
 namespace ftw7_core
@@ -130,9 +130,9 @@ void create_injection_code(assembler::asm86& a, DWORD return_address, const emul
     using namespace ftw7_core::windows;
 
     const auto kernel32 = get_module_handle(L"kernel32.dll");
-    const auto ExitProcess_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "ExitProcess"));
-    const auto GetProcAddress_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
-    const auto LoadLibraryW_ptr = ptr_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
+    const auto ExitProcess_ptr = pointer_to_int<dword_t>(get_proc_address(kernel32, "ExitProcess"));
+    const auto GetProcAddress_ptr = pointer_to_int<dword_t>(get_proc_address(kernel32, "GetProcAddress"));
+    const auto LoadLibraryW_ptr = pointer_to_int<dword_t>(get_proc_address(kernel32, "LoadLibraryW"));
 
     // Push return address onto stack and save all registers.
     a.push(return_address);
@@ -192,14 +192,14 @@ void inject_emulation(process& process, const emulation::settings& settings)
     auto code_address = process.virtual_alloc(a.program_size());
 
     // Relocate injection code to address in injectee's address space.
-    auto code = a.link(ptr_to_int<assembler::asm86::address_type>(code_address));
+    auto code = a.link(pointer_to_int<assembler::asm86::address_type>(code_address));
 
     // Copy injection code into the injectee's address space.
     process.write_process_memory(code_address, &code[0], code.size());
     process.flush_instruction_cache(code_address, code.size());
 
     // Set thread's instruction pointer to the injected code.
-    ctx.Eip = ptr_to_int<DWORD>(code_address);
+    ctx.Eip = pointer_to_int<DWORD>(code_address);
     process.set_thread_context(ctx);
 }
 
