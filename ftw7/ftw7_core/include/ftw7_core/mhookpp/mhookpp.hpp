@@ -19,6 +19,7 @@
 #ifndef FTW7_CORE_MHOOKPP_MHOOKPP_HPP_INCLUDED
 #define FTW7_CORE_MHOOKPP_MHOOKPP_HPP_INCLUDED
 
+#include <Windows.h>
 #include <type_traits>
 #include "ftw7_core/pointer.hpp"
 #include "mhook-lib/mhook.h"
