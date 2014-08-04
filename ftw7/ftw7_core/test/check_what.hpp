@@ -21,12 +21,13 @@
 
 #include <stdexcept>
 #include <string>
+#include <boost/algorithm/string/predicate.hpp>
 #include "ftw7_core/wexcept.hpp"
 
-class check_what
+class check_what_equals
 {
 public:
-    check_what(const std::string& expected_message)
+    check_what_equals(const std::string& expected_message)
         : expected_message(expected_message) {}
 
     bool operator () (const std::exception& e) const
@@ -37,10 +38,10 @@ private:
     std::string expected_message;
 };
 
-class check_wwhat
+class check_wwhat_equals
 {
 public:
-    check_wwhat(const std::wstring& expected_message)
+    check_wwhat_equals(const std::wstring& expected_message)
         : expected_message(expected_message) {}
 
     bool operator () (const ftw7_core::wruntime_error& e) const
@@ -49,6 +50,20 @@ public:
     }
 private:
     std::wstring expected_message;
+};
+
+class check_wwhat_starts_with
+{
+public:
+    check_wwhat_starts_with(const std::wstring& prefix)
+        : prefix(prefix) {}
+
+    bool operator () (const ftw7_core::wruntime_error& e) const
+    {
+        return boost::algorithm::starts_with(e.wwhat(), prefix);
+    }
+private:
+    std::wstring prefix;
 };
 
 #endif

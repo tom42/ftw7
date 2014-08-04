@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(asm86_8bit_relative_label_displacement_too_small_test)
     }
     a.jz("1");
     BOOST_CHECK_EXCEPTION(a.link(0), std::out_of_range,
-        check_what("displacement out of range"));
+        check_what_equals("displacement out of range"));
 }
 
 BOOST_AUTO_TEST_CASE(asm86_8bit_relative_label_displacement_too_large_test)
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(asm86_8bit_relative_label_displacement_too_large_test)
     }
     a.label("1");
     BOOST_CHECK_EXCEPTION(a.link(0), std::out_of_range,
-        check_what("displacement out of range"));
+        check_what_equals("displacement out of range"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

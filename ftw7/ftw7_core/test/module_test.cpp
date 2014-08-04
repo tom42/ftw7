@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(get_module_filename_test)
 
     // Invalid module handle.
     BOOST_CHECK_EXCEPTION(get_module_filename((HMODULE)-1),
-        ftw7_core::wruntime_error, check_wwhat(
+        ftw7_core::wruntime_error, check_wwhat_equals(
             L"could not obtain module file name of module FFFFFFFF: "
             L"The specified module could not be found."));
 }
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(get_module_handle_test)
         LoadLibraryW(L"kernel32.dll"));
 
     BOOST_CHECK_EXCEPTION(get_module_handle(L"not_loaded.dll"),
-        windows_error, check_wwhat(
+        windows_error, check_wwhat_equals(
             L"could not obtain module handle of `not_loaded.dll': "
             L"The specified module could not be found."));
 }
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(get_proc_address_test)
         GetProcAddress(kernel32, "ExitProcess"));
 
     BOOST_CHECK_EXCEPTION(get_proc_address(nullptr, "does_not_exist"),
-        windows_error, check_wwhat(
+        windows_error, check_wwhat_equals(
             L"could not obtain address of `does_not_exist' from module 00000000: "
             L"The specified procedure could not be found."));
 }

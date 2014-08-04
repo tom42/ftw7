@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(creation_test)
 BOOST_AUTO_TEST_CASE(creation_with_invalid_alignment_test)
 {
     BOOST_CHECK_EXCEPTION(object<dword_t>(0), std::invalid_argument,
-        check_what("alignment must not be 0"));
+        check_what_equals("alignment must not be 0"));
 }
 
 BOOST_AUTO_TEST_CASE(align_with_valid_values_test)
@@ -83,7 +83,7 @@ BOOST_AUTO_TEST_CASE(align_with_invalid_values_test)
     // align 0
     BOOST_CHECK_EQUAL(obj.counter(), 0u);
     BOOST_CHECK_EXCEPTION(obj.align(0), std::invalid_argument,
-        check_what("alignment must not be 0"));
+        check_what_equals("alignment must not be 0"));
     BOOST_CHECK_EQUAL(obj.counter(), 0u);
 
     // Check alignments that don't fit evenly into the object alignment
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(align_with_invalid_values_test)
     BOOST_FOREACH(auto alignment, invalid_alignments)
     {
         BOOST_CHECK_EXCEPTION(obj.align(alignment), std::invalid_argument,
-            check_what("alignment does not match object alignment"));
+            check_what_equals("alignment does not match object alignment"));
         BOOST_CHECK_EQUAL(obj.counter(), 0u);
     }
 }
@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(link_invalid_origin_test)
     BOOST_FOREACH(auto origin, invalid_origins)
     {
         BOOST_CHECK_EXCEPTION(obj.link(origin), std::invalid_argument,
-            check_what("origin does not match object alignment"));
+            check_what_equals("origin does not match object alignment"));
     }
 }
 
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(link_origin_moves_object_out_of_address_space_test)
     byte_obj.link(0);
     byte_obj.link(254);
     BOOST_CHECK_EXCEPTION(byte_obj.link(255), std::out_of_range,
-        check_what("origin too large"));
+        check_what_equals("origin too large"));
 
     // Same for word address size.
     object<word_t> word_obj(1);
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(link_origin_moves_object_out_of_address_space_test)
     word_obj.link(0);
     word_obj.link(65534);
     BOOST_CHECK_EXCEPTION(word_obj.link(65535), std::out_of_range,
-        check_what("origin too large"));
+        check_what_equals("origin too large"));
 }
 
 BOOST_AUTO_TEST_CASE(fixup_test)
@@ -260,7 +260,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(fixup_past_end_of_object, address_type,
         else
         {
             BOOST_CHECK_EXCEPTION(obj.link(0), std::out_of_range,
-                check_what("fixup past end of object"));
+                check_what_equals("fixup past end of object"));
         }
     }
 }
