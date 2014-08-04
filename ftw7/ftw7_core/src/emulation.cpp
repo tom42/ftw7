@@ -33,7 +33,7 @@ void settings::initialize(settings& settings)
     static_assert(sizeof(PACKAGE_STRING) <= sizeof(settings.magic_string), "PACKAGE_STRING is too long");
     strcpy(settings.magic_string, PACKAGE_STRING);
 
-    settings.log_level = log::log_level::off;
+    settings.log_level = log::log_level::info;
 }
 
 error_code settings::check(const settings* settings)
