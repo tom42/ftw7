@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CONEMU_EMULATION_DISPLAY_DRIVER_HPP_INCLUDED
-#define FTW7_CONEMU_EMULATION_DISPLAY_DRIVER_HPP_INCLUDED
+#ifndef FTW7_CONEMU_DISPLAY_DISPLAY_DRIVER_HPP_INCLUDED
+#define FTW7_CONEMU_DISPLAY_DISPLAY_DRIVER_HPP_INCLUDED
 
 namespace ftw7_conemu
 {
-namespace emulation
+namespace display
 {
 
 class display_driver
