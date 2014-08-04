@@ -17,10 +17,12 @@
 
 set (
   ftw7_conemu_sources
+  src/emulation.cpp
   src/ftw7_conemu.def
   src/main.cpp
 )
 
+include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 include_directories ("${PROJECT_SOURCE_DIR}/mhook")
 add_library (ftw7_conemu SHARED ${ftw7_conemu_sources})

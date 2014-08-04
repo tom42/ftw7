@@ -21,6 +21,7 @@
 #include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/wexcept.hpp"
+#include "ftw7_conemu/emulation/emulation.hpp"
 
 namespace
 {
@@ -75,6 +76,9 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
         FTW7_LOG_INFO << "Starting up ftw7 console emulation";
         FTW7_LOG_DEBUG << "Emulation DLL's module handle: " << emulation_dll_module_handle;
         FTW7_LOG_DEBUG << "Main thread ID: " << GetCurrentThreadId();
+
+        ftw7_conemu::emulation::initialize();
+
         return no_error;
     }
     catch (const ftw7_core::wruntime_error& e)
