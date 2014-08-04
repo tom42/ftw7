@@ -17,14 +17,59 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include "ftw7_conemu/emulation/emulation.hpp"
+#include "ftw7_core/log/log.hpp"
+#include "ftw7_core/mhookpp/mhookpp.hpp"
+#include "ftw7_core/windows/module.hpp"
 
 namespace ftw7_conemu
 {
 namespace emulation
 {
+namespace
+{
+
+// TODO: decide where to stash all of this
+typedef decltype(WriteConsoleOutputA)* WriteConsoleOutputA_ptr_t;
+WriteConsoleOutputA_ptr_t TrueWriteConsoleOutputA;
+
+BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
+{
+    // TODO: trace this
+    // TODO: catch all exceptions (a dispatcher would be nice for this)
+    // TODO: throw stuff at the driver
+    // TODO: consider putting these functions out of any namespace, just to get
+    //       the namespace out of them when logging...
+    return TRUE;
+}
+
+void install_hooks()
+{
+    using ftw7_core::windows::get_module_handle;
+    using ftw7_core::windows::get_proc_address;
+    using ftw7_core::mhookpp::set_hook;
+
+    // TODO: decide how to respond to errors here.
+    // Most likely we'll have to intercept stuff from kernel32 and possibly user32 only.
+    // These should be always around, so throwing if any of them cannot be loaded is probably totally OK.
+    const auto kernel32 = get_module_handle(L"kernel32");
+
+    // TODO: find out how to handle errors here.
+    // In theory, get_proc_address might fail because we're attempting to hook a function
+    // that simply does not exist on a particular version of windows...
+    // TODO: possibly need to dive up hooking into an early stage where
+    //       we hook a small subset of functions only (e.g. WriteConsoleA and WriteConsoleW,
+    //       those we need for logging). We can then hook those, which should definitely
+    //       be around. We can then go on set up the logging already with the hooks in place
+    //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
+    TrueWriteConsoleOutputA = reinterpret_cast<WriteConsoleOutputA_ptr_t>(get_proc_address(kernel32, "WriteConsoleOutputA"));
+    set_hook(&TrueWriteConsoleOutputA, MyWriteConsoleOutputA);
+}
+
+}
 
 void initialize()
 {
+    install_hooks();
 }
 
 }
