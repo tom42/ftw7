@@ -40,6 +40,7 @@ const log_level_info log_levels[] =
     { log_level::warn,  "warn",  "WARN " },
     { log_level::info,  "info",  "INFO " },
     { log_level::debug, "debug", "DEBUG" },
+    { log_level::trace, "trace", "TRACE" }
 };
 const int n_log_levels = sizeof(log_levels) / sizeof(log_levels[0]);
 log_level current_log_level = log_level::off;

@@ -36,6 +36,7 @@ enum log_level
     warn,
     info,
     debug,
+    trace
 };
 
 struct log_level_info
