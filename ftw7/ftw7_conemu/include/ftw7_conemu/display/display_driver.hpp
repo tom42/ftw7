@@ -28,6 +28,7 @@ class display_driver
 {
 public:
     virtual ~display_driver() {}
+    virtual bool handle_messages() = 0;
 };
 
 }

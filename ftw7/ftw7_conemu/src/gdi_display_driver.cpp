@@ -29,8 +29,15 @@ const wchar_t wndclass_name[] = L"ftw7 GDI display driver window";
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    // TODO: real implementation.
-    return DefWindowProc(hwnd, msg, wparam, lparam);
+    // TODO: real implementation (are we missing anything here?)
+    switch (msg)
+    {
+    case WM_CLOSE:
+        PostQuitMessage(0);
+        return 0;
+    default:
+        return DefWindowProcW(hwnd, msg, wparam, lparam);
+    }
 }
 
 
@@ -88,6 +95,21 @@ gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle)
 
 gdi_display_driver::~gdi_display_driver()
 {
+}
+
+bool gdi_display_driver::handle_messages()
+{
+    MSG msg;
+    while (PeekMessageW(&msg, m_hwnd.get(), 0, 0, PM_REMOVE))
+    {
+        if (msg.message == WM_QUIT)
+        {
+            return false;
+        }
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+    }
+    return true;
 }
 
 }

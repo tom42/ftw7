@@ -32,6 +32,7 @@ namespace
 // TODO: decide where to stash all of this
 typedef decltype(WriteConsoleOutputA)* WriteConsoleOutputA_ptr_t;
 WriteConsoleOutputA_ptr_t TrueWriteConsoleOutputA;
+display::display_driver* display_driver;
 
 BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
 {
@@ -40,6 +41,19 @@ BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL
     // TODO: throw stuff at the driver
     // TODO: consider putting these functions out of any namespace, just to get
     //       the namespace out of them when logging...
+
+
+    // TODO: this can get very nasty:
+    // If we're called from a thread other than the main thread,
+    // accessing the driver window might/will/whatever fail (don't know how windows behaves in that case, really)
+    // This can happen anywhere the display_driver is accessed, so we might want to guard against this somehow.
+    // Better to detect this and fail loud and noisily...
+    if (!display_driver->handle_messages())
+    {
+        FTW7_LOG_INFO << "Exiting (exit requested by display driver)";
+        ExitProcess(0);
+    }
+
     return TRUE;
 }
 
@@ -72,7 +86,8 @@ void initialize(HINSTANCE emulation_dll_module_handle)
 {
     install_hooks();
     // TODO: need to put away the display driver somewhere.
-    new display::gdi_display_driver(emulation_dll_module_handle);
+    // TODO: when do we clean up, btw?
+    display_driver = new display::gdi_display_driver(emulation_dll_module_handle);
 }
 
 }
