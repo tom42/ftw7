@@ -50,7 +50,7 @@ BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL
     // Better to detect this and fail loud and noisily...
     if (!display_driver->handle_messages())
     {
-        FTW7_LOG_INFO << "Exiting (exit requested by display driver)";
+        FTW7_LOG_INFO << L"Exiting (exit requested by display driver)";
         ExitProcess(0);
     }
 

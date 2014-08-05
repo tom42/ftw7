@@ -99,17 +99,21 @@ gdi_display_driver::~gdi_display_driver()
 
 bool gdi_display_driver::handle_messages()
 {
+    // TODO: this message loop is OK. Not sure it belongs into the display driver, though.
+    //       Well, it kind of does: assume we're using GLFW to do an opengl display driver,
+    //       then we want perhaps use GLFW's message loop and not our own.
     MSG msg;
-    while (PeekMessageW(&msg, m_hwnd.get(), 0, 0, PM_REMOVE))
+    bool keep_running = true;
+    while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         if (msg.message == WM_QUIT)
         {
-            return false;
+            keep_running = false;
         }
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
-    return true;
+    return keep_running;
 }
 
 }
