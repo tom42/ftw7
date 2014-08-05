@@ -21,6 +21,7 @@
 
 #include <Windows.h>
 #include <string>
+#include "ftw7_core/windows/windows_error.hpp"
 
 namespace ftw7_core
 {
@@ -31,17 +32,17 @@ template <typename TWndClass, typename TChar>
 class basic_unique_window_class
 {
 public:
-    typedef std::basic_string<TChar> string_type;
+    typedef TChar char_type;
+    typedef std::basic_string<char_type> string_type;
     typedef TWndClass wndclass_type;
 
     basic_unique_window_class(const wndclass_type& wc)
         : m_classname(wc.lpszClassName),
-        m_hinstance(nullptr) // TODO: initialize correctly
+        m_hinstance(wc.hInstance)
     {
-        // TODO: no use for a default ctor here!
-        // TODO: tuck away the class name
-        // TODO: tuck away the hinstance
         // TODO: check wc.lpszClassName and wc.hInstance first? Then again, why bother. This is C++, after all.
+        // TODO: actually DO register the class.
+        //register_class(wc);
     }
 
     const string_type& classname() const
@@ -49,12 +50,47 @@ public:
         return m_classname;
     }
 
+    HINSTANCE hinstance() const
+    {
+        return m_hinstance;
+    }
+
 private:
     basic_unique_window_class(const basic_unique_window_class&) = delete;
     basic_unique_window_class& operator = (const basic_unique_window_class&) = delete;
 
-    string_type m_classname;
-    HINSTANCE m_hinstance;
+    static void register_class(const wndclass_type& wc)
+    {
+        const auto atom = do_register_class(&wc);
+        if (!atom)
+        {
+            const auto error = GetLastError();
+            throw ftw7_core::windows::windows_error(error);
+        }
+    }
+
+    static ATOM do_register_class(const WNDCLASSA* wc)
+    {
+        return RegisterClassA(wc);
+    }
+
+    static ATOM do_register_class(const WNDCLASSEXA* wc)
+    {
+        return RegisterClassExA(wc);
+    }
+
+    static ATOM do_register_class(const WNDCLASSW* wc)
+    {
+        return RegisterClassW(wc);
+    }
+
+    static ATOM do_register_class(const WNDCLASSEXW* wc)
+    {
+        return RegisterClassExW(wc);
+    }
+
+    const string_type m_classname;
+    const HINSTANCE m_hinstance;
 };
 
 typedef basic_unique_window_class<WNDCLASSA, char> unique_window_classa;

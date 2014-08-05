@@ -28,14 +28,40 @@ namespace
 using namespace ftw7_core::windows;
 typedef boost::mpl::list<unique_window_classa, unique_window_classexa, unique_window_classw, unique_window_classexw> unique_window_class_types;
 
-// Create std::string or std::wstring from char*, based on T.
 template <typename T>
-std::basic_string<T> make_string(const char *s)
+struct string_literal
 {
-    std::basic_ostringstream<T> stream;
-    stream << s;
-    return stream.str();
-}
+    static const char* make_literal(const char* narrow, const wchar_t* /*wide*/) { return narrow; }
+};
+
+template <>
+struct string_literal<wchar_t>
+{
+    static const wchar_t* make_literal(const char* /*narrow*/, const wchar_t* wide) { return wide; }
+};
+
+#define STRING_LITERAL(T, x) string_literal<T>::make_literal(x, L##x)
+
+// Set the cbSize member of a WNDCLASS structure.
+// Or don't, in the case of the specializations for WNDCLASSA and WNDCLASSW,
+// because these don't have a cbSize member.
+template <typename T>
+struct set_size
+{
+    static void set(T& wc) { wc.cbSize = sizeof(wc); }
+};
+
+template <>
+struct set_size<WNDCLASSA>
+{
+    static void set(WNDCLASSA& /*wc*/) {}
+};
+
+template <>
+struct set_size<WNDCLASSW>
+{
+    static void set(WNDCLASSW& /*wc*/) {}
+};
 
 BOOST_AUTO_TEST_SUITE(unique_window_class_test)
 
@@ -43,16 +69,15 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(construction_test, unique_window_class_type, uniqu
 {
     unique_window_class_type::wndclass_type wc;
     memset(&wc, 0, sizeof(wc));
-
-    const auto classname = make_string<unique_window_class_type::string_type::value_type>("x");
-    // wc.cbSize = sizeof(wc); // TODO: WNDCLASSA doesn't have this...currently this is OK, since we don't really registerclass(ex) yet
+    set_size<unique_window_class_type::wndclass_type>::set(wc);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = nullptr;   // TODO: might have to supply a real wndproc
     wc.hInstance = GetModuleHandle(nullptr);
-    wc.lpszClassName = classname.c_str();
+    wc.lpszClassName = STRING_LITERAL(unique_window_class_type::char_type, "test window class");
 
     unique_window_class_type uwc(wc);
-    BOOST_CHECK_EQUAL(uwc.classname(), classname);
+    BOOST_CHECK_EQUAL(uwc.classname(), STRING_LITERAL(unique_window_class_type::char_type, "test window class"));
+    BOOST_CHECK_EQUAL(uwc.hinstance(), GetModuleHandle(nullptr));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
