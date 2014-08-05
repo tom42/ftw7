@@ -25,6 +25,8 @@ namespace display
 namespace
 {
 
+const wchar_t wndclass_name[] = L"ftw7 GDI display driver window";
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     // TODO: real implementation.
@@ -44,25 +46,24 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = emulation_dll_module_handle;
-    wc.hIcon = nullptr;
+    wc.hIcon = nullptr;     // TODO: own icon (e.g. an 8x8 7 or something =)
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // TODO: no brush at all? We paint shit ourselves anyway?
     wc.lpszMenuName = nullptr;
-    wc.lpszClassName = L"ftw7 gdi display driver";
+    wc.lpszClassName = wndclass_name;
     wc.hIconSm = nullptr;
 
     return wc;
 }
 
-}
-
-gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle)
-    : m_wc(create_wndclassexw(emulation_dll_module_handle))
+// TODO: might be totally neat if we could move-construct unique_handles.
+//       Rationale: allows for safer code, since we can just create the damn thing right away here.
+HWND create_window()
 {
     // TODO: testcode, revisit all args. Also, RAII.
     auto hwnd = CreateWindowEx(
         WS_EX_OVERLAPPEDWINDOW,
-        m_wc.classname().c_str(),
+        wndclass_name,
         L"foo",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
         CW_USEDEFAULT, CW_USEDEFAULT,
@@ -74,6 +75,15 @@ gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle)
         auto error = GetLastError();
         throw ftw7_core::windows::windows_error(L"CreateWindowEx failed", error);
     }
+    return hwnd;
+}
+
+}
+
+gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle)
+    : m_wc(create_wndclassexw(emulation_dll_module_handle)),
+    m_hwnd(create_window())
+{
 }
 
 gdi_display_driver::~gdi_display_driver()

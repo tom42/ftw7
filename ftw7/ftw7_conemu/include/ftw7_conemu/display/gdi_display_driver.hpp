@@ -22,6 +22,7 @@
 #include <Windows.h>
 #include "ftw7_conemu/display/display_driver.hpp"
 #include "ftw7_core/windows/unique_window_class.hpp"
+#include "ftw7_core/windows/unique_hwnd.hpp"
 
 namespace ftw7_conemu
 {
@@ -35,6 +36,7 @@ public:
     virtual ~gdi_display_driver();
 private:
     ftw7_core::windows::unique_window_classexw m_wc;
+    ftw7_core::windows::unique_hwnd m_hwnd;
 };
 
 }
