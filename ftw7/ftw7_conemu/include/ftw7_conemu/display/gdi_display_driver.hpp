@@ -20,6 +20,7 @@
 #define FTW7_CONEMU_DISPLAY_GDI_DISPLAY_DRIVER_HPP_INCLUDED
 
 #include "ftw7_conemu/display/display_driver.hpp"
+#include "ftw7_core/windows/unique_window_class.hpp"
 
 namespace ftw7_conemu
 {
@@ -30,7 +31,9 @@ class gdi_display_driver : public display_driver
 {
 public:
     gdi_display_driver();
-    virtual ~gdi_display_driver() {}
+    virtual ~gdi_display_driver();
+private:
+    ftw7_core::windows::unique_window_classexw m_wc;
 };
 
 }

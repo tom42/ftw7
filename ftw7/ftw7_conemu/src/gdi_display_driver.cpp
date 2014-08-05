@@ -22,8 +22,29 @@ namespace ftw7_conemu
 {
 namespace display
 {
+namespace
+{
+
+WNDCLASSEXW create_wndclassexw()
+{
+    WNDCLASSEXW wc;
+    memset(&wc, 0, sizeof(wc));
+
+    // TODO: REALLY initialize structure (see MSDN...)
+    wc.cbSize = sizeof(wc);
+    wc.lpszClassName = L"ftw7 gdi display driver";
+
+    return wc;
+}
+
+}
 
 gdi_display_driver::gdi_display_driver()
+    : m_wc(create_wndclassexw())
+{
+}
+
+gdi_display_driver::~gdi_display_driver()
 {
 }
 
