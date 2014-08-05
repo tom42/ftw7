@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_SUITE(unique_window_class_test)
 BOOST_AUTO_TEST_CASE_TEMPLATE(construction_test, unique_window_class_type, unique_window_class_types)
 {
     auto classname = FTW7_STRING_LITERAL(unique_window_class_type::char_type, "test window class");
-    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type, unique_window_class_type::char_type>(classname);
+    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type>(classname);
 
     BOOST_CHECK(!is_windowclass_registered(classname));
     {
