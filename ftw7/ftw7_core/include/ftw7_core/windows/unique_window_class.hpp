@@ -36,7 +36,7 @@ public:
     typedef std::basic_string<char_type> string_type;
     typedef TWndClass wndclass_type;
 
-    basic_unique_window_class(const wndclass_type& wc)
+    explicit basic_unique_window_class(const wndclass_type& wc)
         : m_classname(wc.lpszClassName),
         m_hinstance(wc.hInstance)
     {
