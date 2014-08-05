@@ -32,7 +32,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 }
 
 
-WNDCLASSEXW create_wndclassexw()
+WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
 {
     WNDCLASSEXW wc;
     memset(&wc, 0, sizeof(wc));
@@ -43,7 +43,7 @@ WNDCLASSEXW create_wndclassexw()
     wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hInstance = nullptr; // TODO: probably required?
+    wc.hInstance = emulation_dll_module_handle;
     wc.hIcon = nullptr;
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // TODO: no brush at all? We paint shit ourselves anyway?
@@ -56,8 +56,8 @@ WNDCLASSEXW create_wndclassexw()
 
 }
 
-gdi_display_driver::gdi_display_driver()
-    : m_wc(create_wndclassexw())
+gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle)
+    : m_wc(create_wndclassexw(emulation_dll_module_handle))
 {
     // TODO: testcode, revisit all args. Also, RAII.
     auto hwnd = CreateWindowEx(

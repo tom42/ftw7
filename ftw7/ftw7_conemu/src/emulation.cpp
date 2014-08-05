@@ -68,11 +68,11 @@ void install_hooks()
 
 }
 
-void initialize()
+void initialize(HINSTANCE emulation_dll_module_handle)
 {
     install_hooks();
     // TODO: need to put away the display driver somewhere.
-    new display::gdi_display_driver();
+    new display::gdi_display_driver(emulation_dll_module_handle);
 }
 
 }

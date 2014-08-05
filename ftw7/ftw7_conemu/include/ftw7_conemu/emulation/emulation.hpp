@@ -19,12 +19,14 @@
 #ifndef FTW7_CONEMU_EMULATION_EMULATION_HPP_INCLUDED
 #define FTW7_CONEMU_EMULATION_EMULATION_HPP_INCLUDED
 
+#include <Windows.h>
+
 namespace ftw7_conemu
 {
 namespace emulation
 {
 
-void initialize();
+void initialize(HINSTANCE emulation_dll_module_handle);
 
 }
 }
