@@ -73,9 +73,9 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
 
         ftw7_core::log::initialize(settings->log_level);
 
-        FTW7_LOG_INFO << "Starting up ftw7 console emulation";
-        FTW7_LOG_DEBUG << "Emulation DLL's module handle: " << emulation_dll_module_handle;
-        FTW7_LOG_DEBUG << "Main thread ID: " << GetCurrentThreadId();
+        FTW7_LOG_INFO << L"Starting up ftw7 console emulation";
+        FTW7_LOG_DEBUG << L"Emulation DLL's module handle: " << emulation_dll_module_handle;
+        FTW7_LOG_DEBUG << L"Main thread ID: " << GetCurrentThreadId();
 
         ftw7_conemu::emulation::initialize();
 
