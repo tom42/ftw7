@@ -76,16 +76,33 @@ TWndClassType create_windowclass_structure(const TChar* classname)
     return wc;
 }
 
+bool is_windowclass_registered(const char* classname)
+{
+    WNDCLASSEXA wc;
+    return GetClassInfoExA(GetModuleHandle(nullptr), classname, &wc) ? true : false;
+}
+
+bool is_windowclass_registered(const wchar_t* classname)
+{
+    WNDCLASSEXW wc;
+    return GetClassInfoExW(GetModuleHandle(nullptr), classname, &wc) ? true : false;
+}
+
 BOOST_AUTO_TEST_SUITE(unique_window_class_test)
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(construction_test, unique_window_class_type, unique_window_class_types)
 {
-    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type, unique_window_class_type::char_type>(
-        STRING_LITERAL(unique_window_class_type::char_type, "test window class"));
+    auto classname = STRING_LITERAL(unique_window_class_type::char_type, "test window class");
+    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type, unique_window_class_type::char_type>(classname);
 
-    unique_window_class_type uwc(wc);
-    BOOST_CHECK_EQUAL(uwc.classname(), STRING_LITERAL(unique_window_class_type::char_type, "test window class"));
-    BOOST_CHECK_EQUAL(uwc.hinstance(), GetModuleHandle(nullptr));
+    BOOST_CHECK(!is_windowclass_registered(classname));
+    {
+        unique_window_class_type uwc(wc);
+        BOOST_CHECK_EQUAL(uwc.classname(), classname);
+        BOOST_CHECK_EQUAL(uwc.hinstance(), GetModuleHandle(nullptr));
+        BOOST_CHECK(is_windowclass_registered(classname));
+    }
+    BOOST_CHECK(!is_windowclass_registered(classname));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
