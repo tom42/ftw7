@@ -20,6 +20,7 @@
 #include <boost/test/unit_test.hpp>
 #include <sstream>
 #include "ftw7_core/windows/unique_window_class.hpp"
+#include "check_what.hpp"
 #include "string_literal.hpp"
 #include "wstring_ostream.hpp"
 
@@ -56,7 +57,7 @@ bool is_windowclass_registered(const wchar_t* classname)
 
 BOOST_AUTO_TEST_SUITE(unique_window_class_test)
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(construction_test, unique_window_class_type, unique_window_class_types)
+BOOST_AUTO_TEST_CASE_TEMPLATE(successful_construction_test, unique_window_class_type, unique_window_class_types)
 {
     auto classname = FTW7_STRING_LITERAL(unique_window_class_type::char_type, "test window class");
     auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type>(classname);
@@ -66,6 +67,35 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(construction_test, unique_window_class_type, uniqu
         unique_window_class_type uwc(wc);
         BOOST_CHECK_EQUAL(uwc.classname(), classname);
         BOOST_CHECK_EQUAL(uwc.hinstance(), GetModuleHandle(nullptr));
+        BOOST_CHECK(is_windowclass_registered(classname));
+    }
+    BOOST_CHECK(!is_windowclass_registered(classname));
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(unsuccessful_construction_because_of_bad_wndclass_structure_test, unique_window_class_type, unique_window_class_types)
+{
+    auto classname = FTW7_STRING_LITERAL(unique_window_class_type::char_type, "test window class");
+    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type>(classname);
+
+    wc.cbSize = 0;
+
+    BOOST_CHECK(!is_windowclass_registered(classname));
+    BOOST_CHECK_EXCEPTION({ unique_window_class_type uwc(wc); }, ftw7_core::windows::windows_error,
+        check_wwhat_starts_with(L"could not register window class: "));
+    BOOST_CHECK(!is_windowclass_registered(classname));
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(unsuccessful_construction_because_class_is_already_registered_test, unique_window_class_type, unique_window_class_types)
+{
+    auto classname = FTW7_STRING_LITERAL(unique_window_class_type::char_type, "test window class");
+    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type>(classname);
+
+    BOOST_CHECK(!is_windowclass_registered(classname));
+    {
+        unique_window_class_type uwc1(wc);
+        BOOST_CHECK(is_windowclass_registered(classname));
+        BOOST_CHECK_EXCEPTION({ unique_window_class_type uwc2(wc); }, ftw7_core::windows::windows_error,
+            check_wwhat_starts_with(L"could not register window class: "));
         BOOST_CHECK(is_windowclass_registered(classname));
     }
     BOOST_CHECK(!is_windowclass_registered(classname));

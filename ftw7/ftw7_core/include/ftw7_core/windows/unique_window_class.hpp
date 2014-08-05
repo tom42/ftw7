@@ -75,7 +75,7 @@ private:
         if (!atom)
         {
             const auto error = GetLastError();
-            throw ftw7_core::windows::windows_error(error);
+            throw ftw7_core::windows::windows_error(L"could not register window class", error);
         }
     }
 
