@@ -25,6 +25,13 @@ namespace display
 namespace
 {
 
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    // TODO: real implementation.
+    return DefWindowProc(hwnd, msg, wparam, lparam);
+}
+
+
 WNDCLASSEXW create_wndclassexw()
 {
     WNDCLASSEXW wc;
@@ -32,7 +39,17 @@ WNDCLASSEXW create_wndclassexw()
 
     // TODO: REALLY initialize structure (see MSDN...)
     wc.cbSize = sizeof(wc);
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = WndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = nullptr; // TODO: probably required?
+    wc.hIcon = nullptr;
+    wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // TODO: no brush at all? We paint shit ourselves anyway?
+    wc.lpszMenuName = nullptr;
     wc.lpszClassName = L"ftw7 gdi display driver";
+    wc.hIconSm = nullptr;
 
     return wc;
 }
@@ -42,6 +59,21 @@ WNDCLASSEXW create_wndclassexw()
 gdi_display_driver::gdi_display_driver()
     : m_wc(create_wndclassexw())
 {
+    // TODO: testcode, revisit all args. Also, RAII.
+    auto hwnd = CreateWindowEx(
+        WS_EX_OVERLAPPEDWINDOW,
+        m_wc.classname().c_str(),
+        L"foo",
+        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        640, 400,
+        HWND_DESKTOP,
+        nullptr, nullptr, nullptr);
+    if (!hwnd)
+    {
+        auto error = GetLastError();
+        throw ftw7_core::windows::windows_error(L"CreateWindowEx failed", error);
+    }
 }
 
 gdi_display_driver::~gdi_display_driver()
