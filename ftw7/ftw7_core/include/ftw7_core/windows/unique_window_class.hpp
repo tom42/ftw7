@@ -40,9 +40,14 @@ public:
         : m_classname(wc.lpszClassName),
         m_hinstance(wc.hInstance)
     {
-        // TODO: check wc.lpszClassName and wc.hInstance first? Then again, why bother. This is C++, after all.
-        // TODO: actually DO register the class.
-        //register_class(wc);
+        // register_class will throw if RegisterClass fails, leaving us without
+        // a basic_unique_window_class, which is exactly what we want.
+        register_class(wc);
+    }
+
+    ~basic_unique_window_class()
+    {
+        unregister_class();
     }
 
     const string_type& classname() const
@@ -58,6 +63,11 @@ public:
 private:
     basic_unique_window_class(const basic_unique_window_class&) = delete;
     basic_unique_window_class& operator = (const basic_unique_window_class&) = delete;
+
+    void unregister_class()
+    {
+        do_unregister_class(m_classname, m_hinstance);
+    }
 
     static void register_class(const wndclass_type& wc)
     {
@@ -87,6 +97,16 @@ private:
     static ATOM do_register_class(const WNDCLASSEXW* wc)
     {
         return RegisterClassExW(wc);
+    }
+
+    static BOOL do_unregister_class(const std::string& classname, HINSTANCE hinstance)
+    {
+        return UnregisterClassA(classname.c_str(), hinstance);
+    }
+
+    static BOOL do_unregister_class(const std::wstring& classname, HINSTANCE hinstance)
+    {
+        return UnregisterClassW(classname.c_str(), hinstance);
     }
 
     const string_type m_classname;

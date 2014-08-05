@@ -63,17 +63,25 @@ struct set_size<WNDCLASSW>
     static void set(WNDCLASSW& /*wc*/) {}
 };
 
+template <typename TWndClassType, typename TChar>
+TWndClassType create_windowclass_structure(const TChar* classname)
+{
+    TWndClassType wc;
+    memset(&wc, 0, sizeof(wc));
+    set_size<TWndClassType>::set(wc);
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = nullptr;
+    wc.hInstance = GetModuleHandle(nullptr);
+    wc.lpszClassName = classname;
+    return wc;
+}
+
 BOOST_AUTO_TEST_SUITE(unique_window_class_test)
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(construction_test, unique_window_class_type, unique_window_class_types)
 {
-    unique_window_class_type::wndclass_type wc;
-    memset(&wc, 0, sizeof(wc));
-    set_size<unique_window_class_type::wndclass_type>::set(wc);
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = nullptr;   // TODO: might have to supply a real wndproc
-    wc.hInstance = GetModuleHandle(nullptr);
-    wc.lpszClassName = STRING_LITERAL(unique_window_class_type::char_type, "test window class");
+    auto wc = create_windowclass_structure<unique_window_class_type::wndclass_type, unique_window_class_type::char_type>(
+        STRING_LITERAL(unique_window_class_type::char_type, "test window class"));
 
     unique_window_class_type uwc(wc);
     BOOST_CHECK_EQUAL(uwc.classname(), STRING_LITERAL(unique_window_class_type::char_type, "test window class"));
