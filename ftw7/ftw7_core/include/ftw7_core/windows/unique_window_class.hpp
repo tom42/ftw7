@@ -79,19 +79,9 @@ private:
         }
     }
 
-    static ATOM do_register_class(const WNDCLASSA* wc)
-    {
-        return RegisterClassA(wc);
-    }
-
     static ATOM do_register_class(const WNDCLASSEXA* wc)
     {
         return RegisterClassExA(wc);
-    }
-
-    static ATOM do_register_class(const WNDCLASSW* wc)
-    {
-        return RegisterClassW(wc);
     }
 
     static ATOM do_register_class(const WNDCLASSEXW* wc)
@@ -113,9 +103,7 @@ private:
     const HINSTANCE m_hinstance;
 };
 
-typedef basic_unique_window_class<WNDCLASSA, char> unique_window_classa;
 typedef basic_unique_window_class<WNDCLASSEXA, char> unique_window_classexa;
-typedef basic_unique_window_class<WNDCLASSW, wchar_t> unique_window_classw;
 typedef basic_unique_window_class<WNDCLASSEXW, wchar_t> unique_window_classexw;
 
 }
