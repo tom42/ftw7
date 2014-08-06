@@ -21,6 +21,7 @@
 
 #include <Windows.h>
 #include "ftw7_conemu/display/display_driver.hpp"
+#include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_core/windows/unique_window_class.hpp"
 #include "ftw7_core/windows/unique_hwnd.hpp"
 
@@ -32,7 +33,7 @@ namespace display
 class gdi_display_driver : public display_driver
 {
 public:
-    gdi_display_driver(HINSTANCE emulation_dll_module_handle);
+    gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings);
     virtual ~gdi_display_driver();
     bool handle_messages() override;
 private:

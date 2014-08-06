@@ -34,6 +34,7 @@ void settings::initialize(settings& settings)
     strcpy(settings.magic_string, PACKAGE_STRING);
 
     settings.log_level = log::log_level::info;
+    settings.fullscreen = false;
 }
 
 error_code settings::check(const settings* settings)

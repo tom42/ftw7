@@ -82,12 +82,12 @@ void install_hooks()
 
 }
 
-void initialize(HINSTANCE emulation_dll_module_handle)
+void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
     install_hooks();
     // TODO: need to put away the display driver somewhere.
     // TODO: when do we clean up, btw?
-    display_driver = new display::gdi_display_driver(emulation_dll_module_handle);
+    display_driver = new display::gdi_display_driver(emulation_dll_module_handle, settings);
 }
 
 }

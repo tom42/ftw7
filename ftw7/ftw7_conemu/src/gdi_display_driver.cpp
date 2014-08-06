@@ -93,7 +93,7 @@ unique_hwnd create_window()
 
 }
 
-gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle)
+gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& /*settings*/)
     : m_wc(create_wndclassexw(emulation_dll_module_handle)),
     m_hwnd(create_window())
 {
