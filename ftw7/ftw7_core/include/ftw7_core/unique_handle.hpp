@@ -40,6 +40,11 @@ public:
         return m_handle;
     }
 
+    explicit operator bool() const
+    {
+        return is_valid();
+    }
+
 private:
     unique_handle(const unique_handle&) = delete;
     unique_handle& operator = (const unique_handle&) = delete;
