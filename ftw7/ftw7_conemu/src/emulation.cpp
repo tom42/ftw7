@@ -38,12 +38,27 @@ WriteConsoleOutputA_ptr_t TrueWriteConsoleOutputA;
 
 display::display_driver* display_driver;
 
+template <typename T, typename L>
+auto doit(T, const L& l) -> decltype(l())
+{
+    // TODO: try/catch
+    // TODO: supply lambda and function name first
+    // TODO: variadic template, do tracing with that. This is ossom.
+    return l();
+}
+
 BOOL WINAPI MySetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     // TODO: trace, catch exceptions and all that
-    auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
-    display_driver->set_title(wide_title.c_str());
-    return TRUE;
+    // I think this might be something halfways useful
+    // The doit() function template can now go and have a generic try/catch
+    // around the call to the lambda
+    return doit(lpConsoleTitle, [=]()
+    {
+        auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
+        display_driver->set_title(wide_title.c_str());
+        return TRUE;
+    });
 }
 
 BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
