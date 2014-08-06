@@ -69,19 +69,35 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     return wc;
 }
 
-unique_hwnd create_window()
+unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& /*settings*/)
 {
+    // TODO: check what we really need for windowed mode...
+    const DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
+    const DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+
+    RECT r;
+    r.left = r.top = 0;
+    r.right = 640; // TODO: unhardcode?...well...just use width from settings. or xres. or whatever.
+    r.bottom = 400; // TODO: unhardcode?...well...just use height from settings. or xres. or whatever.
+
+    AdjustWindowRectEx(&r, style, FALSE, exStyle); // TODO: failbowl lould and noisily on error!
+    auto width = r.right - r.left;
+    auto height = r.bottom - r.top;
+
+    // TODO: must be prepared to get a smaller window than requested if windows thinks it can't fit it onto the desktop!
     // TODO: testcode, revisit all args
     unique_hwnd hwnd(CreateWindowEx(
-        WS_EX_OVERLAPPEDWINDOW,
+        exStyle,
         wndclass_name,
-        L"foo",
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        640, 400,
+        L"foo",         // TODO: title?
+        style,
+        CW_USEDEFAULT,  // TODO: ok for windowed mode
+        CW_USEDEFAULT,  // TODO: ok for windowed mode
+        width,
+        height,
         HWND_DESKTOP,
         nullptr,
-        nullptr,
+        emulation_dll_module_handle,
         nullptr));
     if (!hwnd)
     {
@@ -93,9 +109,9 @@ unique_hwnd create_window()
 
 }
 
-gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& /*settings*/)
+gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
     : m_wc(create_wndclassexw(emulation_dll_module_handle)),
-    m_hwnd(create_window())
+    m_hwnd(create_window(emulation_dll_module_handle, settings))
 {
 }
 
