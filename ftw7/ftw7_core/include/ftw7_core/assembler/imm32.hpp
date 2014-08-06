@@ -21,7 +21,6 @@
 
 #include <limits>
 #include <stdexcept>
-#include <boost/noncopyable.hpp>
 #include "ftw7_core/assembler/basic_datatypes.hpp"
 #include "ftw7_core/assembler/detail/object.hpp"
 #include "ftw7_core/assembler/detail/reference.hpp"
@@ -31,7 +30,7 @@ namespace ftw7_core
 namespace assembler
 {
 
-class imm32 : boost::noncopyable
+class imm32
 {
 public:
     imm32(dword_t value) : m_is_reference(false), m_value(value) {}
@@ -61,6 +60,9 @@ public:
     }
 
 private:
+    imm32(const imm32&) = delete;
+    imm32& operator = (const imm32&) = delete;
+
     template <typename target_type, typename address_type>
     target_type to_absolute_value(detail::object<address_type>& obj) const
     {

@@ -21,7 +21,6 @@
 
 #include <vector>
 #include <boost/foreach.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/test/unit_test.hpp>
 #include "ftw7_core/assembler/asm86.hpp"
 
@@ -42,9 +41,12 @@
     a.expected_instructions.push_back(insn);                        \
 }
 
-class test_asm86 : boost::noncopyable
+class test_asm86
 {
 private:
+    test_asm86(const test_asm86&) = delete;
+    test_asm86& operator = (const test_asm86&) = delete;
+
     size_t expected_number_of_bytes() const
     {
         size_t result = 0;

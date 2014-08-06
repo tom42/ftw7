@@ -21,7 +21,6 @@
 
 #include <stdexcept>
 #include <string>
-#include <boost/noncopyable.hpp>
 #include "ftw7_core/assembler/gpreg32.hpp"
 #include "ftw7_core/assembler/imm32.hpp"
 #include "ftw7_core/assembler/detail/object.hpp"
@@ -32,7 +31,7 @@ namespace ftw7_core
 namespace assembler
 {
 
-class asm86 : boost::noncopyable
+class asm86
 {
 public:
     typedef dword_t address_type;
@@ -61,6 +60,9 @@ public:
     #include "ftw7_core/assembler/detail/asm86_directives.ipp"
     #include "ftw7_core/assembler/detail/asm86_instructions.ipp"
 private:
+    asm86(const asm86&) = delete;
+    asm86& operator = (const asm86&) = delete;
+
     #include "ftw7_core/assembler/detail/asm86_instruction_helpers.ipp"
     detail::object<address_type> obj;
 };

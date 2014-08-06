@@ -24,7 +24,6 @@
 #include <string>
 #include <type_traits>
 #include <vector>
-#include <boost/noncopyable.hpp>
 #include "ftw7_core/assembler/basic_datatypes.hpp"
 #include "ftw7_core/assembler/detail/reference.hpp"
 #include "ftw7_core/assembler/detail/symbol_table.hpp"
@@ -37,7 +36,7 @@ namespace detail
 {
 
 template <typename address_type>
-class object : boost::noncopyable
+class object
 {
     static_assert(std::is_unsigned<address_type>::value,
         "template argument address_type must be an unsigned integer type");
@@ -122,6 +121,9 @@ public:
     }
 
 private:
+    object(const object&) = delete;
+    object& operator = (const object&) = delete;
+
     static void check_alignment_is_not_zero(address_type alignment)
     {
         if (alignment == 0)
