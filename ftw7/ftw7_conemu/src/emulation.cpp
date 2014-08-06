@@ -21,6 +21,7 @@
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/mhookpp/mhookpp.hpp"
 #include "ftw7_core/windows/module.hpp"
+#include "ftw7_core/windows/string.hpp"
 
 namespace ftw7_conemu
 {
@@ -29,10 +30,20 @@ namespace emulation
 namespace
 {
 
-// TODO: decide where to stash all of this
+// TODO: decide where to stash all of this and how to generate it
+typedef decltype(SetConsoleTitleA)* SetConsoleTitleA_ptr_t;
 typedef decltype(WriteConsoleOutputA)* WriteConsoleOutputA_ptr_t;
+SetConsoleTitleA_ptr_t TrueSetConsoleTitleA;
 WriteConsoleOutputA_ptr_t TrueWriteConsoleOutputA;
+
 display::display_driver* display_driver;
+
+BOOL WINAPI MySetConsoleTitleA(LPCSTR lpConsoleTitle)
+{
+    auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
+    display_driver->set_title(wide_title.c_str());
+    return TRUE;
+}
 
 BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
 {
@@ -63,9 +74,9 @@ void install_hooks()
     using ftw7_core::windows::get_proc_address;
     using ftw7_core::mhookpp::set_hook;
 
-    // TODO: decide how to respond to errors here.
-    // Most likely we'll have to intercept stuff from kernel32 and possibly user32 only.
-    // These should be always around, so throwing if any of them cannot be loaded is probably totally OK.
+    // The DLLs we're intercepting functions from are all functions the emulation DLL is using itself.
+    // Therefore we can just get their module handles using get_module_handle. This funcion throws on
+    // error, but that should not happen.
     const auto kernel32 = get_module_handle(L"kernel32");
 
     // TODO: find out how to handle errors here.
@@ -78,6 +89,9 @@ void install_hooks()
     //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
     TrueWriteConsoleOutputA = reinterpret_cast<WriteConsoleOutputA_ptr_t>(get_proc_address(kernel32, "WriteConsoleOutputA"));
     set_hook(&TrueWriteConsoleOutputA, MyWriteConsoleOutputA);
+
+    TrueSetConsoleTitleA = reinterpret_cast<SetConsoleTitleA_ptr_t>(get_proc_address(kernel32, "SetConsoleTitleA"));
+    set_hook(&TrueSetConsoleTitleA, MySetConsoleTitleA);
 }
 
 }

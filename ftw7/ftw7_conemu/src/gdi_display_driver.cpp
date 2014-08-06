@@ -18,11 +18,14 @@
  */
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
+#include "ftw7_core/windows/windows_error.hpp"
 #include "resource.h"
 
 // TODO: might have a use for this elsewhere.
 #define WIDEN2(x) L ## x
 #define WIDEN(x) WIDEN2(x)
+
+#define FTW7_GDI_DISPLAY_DRIVER_NAME WIDEN(PACKAGE_STRING) L" GDI display driver"
 
 namespace ftw7_conemu
 {
@@ -32,9 +35,6 @@ namespace
 {
 
 using ftw7_core::windows::unique_hwnd;
-
-const wchar_t wndclass_name[] = WIDEN(PACKAGE_STRING) L" GDI display driver window";
-const wchar_t window_title[] = WIDEN(PACKAGE_STRING);
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -69,7 +69,7 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // TODO: no brush at all? We paint shit ourselves anyway?
     wc.lpszMenuName = nullptr;
-    wc.lpszClassName = wndclass_name;
+    wc.lpszClassName = FTW7_GDI_DISPLAY_DRIVER_NAME;
     wc.hIconSm = nullptr;
 
     return wc;
@@ -94,8 +94,8 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     // TODO: testcode, revisit all args
     unique_hwnd hwnd(CreateWindowEx(
         exStyle,
-        wndclass_name,
-        window_title,
+        FTW7_GDI_DISPLAY_DRIVER_NAME,
+        FTW7_GDI_DISPLAY_DRIVER_NAME,
         style,
         CW_USEDEFAULT,  // TODO: ok for windowed mode
         CW_USEDEFAULT,  // TODO: ok for windowed mode
@@ -139,6 +139,17 @@ bool gdi_display_driver::handle_messages()
         DispatchMessageW(&msg);
     }
     return keep_running;
+}
+
+void gdi_display_driver::set_title(const wchar_t* title)
+{
+    std::wstring realtitle(FTW7_GDI_DISPLAY_DRIVER_NAME);
+    realtitle += title;
+    if (!SetWindowTextW(m_hwnd.get(), realtitle.c_str()))
+    {
+        const auto error = GetLastError();
+        throw ftw7_core::windows::windows_error(L"SetWindowText failed", error);
+    }
 }
 
 }

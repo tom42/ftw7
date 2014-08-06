@@ -36,6 +36,7 @@ public:
     gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings);
     virtual ~gdi_display_driver();
     bool handle_messages() override;
+    void set_title(const wchar_t* title) override;
 private:
     ftw7_core::windows::unique_window_classexw m_wc;
     ftw7_core::windows::unique_hwnd m_hwnd;

@@ -29,6 +29,7 @@ class display_driver
 public:
     virtual ~display_driver() {}
     virtual bool handle_messages() = 0;
+    virtual void set_title(const wchar_t *title) = 0;
 };
 
 }
