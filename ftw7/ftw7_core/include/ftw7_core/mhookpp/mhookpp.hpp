@@ -22,6 +22,7 @@
 #include <Windows.h>
 #include <type_traits>
 #include "ftw7_core/pointer.hpp"
+#include "ftw7_core/windows/module.hpp"
 #include "mhook-lib/mhook.h"
 
 namespace ftw7_core
@@ -40,6 +41,21 @@ bool set_hook(TPSystemFunction* pp_system_function, TPHookFunction p_hookfunctio
     static_assert(std::is_same<TPSystemFunction, TPHookFunction>::value,
         "Function pointer types don't match");
     return Mhook_SetHook(reinterpret_cast<PVOID*>(pp_system_function), p_hookfunction) ? true : false;
+}
+
+// Combines the mantra of calling GetProcAddress followed by Mhook_SetHook. Throws on error.
+template <typename TPSystemFunction, typename TPHookFunction>
+void set_hook(HMODULE module, const char* procname, TPSystemFunction* pp_system_function, TPHookFunction p_hookfunction)
+{
+    static_assert(ftw7_core::is_function_pointer<typename std::remove_pointer<decltype(pp_system_function)>::type>::value,
+        "Argument pp_system_function must be a pointer to a function pointer");
+    static_assert(ftw7_core::is_function_pointer<decltype(p_hookfunction)>::value,
+        "Argument p_hookfunction must be a function pointer");
+    static_assert(std::is_same<TPSystemFunction, TPHookFunction>::value,
+        "Function pointer types don't match");
+    *pp_system_function = reinterpret_cast<TPSystemFunction>(ftw7_core::windows::get_proc_address(module, procname));
+    set_hook(pp_system_function, p_hookfunction);
+    // TODO: throw on error here, really. Don't know whether to have a generic function in a separate translation unit for that, though.
 }
 
 }

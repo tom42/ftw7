@@ -40,6 +40,7 @@ display::display_driver* display_driver;
 
 BOOL WINAPI MySetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
+    // TODO: trace, catch exceptions and all that
     auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
     display_driver->set_title(wide_title.c_str());
     return TRUE;
@@ -71,27 +72,21 @@ BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL
 void install_hooks()
 {
     using ftw7_core::windows::get_module_handle;
-    using ftw7_core::windows::get_proc_address;
     using ftw7_core::mhookpp::set_hook;
 
-    // The DLLs we're intercepting functions from are all functions the emulation DLL is using itself.
-    // Therefore we can just get their module handles using get_module_handle. This funcion throws on
-    // error, but that should not happen.
+    // The DLLs we're intercepting functions from are all used by the emulation DLL itself.
+    // Therefore we can just get their module handles using get_module_handle.
+    // This funcion throws on error, but that should not happen.
     const auto kernel32 = get_module_handle(L"kernel32");
 
-    // TODO: find out how to handle errors here.
-    // In theory, get_proc_address might fail because we're attempting to hook a function
-    // that simply does not exist on a particular version of windows...
-    // TODO: possibly need to dive up hooking into an early stage where
+    // TODO: possibly need to divide up hooking into an early stage where
     //       we hook a small subset of functions only (e.g. WriteConsoleA and WriteConsoleW,
     //       those we need for logging). We can then hook those, which should definitely
     //       be around. We can then go on set up the logging already with the hooks in place
     //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
-    TrueWriteConsoleOutputA = reinterpret_cast<WriteConsoleOutputA_ptr_t>(get_proc_address(kernel32, "WriteConsoleOutputA"));
-    set_hook(&TrueWriteConsoleOutputA, MyWriteConsoleOutputA);
 
-    TrueSetConsoleTitleA = reinterpret_cast<SetConsoleTitleA_ptr_t>(get_proc_address(kernel32, "SetConsoleTitleA"));
-    set_hook(&TrueSetConsoleTitleA, MySetConsoleTitleA);
+    set_hook(kernel32, "SetConsoleTitleA", &TrueSetConsoleTitleA, MySetConsoleTitleA);
+    set_hook(kernel32, "WriteConsoleOutputA", &TrueWriteConsoleOutputA, MyWriteConsoleOutputA);
 }
 
 }
