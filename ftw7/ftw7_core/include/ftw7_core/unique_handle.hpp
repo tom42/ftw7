@@ -30,6 +30,9 @@ public:
     explicit unique_handle(THandle handle = THandleTraits::invalid()) throw()
         : m_handle(handle) {}
 
+    unique_handle(unique_handle&& other) throw()
+        : m_handle(other.release()) {}
+
     ~unique_handle() throw()
     {
         close();
@@ -38,6 +41,13 @@ public:
     THandle get() const throw()
     {
         return m_handle;
+    }
+
+    THandle release() throw()
+    {
+        auto tmp = m_handle;
+        m_handle = THandleTraits::invalid();
+        return tmp;
     }
 
     explicit operator bool() const throw()
