@@ -19,6 +19,7 @@ set (
   ftw7_conemu_sources
   src/emulation.cpp
   src/ftw7_conemu.def
+  src/ftw7_conemu.rc
   src/gdi_display_driver.cpp
   src/main.cpp
 )
