@@ -35,6 +35,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_CLOSE:
         PostQuitMessage(0);
         return 0;
+    case WM_KEYDOWN:
+        if (wparam == VK_ESCAPE)
+        {
+            PostQuitMessage(0);
+        }
+        return 0;
     default:
         return DefWindowProcW(hwnd, msg, wparam, lparam);
     }
@@ -99,9 +105,6 @@ gdi_display_driver::~gdi_display_driver()
 
 bool gdi_display_driver::handle_messages()
 {
-    // TODO: this message loop is OK. Not sure it belongs into the display driver, though.
-    //       Well, it kind of does: assume we're using GLFW to do an opengl display driver,
-    //       then we want perhaps use GLFW's message loop and not our own.
     MSG msg;
     bool keep_running = true;
     while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
