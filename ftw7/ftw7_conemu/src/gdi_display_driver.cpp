@@ -143,7 +143,7 @@ bool gdi_display_driver::handle_messages()
 
 void gdi_display_driver::set_title(const wchar_t* title)
 {
-    std::wstring realtitle(FTW7_GDI_DISPLAY_DRIVER_NAME);
+    std::wstring realtitle(FTW7_GDI_DISPLAY_DRIVER_NAME L" :: ");
     realtitle += title;
     if (!SetWindowTextW(m_hwnd.get(), realtitle.c_str()))
     {
