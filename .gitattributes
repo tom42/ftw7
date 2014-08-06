@@ -5,4 +5,5 @@ COPYING        text
 *.h            text
 *.hpp          text
 *.md           text
+*.rc           text
 *.txt          text
