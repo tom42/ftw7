@@ -26,6 +26,8 @@ namespace display
 namespace
 {
 
+using ftw7_core::windows::unique_hwnd;
+
 const wchar_t wndclass_name[] = L"ftw7 GDI display driver window";
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -45,7 +47,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         return DefWindowProcW(hwnd, msg, wparam, lparam);
     }
 }
-
 
 WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
 {
@@ -68,12 +69,10 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     return wc;
 }
 
-// TODO: might be totally neat if we could move-construct unique_handles.
-//       Rationale: allows for safer code, since we can just create the damn thing right away here.
-HWND create_window()
+unique_hwnd create_window()
 {
-    // TODO: testcode, revisit all args. Also, RAII.
-    auto hwnd = CreateWindowEx(
+    // TODO: testcode, revisit all args
+    unique_hwnd hwnd(CreateWindowEx(
         WS_EX_OVERLAPPEDWINDOW,
         wndclass_name,
         L"foo",
@@ -81,10 +80,12 @@ HWND create_window()
         CW_USEDEFAULT, CW_USEDEFAULT,
         640, 400,
         HWND_DESKTOP,
-        nullptr, nullptr, nullptr);
+        nullptr,
+        nullptr,
+        nullptr));
     if (!hwnd)
     {
-        auto error = GetLastError();
+        const auto error = GetLastError();
         throw ftw7_core::windows::windows_error(L"CreateWindowEx failed", error);
     }
     return hwnd;
