@@ -75,7 +75,7 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     return wc;
 }
 
-unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& /*settings*/)
+unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
     // TODO: check what we really need for windowed mode...
     const DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
@@ -83,8 +83,8 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
 
     RECT r;
     r.left = r.top = 0;
-    r.right = 640; // TODO: unhardcode?...well...just use width from settings. or xres. or whatever.
-    r.bottom = 400; // TODO: unhardcode?...well...just use height from settings. or xres. or whatever.
+    r.right = settings.width;
+    r.bottom = settings.height;
 
     AdjustWindowRectEx(&r, style, FALSE, exStyle); // TODO: failbowl lould and noisily on error!
     auto width = r.right - r.left;

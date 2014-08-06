@@ -45,6 +45,8 @@ struct settings
     char magic_string[32];
     log::log_level log_level;
     bool fullscreen;
+    int width;
+    int height;
 
     static void initialize(settings& settings);
     static error_code check(const settings* settings);
