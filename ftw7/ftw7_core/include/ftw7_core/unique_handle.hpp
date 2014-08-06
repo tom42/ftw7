@@ -40,7 +40,7 @@ public:
         return m_handle;
     }
 
-    explicit operator bool() const
+    explicit operator bool() const throw()
     {
         return is_valid();
     }
