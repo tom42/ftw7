@@ -17,6 +17,7 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
+#include "resource.h"
 
 namespace ftw7_conemu
 {
@@ -59,7 +60,7 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = emulation_dll_module_handle;
-    wc.hIcon = nullptr;     // TODO: own icon (e.g. an 8x8 7 or something =)
+    wc.hIcon = LoadIconW(emulation_dll_module_handle, MAKEINTRESOURCEW(IDI_FTW7));
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // TODO: no brush at all? We paint shit ourselves anyway?
     wc.lpszMenuName = nullptr;
