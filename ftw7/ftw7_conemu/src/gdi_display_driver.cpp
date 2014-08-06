@@ -16,8 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include "ftw7_version.h"
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "resource.h"
+
+// TODO: might have a use for this elsewhere.
+#define WIDEN2(x) L ## x
+#define WIDEN(x) WIDEN2(x)
 
 namespace ftw7_conemu
 {
@@ -28,7 +33,8 @@ namespace
 
 using ftw7_core::windows::unique_hwnd;
 
-const wchar_t wndclass_name[] = L"ftw7 GDI display driver window";
+const wchar_t wndclass_name[] = WIDEN(PACKAGE_STRING) L" GDI display driver window";
+const wchar_t window_title[] = WIDEN(PACKAGE_STRING);
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -89,7 +95,7 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     unique_hwnd hwnd(CreateWindowEx(
         exStyle,
         wndclass_name,
-        L"foo",         // TODO: title?
+        window_title,
         style,
         CW_USEDEFAULT,  // TODO: ok for windowed mode
         CW_USEDEFAULT,  // TODO: ok for windowed mode
