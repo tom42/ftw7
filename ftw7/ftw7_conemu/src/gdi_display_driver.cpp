@@ -30,7 +30,6 @@ const wchar_t wndclass_name[] = L"ftw7 GDI display driver window";
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    // TODO: real implementation (are we missing anything here?)
     switch (msg)
     {
     case WM_CLOSE:
@@ -53,7 +52,6 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     WNDCLASSEXW wc;
     memset(&wc, 0, sizeof(wc));
 
-    // TODO: REALLY initialize structure (see MSDN...)
     wc.cbSize = sizeof(wc);
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = WndProc;
