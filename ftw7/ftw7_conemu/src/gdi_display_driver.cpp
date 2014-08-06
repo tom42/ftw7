@@ -143,6 +143,15 @@ bool gdi_display_driver::handle_messages()
 
 void gdi_display_driver::set_title(const wchar_t* title)
 {
+    // TODO: not sure prefixing the title is a good thing here.
+    // Some demos use FindWindow to, well, find the console
+    // window and do stuff to it. If we modify the title, then
+    // they can't find the window. This might work or lead
+    // to totally disastrous results...so perhaps we do
+    // it better like in the times of old: don't modify the
+    // title, but also intercept some window position functions
+    // where we can then install a no-op that says "all's well"
+    // to the caller =)
     std::wstring realtitle(FTW7_GDI_DISPLAY_DRIVER_NAME L" :: ");
     realtitle += title;
     if (!SetWindowTextW(m_hwnd.get(), realtitle.c_str()))
