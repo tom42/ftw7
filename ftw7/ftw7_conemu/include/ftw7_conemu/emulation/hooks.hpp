@@ -19,6 +19,8 @@
 #ifndef FTW7_CONEMU_EMULATION_HOOKS_HPP_INCLUDED
 #define FTW7_CONEMU_EMULATION_HOOKS_HPP_INCLUDED
 
+#include <Windows.h>
+
 namespace ftw7_conemu
 {
 namespace emulation
