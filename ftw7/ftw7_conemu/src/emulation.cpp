@@ -48,7 +48,7 @@ auto doit(T, const L& l) -> decltype(l())
     return l();
 }
 
-BOOL WINAPI MySetConsoleTitleA(LPCSTR lpConsoleTitle)
+BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     // TODO: trace, catch exceptions and all that
     // I think this might be something halfways useful
@@ -62,7 +62,7 @@ BOOL WINAPI MySetConsoleTitleA(LPCSTR lpConsoleTitle)
     });
 }
 
-BOOL WINAPI MyWriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
+BOOL WINAPI ftw7_WriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
 {
     // TODO: trace this
     // TODO: catch all exceptions (a dispatcher would be nice for this)
@@ -105,7 +105,7 @@ void install_hooks()
 #define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                                     \
     {                                                                                       \
         FTW7_LOG_DEBUG << L"Hooking function " << #procname << L" (" << #dllname << L')';   \
-        set_hook(dllname, #procname, &true_##procname, My##procname);                       \
+        set_hook(dllname, #procname, &true_##procname, ftw7_##procname);                    \
     }
 #include "ftw7_conemu/emulation/hooked_functions.x"
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
