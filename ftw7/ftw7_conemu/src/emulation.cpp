@@ -18,6 +18,7 @@
  */
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "ftw7_conemu/emulation/emulation.hpp"
+#include "ftw7_conemu/emulation/hooks.hpp"
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/mhookpp/mhookpp.hpp"
 #include "ftw7_core/windows/module.hpp"
@@ -30,11 +31,11 @@ namespace emulation
 namespace
 {
 
-// TODO: decide where to stash all of this and how to generate it
-typedef decltype(SetConsoleTitleA)* SetConsoleTitleA_ptr_t;
-typedef decltype(WriteConsoleOutputA)* WriteConsoleOutputA_ptr_t;
-SetConsoleTitleA_ptr_t TrueSetConsoleTitleA;
-WriteConsoleOutputA_ptr_t TrueWriteConsoleOutputA;
+// Define the variables that hold the addresses of the true API functions.
+// This yields definitions such as: SetConsoleTitleA_ptr_t true_SetConsoleTitleA;
+#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) procname##_ptr_t true_##procname;
+#include "ftw7_conemu/emulation/hooked_functions.x"
+#undef FTW7_CONEMU_XHOOKED_FUNCTION
 
 display::display_driver* display_driver;
 
@@ -100,8 +101,14 @@ void install_hooks()
     //       be around. We can then go on set up the logging already with the hooks in place
     //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
 
-    set_hook(kernel32, "SetConsoleTitleA", &TrueSetConsoleTitleA, MySetConsoleTitleA);
-    set_hook(kernel32, "WriteConsoleOutputA", &TrueWriteConsoleOutputA, MyWriteConsoleOutputA);
+    // Hook all functions listed in the xheader.
+#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                                     \
+    {                                                                                       \
+        FTW7_LOG_DEBUG << L"Hooking function " << #procname << L" (" << #dllname << L')';   \
+        set_hook(dllname, #procname, &true_##procname, My##procname);                       \
+    }
+#include "ftw7_conemu/emulation/hooked_functions.x"
+#undef FTW7_CONEMU_XHOOKED_FUNCTION
 }
 
 }
