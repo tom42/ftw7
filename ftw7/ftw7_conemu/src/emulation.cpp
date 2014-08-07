@@ -51,6 +51,8 @@ void handle_exception(const wchar_t* function)
     ExitProcess(ftw7_core::emulation::error_code::error_during_api_call);
 }
 
+#define FTW7_HANDLE_API_EXCEPTION() handle_exception(__FUNCTIONW__)
+
 }
 
 
@@ -82,8 +84,7 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
     }
     catch (...)
     {
-        // TODO: introduce a macro that doesn't require to pass the function name all the time
-        handle_exception(__FUNCTIONW__);
+        FTW7_HANDLE_API_EXCEPTION();
     }
     return TRUE;
 }
