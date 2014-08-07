@@ -87,5 +87,6 @@ void initialize(log_level level);
 #define FTW7_LOG_WARN  FTW7_LOG(::ftw7_core::log::log_level::warn)
 #define FTW7_LOG_INFO  FTW7_LOG(::ftw7_core::log::log_level::info)
 #define FTW7_LOG_DEBUG FTW7_LOG(::ftw7_core::log::log_level::debug)
+#define FTW7_LOG_TRACE FTW7_LOG(::ftw7_core::log::log_level::trace)
 
 #endif
