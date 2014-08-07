@@ -26,7 +26,14 @@
 
 namespace
 {
+
 ftw7_conemu::display::display_driver* display_driver;
+
+void handle_exception()
+{
+    // TODO: well yes...handle it.
+}
+
 }
 
 
@@ -39,11 +46,20 @@ ftw7_conemu::display::display_driver* display_driver;
 // the simplest way.
 ////////////////////////////////////////////////////////////////////////////////
 
-BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR /*lpConsoleTitle*/)
+BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
-    // TODO: trace API call
-    // TODO: delegate to driver/emulator/whatever
-    // TODO: catch all exceptions
+    try
+    {
+        // TODO: more convenient mechanism for api call tracing (macro->function. or whatever)
+        FTW7_LOG_TRACE << __FUNCTIONW__ << L": " << lpConsoleTitle;
+        const auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
+        // TODO: concurrency?
+        display_driver->set_title(wide_title.c_str());
+    }
+    catch (...)
+    {
+        handle_exception();
+    }
     return TRUE;
 }
 
