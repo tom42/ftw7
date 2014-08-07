@@ -29,9 +29,26 @@ namespace
 
 ftw7_conemu::display::display_driver* display_driver;
 
-void handle_exception()
+void handle_exception(const wchar_t* function)
 {
-    // TODO: well yes...handle it.
+    try
+    {
+        throw;
+    }
+    catch (const ftw7_core::wruntime_error& e)
+    {
+        FTW7_LOG_ERROR << function << L": " << e.wwhat();
+    }
+    catch (const std::exception& e)
+    {
+        FTW7_LOG_ERROR << function << L": " << e.what();
+    }
+    catch (...)
+    {
+        FTW7_LOG_ERROR << function << L": unknown exception";
+    }
+    FTW7_LOG_ERROR << "Error during API call. Exiting. Now.";
+    ExitProcess(ftw7_core::emulation::error_code::error_during_api_call);
 }
 
 }
@@ -58,7 +75,7 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
     }
     catch (...)
     {
-        handle_exception();
+        handle_exception(__FUNCTIONW__);
     }
     return TRUE;
 }
