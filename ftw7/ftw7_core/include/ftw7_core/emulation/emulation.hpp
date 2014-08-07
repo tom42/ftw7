@@ -36,7 +36,8 @@ enum error_code
     settings_pointer_must_not_be_null,
     settings_have_bad_size,
     wrong_magic_string_in_settings,
-    error_during_initialization
+    error_during_initialization,
+    error_during_api_call
 };
 
 struct settings
