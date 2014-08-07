@@ -38,6 +38,9 @@ public:
     bool handle_messages() override;
     void set_title(const wchar_t* title) override;
 private:
+    gdi_display_driver(const gdi_display_driver&) = delete;
+    gdi_display_driver& operator = (const gdi_display_driver&) = delete;
+
     ftw7_core::windows::unique_window_classexw m_wc;
     ftw7_core::windows::unique_hwnd m_hwnd;
 };
