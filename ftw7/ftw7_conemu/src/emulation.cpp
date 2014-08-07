@@ -31,12 +31,6 @@ namespace emulation
 namespace
 {
 
-// Define the variables that hold the addresses of the true API functions.
-// This yields definitions such as: SetConsoleTitleA_ptr_t true_SetConsoleTitleA;
-#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) procname##_ptr_t true_##procname;
-#include "ftw7_conemu/emulation/hooked_functions.x"
-#undef FTW7_CONEMU_XHOOKED_FUNCTION
-
 display::display_driver* display_driver;
 
 template <typename T, typename L>

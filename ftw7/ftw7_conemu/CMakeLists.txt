@@ -22,6 +22,7 @@ set (
   src/ftw7_conemu.rc
   src/gdi_display_driver.cpp
   src/main.cpp
+  src/true_functions.cpp
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")
