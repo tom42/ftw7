@@ -68,6 +68,13 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
     try
     {
         // TODO: more convenient mechanism for api call tracing (macro->function. or whatever)
+        // TODO: this is actually not THAT simple. An output stream happily prints pointers,
+        //       put when you throw a character pointer at it, then it will attempt to print
+        //       the string, making our application failbowl nastily.
+        // TODO: also: lpConsoleTitle might in theory be null. In this case we really
+        //       shouldn't attempt to set it. Rather we should set an error code.
+        // TODO: also, what happens if setwindowtext fails? I mean...not sure we should throw because of this.
+        //       We should probably return FALSE then, no?
         FTW7_LOG_TRACE << __FUNCTIONW__ << L": " << lpConsoleTitle;
         const auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
         // TODO: concurrency?
@@ -75,6 +82,7 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
     }
     catch (...)
     {
+        // TODO: introduce a macro that doesn't require to pass the function name all the time
         handle_exception(__FUNCTIONW__);
     }
     return TRUE;
