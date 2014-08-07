@@ -24,6 +24,42 @@
 #include "ftw7_core/windows/module.hpp"
 #include "ftw7_core/windows/string.hpp"
 
+namespace
+{
+ftw7_conemu::display::display_driver* display_driver;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Replacement functions.
+// __FUNCTION__and __FUNCTIONW__ return a fully qualified function name.
+// We don't want to clutter our logs with this, so we keep the replacement
+// functions outside of any namespace, so that the log will contain function
+// names only. There are other ways to achieve this, but this is by far
+// the simplest way.
+////////////////////////////////////////////////////////////////////////////////
+
+BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR /*lpConsoleTitle*/)
+{
+    // TODO: trace API call
+    // TODO: delegate to driver/emulator/whatever
+    // TODO: catch all exceptions
+    return TRUE;
+}
+
+BOOL WINAPI ftw7_WriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
+{
+    // TODO: trace API call
+    // TODO: delegate to driver/emulator/whatever
+    // TODO: catch all exceptions
+    return TRUE;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Initialization code
+////////////////////////////////////////////////////////////////////////////////
+
 namespace ftw7_conemu
 {
 namespace emulation
@@ -31,7 +67,56 @@ namespace emulation
 namespace
 {
 
-display::display_driver* display_driver;
+void install_hooks()
+{
+    using ftw7_core::windows::get_module_handle;
+    using ftw7_core::mhookpp::set_hook;
+
+    // The DLLs we're intercepting functions from are all used by the emulation DLL itself.
+    // Therefore we can just get their module handles using get_module_handle.
+    // This funcion throws on error, but that should not happen.
+    const auto kernel32 = get_module_handle(L"kernel32");
+
+    // TODO: possibly need to divide up hooking into an early stage where
+    //       we hook a small subset of functions only (e.g. WriteConsoleA and WriteConsoleW,
+    //       those we need for logging). We can then hook those, which should definitely
+    //       be around. We can then go on set up the logging already with the hooks in place
+    //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
+
+    // Hook all functions listed in the xheader.
+#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                                     \
+    {                                                                                       \
+        FTW7_LOG_DEBUG << L"Hooking function " << #procname << L" (" << #dllname << L')';   \
+        set_hook(dllname, #procname, &true_##procname, ftw7_##procname);                    \
+    }
+#include "ftw7_conemu/emulation/hooked_functions.x"
+#undef FTW7_CONEMU_XHOOKED_FUNCTION
+}
+
+}
+
+void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+{
+    install_hooks();
+    // TODO: need to put away the display driver somewhere.
+    // TODO: when do we clean up, btw?
+    display_driver = new display::gdi_display_driver(emulation_dll_module_handle, settings);
+}
+
+}
+}
+
+
+// TODO: find out what to do with shite below.
+#if 0
+namespace ftw7_conemu
+{
+namespace emulation
+{
+namespace
+{
+
+
 
 template <typename T, typename L>
 auto doit(T, const L& l) -> decltype(l())
@@ -79,41 +164,9 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSM
     return TRUE;
 }
 
-void install_hooks()
-{
-    using ftw7_core::windows::get_module_handle;
-    using ftw7_core::mhookpp::set_hook;
 
-    // The DLLs we're intercepting functions from are all used by the emulation DLL itself.
-    // Therefore we can just get their module handles using get_module_handle.
-    // This funcion throws on error, but that should not happen.
-    const auto kernel32 = get_module_handle(L"kernel32");
-
-    // TODO: possibly need to divide up hooking into an early stage where
-    //       we hook a small subset of functions only (e.g. WriteConsoleA and WriteConsoleW,
-    //       those we need for logging). We can then hook those, which should definitely
-    //       be around. We can then go on set up the logging already with the hooks in place
-    //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
-
-    // Hook all functions listed in the xheader.
-#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                                     \
-    {                                                                                       \
-        FTW7_LOG_DEBUG << L"Hooking function " << #procname << L" (" << #dllname << L')';   \
-        set_hook(dllname, #procname, &true_##procname, ftw7_##procname);                    \
-    }
-#include "ftw7_conemu/emulation/hooked_functions.x"
-#undef FTW7_CONEMU_XHOOKED_FUNCTION
-}
-
-}
-
-void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
-{
-    install_hooks();
-    // TODO: need to put away the display driver somewhere.
-    // TODO: when do we clean up, btw?
-    display_driver = new display::gdi_display_driver(emulation_dll_module_handle, settings);
 }
 
 }
 }
+#endif
