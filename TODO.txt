@@ -1,1 +1,8 @@
 * string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
+* Log output to console: this is sometimes tricky.
+  * Console applications work out of the box.
+  * Magrathea: Succeeds with the following steps
+    * Pass the launcher's process ID to the emulation DLL
+	* Inside the emulation DLL
+	  * Use AttachConsole to attach to the parent process' console
+	  * Use WriteConsole(W) to write to the console
