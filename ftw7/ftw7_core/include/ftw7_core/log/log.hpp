@@ -82,6 +82,31 @@ private:
     std::wostringstream m_buffer;
 };
 
+inline void print_args(std::wostream&)
+{
+    // Helper function to stop recursion.
+}
+
+template <typename T, typename... Args>
+void print_args(std::wostream& os, T value, Args... args)
+{
+    // TODO: do not attempt to log char* and wchar* as strings.
+    os << ' ' << value;
+    print_args(os, args...);
+}
+
+template <typename... Args>
+void trace_api_call(const wchar_t* function, Args... args)
+{
+    // Create log message the normal way.
+    log_message msg;
+    auto& buf = msg.buffer(log_level::trace);
+
+    // Log function name, then recursively print args.
+    buf << function;
+    print_args(buf, args...);
+}
+
 }
 
 const log_level_info* log_level_info_begin();
@@ -92,9 +117,9 @@ void initialize(log_level level);
 }
 
 // Generic logging macro with log level as argument.
-#define FTW7_LOG(level) \
-    if (!ftw7_core::log::detail::is_enabled((level))); \
-        else ftw7_core::log::detail::log_message().buffer((level))
+#define FTW7_LOG(level)                                                 \
+    if (!::ftw7_core::log::detail::is_enabled((level)));                \
+        else ::ftw7_core::log::detail::log_message().buffer((level))
 
 // Convenience logging macros for all the different log levels.
 #define FTW7_LOG_ERROR FTW7_LOG(::ftw7_core::log::log_level::error)
@@ -102,5 +127,10 @@ void initialize(log_level level);
 #define FTW7_LOG_INFO  FTW7_LOG(::ftw7_core::log::log_level::info)
 #define FTW7_LOG_DEBUG FTW7_LOG(::ftw7_core::log::log_level::debug)
 #define FTW7_LOG_TRACE FTW7_LOG(::ftw7_core::log::log_level::trace)
+
+// Special logging macro to trace API calls (calls to hooked functions)
+#define FTW7_TRACE_API_CALL(...)                                                    \
+    if (::ftw7_core::log::detail::is_enabled(::ftw7_core::log::log_level::trace))   \
+        ::ftw7_core::log::detail::trace_api_call(__FUNCTIONW__, __VA_ARGS__)
 
 #endif

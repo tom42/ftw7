@@ -31,6 +31,7 @@ BOOST_AUTO_TEST_CASE(smoke_test)
     log::initialize(log::log_level::trace);
     FTW7_LOG_INFO << "Info Message";
     FTW7_LOG_DEBUG << L"Debug Message";
+    FTW7_TRACE_API_CALL(1, 'a', L'b', "x", "y");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
