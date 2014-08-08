@@ -62,6 +62,32 @@ std::wostream& operator << (std::wostream& os, COORD coord)
     os << L'(' << coord.X << L',' << coord.Y << ')';
     return os;
 }
+std::wostream& operator << (std::wostream& os, const SMALL_RECT& small_rect)
+{
+    os << L'(' << small_rect.Left
+        << L',' << small_rect.Top
+        << L',' << small_rect.Right
+        << L',' << small_rect.Bottom
+        << L')';
+    return os;
+}
+std::wostream& operator << (std::wostream& os, const SMALL_RECT* p_small_rect)
+{
+    // For the tracing messages we'd like to print as much data as possible
+    // before crashing, so we use ReadProcessMemory here in case the caller
+    // gave us a bad pointer.
+    SMALL_RECT sr;
+    if (ReadProcessMemory(GetCurrentProcess(), p_small_rect, &sr, sizeof(sr), nullptr))
+    {
+        os << sr;
+    }
+    else
+    {
+        os << L"(?)";
+    }
+    os << static_cast<const void*>(p_small_rect);
+    return os;
+}
 
 }
 
@@ -167,6 +193,7 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
         FTW7_TRACE_API_CALL(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
 
         // TODO: actually do something (take care not to choke on null pointers etc!)
+        //       For starters, don't do anything, unless: (80,50) (0,0) (0,0,80,50)013485F8
         // TODO: concurrency?
         if (!display_driver->handle_messages())
         {
