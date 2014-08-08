@@ -36,6 +36,7 @@ set (
   test/asm86_value_test.cpp
   test/format_message_test.cpp
   test/inserts_test.cpp
+  test/log_test.cpp
   test/main.cpp
   test/module_test.cpp
   test/object_test.cpp
