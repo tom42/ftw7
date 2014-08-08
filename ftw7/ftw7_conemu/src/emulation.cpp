@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <iostream>
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "ftw7_conemu/emulation/emulation.hpp"
 #include "ftw7_conemu/emulation/hooks.hpp"
@@ -52,6 +53,14 @@ void handle_exception(const wchar_t* function)
 }
 
 #define FTW7_HANDLE_API_EXCEPTION() handle_exception(__FUNCTIONW__)
+
+// Allow tracing of selected data types.  We keep the operator << overloads
+// inside this anonymous namespace to ensure they don't disturb anybody else.
+std::wostream& operator << (std::wostream& os, COORD coord)
+{
+    os << L'(' << coord.X << L',' << coord.Y << ')';
+    return os;
+}
 
 }
 
@@ -109,8 +118,7 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
 {
     try
     {
-        // TODO: find a way to trace COORDs. Currently we trace their address, but that's not what we want.
-        FTW7_TRACE_API_CALL(hConsoleOutput, lpBuffer, &dwBufferSize, &dwBufferCoord, lpWriteRegion);
+        FTW7_TRACE_API_CALL(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
 
         // TODO: actually do something (take care not to choke on null pointers etc!)
         // TODO: concurrency?
