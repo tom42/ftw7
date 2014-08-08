@@ -21,7 +21,6 @@
 #include "ftw7_core/windows/windows_error.hpp"
 #include "resource.h"
 
-// TODO: might have a use for this elsewhere.
 #define WIDEN2(x) L ## x
 #define WIDEN(x) WIDEN2(x)
 
@@ -67,7 +66,7 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     wc.hInstance = emulation_dll_module_handle;
     wc.hIcon = LoadIconW(emulation_dll_module_handle, MAKEINTRESOURCEW(IDI_FTW7));
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // TODO: no brush at all? We paint shit ourselves anyway?
+    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName = nullptr;
     wc.lpszClassName = FTW7_GDI_DISPLAY_DRIVER_NAME;
     wc.hIconSm = nullptr;
@@ -97,8 +96,8 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
         FTW7_GDI_DISPLAY_DRIVER_NAME,
         FTW7_GDI_DISPLAY_DRIVER_NAME,
         style,
-        CW_USEDEFAULT,  // TODO: ok for windowed mode
-        CW_USEDEFAULT,  // TODO: ok for windowed mode
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
         width,
         height,
         HWND_DESKTOP,

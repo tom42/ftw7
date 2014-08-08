@@ -54,8 +54,13 @@ void set_hook(HMODULE module, const char* procname, TPSystemFunction* pp_system_
     static_assert(std::is_same<TPSystemFunction, TPHookFunction>::value,
         "Function pointer types don't match");
     *pp_system_function = reinterpret_cast<TPSystemFunction>(ftw7_core::windows::get_proc_address(module, procname));
-    set_hook(pp_system_function, p_hookfunction);
-    // TODO: throw on error here, really. Don't know whether to have a generic function in a separate translation unit for that, though.
+    if (!set_hook(pp_system_function, p_hookfunction))
+    {
+        std::string msg("Could not set hook for function '");
+        msg += procname;
+        msg += "' (Mhook won't say why)";
+        throw std::runtime_error(msg);
+    }
 }
 
 }
