@@ -97,6 +97,23 @@ BOOL WINAPI ftw7_AllocConsole()
     return TRUE;
 }
 
+BOOL WINAPI ftw7_SetConsoleActiveScreenBuffer(HANDLE hConsoleOutput)
+{
+    try
+    {
+        // Some demos initialize the console by creating a new screen buffer and
+        // setting it as the active one. This is causes our console log output
+        // to disappear, so we suppress this function altogether.
+        FTW7_TRACE_API_CALL(hConsoleOutput);
+        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": suppressed call";
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return TRUE;
+}
+
 BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     try

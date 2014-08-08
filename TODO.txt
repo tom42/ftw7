@@ -2,7 +2,6 @@
   * kernel32
     * CreateConsoleScreenBuffer
     * GetProcAddress (for UPX packed executables. Should not be necessary with mhook)
-    * SetConsoleActiveScreenBuffer
     * SetConsoleCursorInfo
     * SetConsoleMode
     * SetConsoleScreenBufferSize
