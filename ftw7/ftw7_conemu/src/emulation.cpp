@@ -74,6 +74,10 @@ std::wostream& operator << (std::wostream& os, COORD coord)
 // the simplest way.
 ////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+// kernel32
+////////////////////////////////////////////////////////////////////////////////
+
 BOOL WINAPI ftw7_AllocConsole()
 {
     try
@@ -159,6 +163,25 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
     return TRUE;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// user32
+////////////////////////////////////////////////////////////////////////////////
+
+BOOL WINAPI ftw7_ShowWindow(HWND hWnd, int nCmdShow)
+{
+    try
+    {
+        FTW7_TRACE_API_CALL(hWnd, nCmdShow);
+        // TODO: check if they want to fiddle with our own window. If so, forbid id. If not, don't (currently we're always a no-op)
+        // TODO: document what we're doing this for (trauma demos)        
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return TRUE;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Initialization code
@@ -180,6 +203,7 @@ void install_hooks()
     // Therefore we can just get their module handles using get_module_handle.
     // This funcion throws on error, but that should not happen.
     const auto kernel32 = get_module_handle(L"kernel32");
+    const auto user32 = get_module_handle(L"user32");
 
     // TODO: possibly need to divide up hooking into an early stage where
     //       we hook a small subset of functions only (e.g. WriteConsoleA and WriteConsoleW,
@@ -188,10 +212,11 @@ void install_hooks()
     //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
 
     // Hook all functions listed in the xheader.
-#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                                     \
-    {                                                                                       \
-        FTW7_LOG_DEBUG << L"Hooking function " << #procname << L" (" << #dllname << L')';   \
-        set_hook(dllname, #procname, &true_##procname, ftw7_##procname);                    \
+#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                     \
+    {                                                                       \
+        FTW7_LOG_DEBUG << L"Hooking function " << #procname                 \
+            << L" (" << #dllname << L", " << dllname << L')';               \
+        set_hook(dllname, #procname, &true_##procname, ftw7_##procname);    \
     }
 #include "ftw7_conemu/emulation/hooked_functions.x"
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
