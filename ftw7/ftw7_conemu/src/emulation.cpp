@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <atomic>
 #include <iostream>
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "ftw7_conemu/emulation/emulation.hpp"
@@ -88,7 +89,7 @@ BOOL WINAPI ftw7_AllocConsole()
         // While harmless, this would result in yet another annoying console
         // window lingering around, so we suppress this.
         FTW7_TRACE_API_CALL();
-        FTW7_LOG_DEBUG << "AllocConsole is out of order today";
+        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": faked. This is a no-op.";
     }
     catch (...)
     {
@@ -105,7 +106,7 @@ BOOL WINAPI ftw7_SetConsoleActiveScreenBuffer(HANDLE hConsoleOutput)
         // setting it as the active one. This is causes our console log output
         // to disappear, so we suppress this function altogether.
         FTW7_TRACE_API_CALL(hConsoleOutput);
-        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": suppressed call";
+        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": faked. This is a no-op.";
     }
     catch (...)
     {
@@ -183,6 +184,26 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
 ////////////////////////////////////////////////////////////////////////////////
 // user32
 ////////////////////////////////////////////////////////////////////////////////
+
+int WINAPI ftw7_ShowCursor(BOOL bShow)
+{
+    static std::atomic<int> display_counter(0);
+    int result = 0;
+    try
+    {
+        // It's particularly annoying in windowed mode when demos disable the
+        // mouse cursor, so we control cursor visibility inside the display
+        // drivers and simply fake ShowCursor including its return value.
+        FTW7_TRACE_API_CALL(bShow);
+        result = bShow ? ++display_counter : --display_counter;
+        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": faked. New display counter: " << result;
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return result;
+}
 
 BOOL WINAPI ftw7_ShowWindow(HWND hWnd, int nCmdShow)
 {
