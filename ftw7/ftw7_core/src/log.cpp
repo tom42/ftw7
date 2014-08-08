@@ -44,6 +44,8 @@ const log_level_info log_levels[] =
 };
 const int n_log_levels = sizeof(log_levels) / sizeof(log_levels[0]);
 log_level current_log_level = log_level::off;
+stdout_logger default_logger;
+logger* current_logger = &default_logger;
 
 const char* to_string(log_level level)
 {
@@ -82,16 +84,11 @@ log_message::~log_message()
 {
     try
     {
-        // Finalize log message.
+        // Finalize and write log message.
         // Call str() only once since it returns a copy of the stream's content.
         m_buffer << std::endl;
         const auto message = m_buffer.str();
-
-        // The Visual Studio 2013 documentation states for both fwrite and fflush
-        // that they lock the calling thread and are therefore thread-safe.
-        // We only assume here that this is the case for fwprintf too.
-        fwprintf(stdout, L"%s", message.c_str());
-        fflush(stdout);
+        current_logger->write(message.c_str());
     }
     catch (...)
     {
@@ -111,6 +108,15 @@ std::wostringstream& log_message::buffer(log_level level)
     return m_buffer;
 }
 
+}
+
+void stdout_logger::write(const wchar_t* s)
+{
+    // The Visual Studio 2013 documentation states for both fwrite and fflush
+    // that they lock the calling thread and are therefore thread-safe.
+    // We only assume here that this is the case for fwprintf too.
+    fwprintf(stdout, L"%s", s);
+    fflush(stdout);
 }
 
 const log_level_info* log_level_info_begin()

@@ -46,6 +46,20 @@ struct log_level_info
     const char* log_name;
 };
 
+class logger
+{
+public:
+    virtual ~logger() = default;
+    virtual void write(const wchar_t* s) = 0;
+};
+
+class stdout_logger : public logger
+{
+public:
+    virtual ~stdout_logger() = default;
+    virtual void write(const wchar_t* s) override;
+};
+
 namespace detail
 {
 
