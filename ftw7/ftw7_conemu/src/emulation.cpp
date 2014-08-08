@@ -91,9 +91,21 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 
 BOOL WINAPI ftw7_WriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
 {
-    // TODO: trace API call
-    // TODO: delegate to driver/emulator/whatever
-    // TODO: catch all exceptions
+    try
+    {
+        // TODO: trace API call
+        // TODO: actually do something (take care not to choke on null pointers etc!)
+        // TODO: concurrency?
+        if (!display_driver->handle_messages())
+        {
+            FTW7_LOG_INFO << L"Exiting (exit requested by display driver)";
+            ExitProcess(ftw7_core::emulation::error_code::no_error);
+        }
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
     return TRUE;
 }
 
@@ -147,68 +159,3 @@ void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulatio
 
 }
 }
-
-
-// TODO: find out what to do with shite below.
-#if 0
-namespace ftw7_conemu
-{
-namespace emulation
-{
-namespace
-{
-
-
-
-template <typename T, typename L>
-auto doit(T, const L& l) -> decltype(l())
-{
-    // TODO: try/catch
-    // TODO: supply lambda and function name first
-    // TODO: variadic template, do tracing with that. This is ossom.
-    return l();
-}
-
-BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
-{
-    // TODO: trace, catch exceptions and all that
-    // I think this might be something halfways useful
-    // The doit() function template can now go and have a generic try/catch
-    // around the call to the lambda
-    return doit(lpConsoleTitle, [=]()
-    {
-        auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
-        display_driver->set_title(wide_title.c_str());
-        return TRUE;
-    });
-}
-
-BOOL WINAPI ftw7_WriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
-{
-    // TODO: trace this
-    // TODO: catch all exceptions (a dispatcher would be nice for this)
-    // TODO: throw stuff at the driver
-    // TODO: consider putting these functions out of any namespace, just to get
-    //       the namespace out of them when logging...
-
-
-    // TODO: this can get very nasty:
-    // If we're called from a thread other than the main thread,
-    // accessing the driver window might/will/whatever fail (don't know how windows behaves in that case, really)
-    // This can happen anywhere the display_driver is accessed, so we might want to guard against this somehow.
-    // Better to detect this and fail loud and noisily...
-    if (!display_driver->handle_messages())
-    {
-        FTW7_LOG_INFO << L"Exiting (exit requested by display driver)";
-        ExitProcess(0);
-    }
-
-    return TRUE;
-}
-
-
-}
-
-}
-}
-#endif
