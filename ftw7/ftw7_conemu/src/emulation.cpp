@@ -65,6 +65,25 @@ void handle_exception(const wchar_t* function)
 // the simplest way.
 ////////////////////////////////////////////////////////////////////////////////
 
+BOOL WINAPI ftw7_AllocConsole()
+{
+    try
+    {
+        // Magrathea is a Windows application and has its fullscreen emulation
+        // built in. When run with command line arguments "outp 0", the demo
+        // creates a console and uses that for output.
+        // While harmless, this would result in yet another annoying console
+        // window lingering around, so we suppress this.
+        FTW7_TRACE_API_CALL();
+        FTW7_LOG_DEBUG << "AllocConsole is out of order today";
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return TRUE;
+}
+
 BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     try

@@ -19,5 +19,6 @@
 
  // xheader to generate hook related types, variables etc.
  // This file intentionally doesn't have a header guard.
+ FTW7_CONEMU_XHOOKED_FUNCTION(kernel32, AllocConsole)
  FTW7_CONEMU_XHOOKED_FUNCTION(kernel32, SetConsoleTitleA)
  FTW7_CONEMU_XHOOKED_FUNCTION(kernel32, WriteConsoleOutputA)
