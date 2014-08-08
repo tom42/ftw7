@@ -1,3 +1,16 @@
+* Here's a list of functions prototype I is hooking. Check them and implement them if it makes sense.
+  * kernel32
+    * CreateConsoleScreenBuffer
+    * GetProcAddress (for UPX packed executables. Should not be necessary with mhook)
+    * SetConsoleActiveScreenBuffer
+    * SetConsoleCursorInfo
+    * SetConsoleMode
+    * SetConsoleScreenBufferSize
+    * SetConsoleTitleA
+    * WriteConsoleOutputA
+  * user32
+    * FindWindowA
+	* ShowCursor
 * string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
 * Log output to console: this is sometimes tricky.
   * Console applications work out of the box.
