@@ -102,14 +102,33 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
         FTW7_TRACE_API_CALL(lpConsoleTitle);
         if (!lpConsoleTitle)
         {
-            // lpConsoleTitle mustn't be 0. Rather than finding out what error code
-            // to set in this case we simply let the real SetConsoleTitle do its job.
+            // Invalid argument. Let Windows deal with it.
             return ftw7_conemu::emulation::true_SetConsoleTitleA(lpConsoleTitle);
         }
 
         const auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
         // TODO: concurrency?
         display_driver->set_title(wide_title.c_str());
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return TRUE;
+}
+
+BOOL WINAPI ftw7_SetConsoleTitleW(LPCWSTR lpConsoleTitle)
+{
+    try
+    {
+        FTW7_TRACE_API_CALL(lpConsoleTitle);
+        if (!lpConsoleTitle)
+        {
+            // Invalid argument. Let Windows deal with it.
+            return ftw7_conemu::emulation::true_SetConsoleTitleW(lpConsoleTitle);
+        }
+        // TODO: concurrency?
+        display_driver->set_title(lpConsoleTitle);
     }
     catch (...)
     {
