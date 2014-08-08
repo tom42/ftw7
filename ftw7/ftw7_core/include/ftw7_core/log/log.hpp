@@ -82,17 +82,43 @@ private:
     std::wostringstream m_buffer;
 };
 
-inline void print_args(std::wostream&)
+template <typename T>
+void trace_arg(std::wostream& os, T arg)
+{
+    os << arg;
+}
+
+// Do not attempt to trace const/non-const char/wchar_t pointers as strings.
+// Since the pointers are coming from arbitrary programs, they might be null,
+// be non-terminated or point to non-readable memory.
+inline void trace_arg(std::wostream& os, char* s)
+{
+    os << static_cast<const void*>(s);
+}
+inline void trace_arg(std::wostream& os, const char* s)
+{
+    os << static_cast<const void*>(s);
+}
+inline void trace_arg(std::wostream& os, wchar_t* s)
+{
+    os << static_cast<const void*>(s);
+}
+inline void trace_arg(std::wostream& os, const wchar_t* s)
+{
+    os << static_cast<const void*>(s);
+}
+
+inline void trace_args(std::wostream&)
 {
     // Helper function to stop recursion.
 }
 
 template <typename T, typename... Args>
-void print_args(std::wostream& os, T value, Args... args)
+void trace_args(std::wostream& os, T value, Args... args)
 {
-    // TODO: do not attempt to log char* and wchar* as strings.
-    os << ' ' << value;
-    print_args(os, args...);
+    os << ' ';
+    trace_arg(os, value);
+    trace_args(os, args...);
 }
 
 template <typename... Args>
@@ -104,7 +130,7 @@ void trace_api_call(const wchar_t* function, Args... args)
 
     // Log function name, then recursively print args.
     buf << function;
-    print_args(buf, args...);
+    trace_args(buf, args...);
 }
 
 }

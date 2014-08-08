@@ -69,15 +69,11 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     try
     {
-        // TODO: more convenient mechanism for api call tracing (macro->function. or whatever)
-        // TODO: this is actually not THAT simple. An output stream happily prints pointers,
-        //       put when you throw a character pointer at it, then it will attempt to print
-        //       the string, making our application failbowl nastily.
         // TODO: also: lpConsoleTitle might in theory be null. In this case we really
         //       shouldn't attempt to set it. Rather we should set an error code.
         // TODO: also, what happens if setwindowtext fails? I mean...not sure we should throw because of this.
         //       We should probably return FALSE then, no?
-        FTW7_LOG_TRACE << __FUNCTIONW__ << L": " << lpConsoleTitle;
+        FTW7_TRACE_API_CALL(lpConsoleTitle);
         const auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
         // TODO: concurrency?
         display_driver->set_title(wide_title.c_str());
@@ -89,11 +85,14 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
     return TRUE;
 }
 
-BOOL WINAPI ftw7_WriteConsoleOutputA(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT)
+BOOL WINAPI ftw7_WriteConsoleOutputA(
+    HANDLE hConsoleOutput, const CHAR_INFO* lpBuffer, COORD dwBufferSize, COORD dwBufferCoord, PSMALL_RECT lpWriteRegion)
 {
     try
     {
-        // TODO: trace API call
+        // TODO: find a way to trace COORDs. Currently we trace their address, but that's not what we want.
+        FTW7_TRACE_API_CALL(hConsoleOutput, lpBuffer, &dwBufferSize, &dwBufferCoord, lpWriteRegion);
+
         // TODO: actually do something (take care not to choke on null pointers etc!)
         // TODO: concurrency?
         if (!display_driver->handle_messages())
