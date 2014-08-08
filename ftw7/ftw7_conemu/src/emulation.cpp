@@ -97,11 +97,16 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     try
     {
-        // TODO: also: lpConsoleTitle might in theory be null. In this case we really
-        //       shouldn't attempt to set it. Rather we should set an error code.
         // TODO: also, what happens if setwindowtext fails? I mean...not sure we should throw because of this.
         //       We should probably return FALSE then, no?
         FTW7_TRACE_API_CALL(lpConsoleTitle);
+        if (!lpConsoleTitle)
+        {
+            // lpConsoleTitle mustn't be 0. Rather than finding out what error code
+            // to set in this case we simply let the real SetConsoleTitle do its job.
+            return ftw7_conemu::emulation::true_SetConsoleTitleA(lpConsoleTitle);
+        }
+
         const auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
         // TODO: concurrency?
         display_driver->set_title(wide_title.c_str());
