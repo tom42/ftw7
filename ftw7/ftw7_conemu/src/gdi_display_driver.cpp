@@ -140,6 +140,11 @@ bool gdi_display_driver::handle_messages()
     return keep_running;
 }
 
+void gdi_display_driver::render(const CHAR_INFO* /*buffer*/)
+{
+    // TODO: actually do something here
+}
+
 void gdi_display_driver::set_title(const wchar_t* title)
 {
     if (!SetWindowTextW(m_hwnd.get(), title))
