@@ -191,6 +191,11 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
     try
     {
         FTW7_TRACE_API_CALL(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
+        if (!hConsoleOutput || !lpBuffer || !lpWriteRegion)
+        {
+            // Invalid argument(s)
+            return ftw7_conemu::emulation::true_WriteConsoleOutputA(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
+        }
 
         // TODO: actually do something (take care not to choke on null pointers etc!)
         //       For starters, don't do anything, unless: (80,50) (0,0) (0,0,80,50)013485F8
