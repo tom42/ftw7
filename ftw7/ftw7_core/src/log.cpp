@@ -88,7 +88,7 @@ log_message::~log_message()
         // Call str() only once since it returns a copy of the stream's content.
         m_buffer << std::endl;
         const auto message = m_buffer.str();
-        current_logger->write(message.c_str());
+        current_logger->write(message.c_str(), message.size());
     }
     catch (...)
     {
@@ -110,7 +110,7 @@ std::wostringstream& log_message::buffer(log_level level)
 
 }
 
-void stdout_logger::write(const wchar_t* s)
+void stdout_logger::write(const wchar_t* s, size_t /*nchars*/)
 {
     // The Visual Studio 2013 documentation states for both fwrite and fflush
     // that they lock the calling thread and are therefore thread-safe.
