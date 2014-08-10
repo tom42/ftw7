@@ -13,3 +13,10 @@
 	* Inside the emulation DLL
 	  * Use AttachConsole to attach to the parent process' console
 	  * Use WriteConsole(W) to write to the console
+	  * Be careful, though: MSDN says:
+	    "WriteConsole fails if it is used with a standard handle that is redirected to a file.
+		If an application processes multilingual output that can be redirected, determine whether
+		the output handle is a console handle (one method is to call the GetConsoleMode function
+		and check whether it succeeds). If the handle is a console handle, call WriteConsole.
+		If the handle is not a console handle, the output is redirected and you should call
+		WriteFile to perform the I/O."...oh well.
