@@ -197,8 +197,24 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
             return ftw7_conemu::emulation::true_WriteConsoleOutputA(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
         }
 
-        // TODO: actually do something (take care not to choke on null pointers etc!)
-        //       For starters, don't do anything, unless: (80,50) (0,0) (0,0,80,50)013485F8
+        if (!((dwBufferSize.X == 80) &&
+            (dwBufferSize.Y == 50) &&
+            (dwBufferCoord.X == 0) &&
+            (dwBufferCoord.Y == 0) &&
+            (lpWriteRegion->Left == 0) &&
+            (lpWriteRegion->Top == 0) &&
+            (lpWriteRegion->Right == 80) &&
+            (lpWriteRegion->Bottom == 50)))
+        {
+            std::wostringstream msg;
+            msg << L"unsupported blit size. dwBufferSize=" << dwBufferSize
+                << " dwBufferCoord=" << dwBufferCoord
+                << " lpWriteRegion=" << lpWriteRegion;
+            throw ftw7_core::wruntime_error(msg.str());
+        }
+
+
+        // TODO: actually do something
         // TODO: concurrency?
         if (!display_driver->handle_messages())
         {
