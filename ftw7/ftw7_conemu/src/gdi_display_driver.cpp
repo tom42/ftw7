@@ -18,6 +18,7 @@
  */
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
+#include "ftw7_conemu/display/vga8x8.hpp"
 #include "ftw7_core/windows/windows_error.hpp"
 #include "resource.h"
 
@@ -25,6 +26,7 @@
 #define WIDEN(x) WIDEN2(x)
 
 #define FTW7_GDI_DISPLAY_DRIVER_NAME WIDEN(PACKAGE_STRING) L" GDI display driver"
+#define CONRGB(r, g, b) ((((r) & 255) << 16) | (((g) & 255) << 8) | (((b) & 255)))
 
 namespace ftw7_conemu
 {
@@ -34,6 +36,30 @@ namespace
 {
 
 using ftw7_core::windows::unique_hwnd;
+
+const int RENDER_BUFFER_WIDTH = 640;
+const int RENDER_BUFFER_HEIGHT = 400;
+const int CHAR_WIDTH = 8;
+const int CHAR_HEIGHT = 8;
+const uint32_t palette[] =
+{
+    CONRGB(0x00, 0x00, 0x00),
+    CONRGB(0x00, 0x00, 0xaa),
+    CONRGB(0x00, 0xaa, 0x00),
+    CONRGB(0x00, 0xaa, 0xaa),
+    CONRGB(0xaa, 0x00, 0x00),
+    CONRGB(0xaa, 0x00, 0xaa),
+    CONRGB(0xaa, 0x55, 0x00),
+    CONRGB(0xaa, 0xaa, 0xaa),
+    CONRGB(0x55, 0x55, 0x55),
+    CONRGB(0x55, 0x55, 0xff),
+    CONRGB(0x55, 0xff, 0x55),
+    CONRGB(0x55, 0xff, 0xff),
+    CONRGB(0xff, 0x55, 0x55),
+    CONRGB(0xff, 0x55, 0xff),
+    CONRGB(0xff, 0xff, 0x55),
+    CONRGB(0xff, 0xff, 0xff)
+};
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -116,7 +142,8 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
 
 gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
     : m_wc(create_wndclassexw(emulation_dll_module_handle)),
-    m_hwnd(create_window(emulation_dll_module_handle, settings))
+    m_hwnd(create_window(emulation_dll_module_handle, settings)),
+    m_renderbuffer(RENDER_BUFFER_WIDTH * RENDER_BUFFER_HEIGHT)
 {
 }
 
@@ -140,9 +167,57 @@ bool gdi_display_driver::handle_messages()
     return keep_running;
 }
 
-void gdi_display_driver::render(const CHAR_INFO* /*buffer*/)
+void gdi_display_driver::render(const CHAR_INFO* buffer)
 {
-    // TODO: actually do something here
+    for (int row = 0; row < RENDER_BUFFER_HEIGHT / CHAR_HEIGHT; ++row)
+    {
+        for (int col = 0; col < RENDER_BUFFER_WIDTH / CHAR_WIDTH; ++col)
+        {
+            int x0 = col * CHAR_WIDTH;
+            int y0 = row * CHAR_HEIGHT;
+            uint32_t* dst = &m_renderbuffer[y0 * RENDER_BUFFER_WIDTH + x0];
+
+            // Get foreground and background color.
+            // Don't worry about the COMMON_LVB flags, this is CJK specific
+            // and apparently not even supported on non-CJK Windows systems.
+            const uint32_t bgcolor = palette[(buffer->Attributes >> 4) & 15];
+            const uint32_t fgcolor = palette[buffer->Attributes & 15];
+
+            const size_t c = static_cast<unsigned char>(buffer->Char.AsciiChar);
+            const unsigned char* chardata = &vga8x8[c * CHAR_HEIGHT];
+
+            // Render character
+            for (int y = 0; y < CHAR_HEIGHT; ++y)
+            {
+                unsigned char byte = *chardata++;
+                for (int x = 0; x < CHAR_WIDTH; ++x)
+                {
+                    *dst++ = (byte & 128) ? fgcolor : bgcolor;
+                    byte <<= 1;
+                }
+                dst += RENDER_BUFFER_WIDTH - CHAR_WIDTH;
+            }
+            ++buffer;
+        }
+    }
+
+    // TODO: review, unhardcode stuff, find out how/when to allocate/deallocate the DC
+    static const BITMAPINFO bmi =
+    {
+        {
+            sizeof(bmi),
+            RENDER_BUFFER_WIDTH,
+            -RENDER_BUFFER_HEIGHT,
+            1, 32, BI_RGB, 0, 0, 0, 0, 0
+        },
+        { 0, 0, 0, 0 }
+    };
+    auto dc = GetDC(m_hwnd.get());
+    RECT rect;
+    GetClientRect(m_hwnd.get(), &rect); // TODO: handle errors, really
+
+    StretchDIBits(dc, 0, 0, rect.right, rect.bottom, 0, 0, RENDER_BUFFER_WIDTH, RENDER_BUFFER_HEIGHT, &m_renderbuffer[0], &bmi, DIB_RGB_COLORS, SRCCOPY);
+    ReleaseDC(m_hwnd.get(), dc);
 }
 
 void gdi_display_driver::set_title(const wchar_t* title)

@@ -207,8 +207,8 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
             (dwBufferCoord.Y == 0) &&
             (lpWriteRegion->Left == 0) &&
             (lpWriteRegion->Top == 0) &&
-            ((lpWriteRegion->Right == 80) || (lpWriteRegion->Right==79)) &&
-            ((lpWriteRegion->Bottom == 50) || (lpWriteRegion->Bottom==49))))
+            ((lpWriteRegion->Right == 80) || (lpWriteRegion->Right == 79)) &&
+            ((lpWriteRegion->Bottom == 50) || (lpWriteRegion->Bottom == 49))))
         {
             std::wostringstream msg;
             msg << L"unsupported blit size. dwBufferSize=" << dwBufferSize
@@ -217,9 +217,8 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
             throw ftw7_core::wruntime_error(msg.str());
         }
 
-
-        // TODO: actually do something
         // TODO: concurrency?
+        display_driver->render(lpBuffer);
         if (!display_driver->handle_messages())
         {
             FTW7_LOG_INFO << L"Exiting (exit requested by display driver)";

@@ -20,6 +20,8 @@
 #define FTW7_CONEMU_DISPLAY_GDI_DISPLAY_DRIVER_HPP_INCLUDED
 
 #include <Windows.h>
+#include <cstdint>
+#include <vector>
 #include "ftw7_conemu/display/display_driver.hpp"
 #include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_core/windows/unique_window_class.hpp"
@@ -44,6 +46,7 @@ private:
 
     ftw7_core::windows::unique_window_classexw m_wc;
     ftw7_core::windows::unique_hwnd m_hwnd;
+    std::vector<uint32_t> m_renderbuffer;
 };
 
 }
