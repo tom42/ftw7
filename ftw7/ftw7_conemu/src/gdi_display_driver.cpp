@@ -102,7 +102,6 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
 
 unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
-    // TODO: check what we really need for windowed mode...
     const DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
     const DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
 
@@ -111,12 +110,14 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     r.right = settings.width;
     r.bottom = settings.height;
 
-    AdjustWindowRectEx(&r, style, FALSE, exStyle); // TODO: failbowl lould and noisily on error!
-    auto width = r.right - r.left;
-    auto height = r.bottom - r.top;
+    if (!AdjustWindowRectEx(&r, style, FALSE, exStyle))
+    {
+        const auto error = GetLastError();
+        throw ftw7_core::windows::windows_error(L"AdjustWindowRectEx failed", error);
+    }
 
-    // TODO: must be prepared to get a smaller window than requested if windows thinks it can't fit it onto the desktop!
-    // TODO: testcode, revisit all args
+    // Note: we may get a window smaller than requested if Windows thinks it
+    // can't fit the window onto the desktop.
     unique_hwnd hwnd(CreateWindowEx(
         exStyle,
         FTW7_GDI_DISPLAY_DRIVER_NAME,
@@ -124,8 +125,8 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
         style,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
-        width,
-        height,
+        r.right - r.left,
+        r.bottom - r.top,
         HWND_DESKTOP,
         nullptr,
         emulation_dll_module_handle,
