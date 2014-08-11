@@ -19,6 +19,7 @@
 #include <atomic>
 #include <iostream>
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
+#include "ftw7_conemu/display/opengl_display_driver.hpp"
 #include "ftw7_conemu/emulation/emulation.hpp"
 #include "ftw7_conemu/emulation/hooks.hpp"
 #include "ftw7_core/log/log.hpp"
@@ -268,7 +269,8 @@ BOOL WINAPI ftw7_ShowWindow(HWND hWnd, int nCmdShow)
     {
         FTW7_HANDLE_API_EXCEPTION();
     }
-    return TRUE;
+    // TODO: temporary hack to get glfw up and running
+    return ftw7_conemu::emulation::true_ShowWindow(hWnd, nCmdShow);
 }
 
 
@@ -318,7 +320,9 @@ void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulatio
     install_hooks();
     // TODO: need to put away the display driver somewhere.
     // TODO: when do we clean up, btw?
-    display_driver = new display::gdi_display_driver(emulation_dll_module_handle, settings);
+    // TODO: have a way to select the display driver
+    //display_driver = new display::gdi_display_driver(emulation_dll_module_handle, settings);
+    display_driver = new display::opengl_display_driver(emulation_dll_module_handle, settings);
 }
 
 }

@@ -16,11 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#include <Windows.h>
+#include "GLFW/glfw3.h"
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
+#include "ftw7_core/log/log.hpp"
 
 namespace ftw7_conemu
 {
 namespace display
 {
+
+opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_handle*/, const ftw7_core::emulation::settings& /*settings*/)
+{
+    // TODO: initialize glfw, or die on error
+}
+
+opengl_display_driver::~opengl_display_driver()
+{
+    // TODO: clean up
+}
+
+bool opengl_display_driver::handle_messages()
+{
+    // TODO: handle glfw messages and stuff
+    return true;
+}
+
+void opengl_display_driver::render(const CHAR_INFO* /*buffer*/)
+{
+    // TODO: render and swap buffers
+}
+
+void opengl_display_driver::set_title(const wchar_t* /*title*/)
+{
+    // TODO: set the title
+}
+
 }
 }
