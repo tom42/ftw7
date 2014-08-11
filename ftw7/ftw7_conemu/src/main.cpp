@@ -56,7 +56,6 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
 {
     using namespace ftw7_core::emulation;
 
-    // TODO: initialize display/emulation
     try
     {
         static std::atomic<bool> is_initialized(false);
