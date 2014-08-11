@@ -32,7 +32,7 @@ public:
     virtual ~display_driver() {}
     virtual bool handle_messages() = 0;
     virtual void render(const CHAR_INFO* buffer) = 0;
-    virtual void set_title(const wchar_t *title) = 0;
+    virtual void set_title(const wchar_t* title) = 0;
 };
 
 }
