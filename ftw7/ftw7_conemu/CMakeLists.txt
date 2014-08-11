@@ -23,6 +23,7 @@ set (
   src/gdi_display_driver.cpp
   src/main.cpp
   src/true_functions.cpp
+  src/vga8x8.cpp
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")
