@@ -23,5 +23,6 @@ add_definitions (-DUNICODE)
 add_definitions (-D_UNICODE)
 
 add_subdirectory (argp)
+add_subdirectory (glfw)
 add_subdirectory (mhook)
 add_subdirectory (ftw7)

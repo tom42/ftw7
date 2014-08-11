@@ -30,5 +30,6 @@ set (
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 include_directories ("${PROJECT_SOURCE_DIR}/mhook")
+include_directories ("${PROJECT_SOURCE_DIR}/glfw/glfw/include")
 add_library (ftw7_conemu SHARED ${ftw7_conemu_sources})
-target_link_libraries (ftw7_conemu ftw7_core mhook)
+target_link_libraries (ftw7_conemu ftw7_core glfw mhook opengl32)
