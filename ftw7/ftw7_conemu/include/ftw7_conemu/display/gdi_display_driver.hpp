@@ -24,8 +24,9 @@
 #include <vector>
 #include "ftw7_conemu/display/display_driver.hpp"
 #include "ftw7_core/emulation/emulation.hpp"
-#include "ftw7_core/windows/unique_window_class.hpp"
+#include "ftw7_core/windows/unique_hdc.hpp"
 #include "ftw7_core/windows/unique_hwnd.hpp"
+#include "ftw7_core/windows/unique_window_class.hpp"
 
 namespace ftw7_conemu
 {
@@ -46,6 +47,7 @@ private:
 
     ftw7_core::windows::unique_window_classexw m_wc;
     ftw7_core::windows::unique_hwnd m_hwnd;
+    ftw7_core::windows::unique_hdc m_hdc;
     std::vector<uint32_t> m_renderbuffer;
 };
 

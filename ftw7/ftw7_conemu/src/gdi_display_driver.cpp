@@ -144,6 +144,7 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
 gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
     : m_wc(create_wndclassexw(emulation_dll_module_handle)),
     m_hwnd(create_window(emulation_dll_module_handle, settings)),
+    m_hdc(m_hwnd.get()),
     m_renderbuffer(RENDER_BUFFER_WIDTH * RENDER_BUFFER_HEIGHT)
 {
 }
@@ -202,7 +203,6 @@ void gdi_display_driver::render(const CHAR_INFO* buffer)
         }
     }
 
-    // TODO: review, unhardcode stuff, find out how/when to allocate/deallocate the DC
     static const BITMAPINFO bmi =
     {
         {
@@ -213,12 +213,19 @@ void gdi_display_driver::render(const CHAR_INFO* buffer)
         },
         { 0, 0, 0, 0 }
     };
-    auto dc = GetDC(m_hwnd.get());
-    RECT rect;
-    GetClientRect(m_hwnd.get(), &rect); // TODO: handle errors, really
 
-    StretchDIBits(dc, 0, 0, rect.right, rect.bottom, 0, 0, RENDER_BUFFER_WIDTH, RENDER_BUFFER_HEIGHT, &m_renderbuffer[0], &bmi, DIB_RGB_COLORS, SRCCOPY);
-    ReleaseDC(m_hwnd.get(), dc);
+    RECT rect;
+    if (!GetClientRect(m_hwnd.get(), &rect))
+    {
+        const auto error = GetLastError();
+        throw ftw7_core::windows::windows_error(L"GetClientRect failed", error);
+    }
+
+    if (!StretchDIBits(m_hdc.get(), 0, 0, rect.right, rect.bottom, 0, 0, RENDER_BUFFER_WIDTH, RENDER_BUFFER_HEIGHT, &m_renderbuffer[0], &bmi, DIB_RGB_COLORS, SRCCOPY))
+    {
+        const auto error = GetLastError();
+        throw ftw7_core::windows::windows_error(L"StretchDIBits failed", error);
+    }
 }
 
 void gdi_display_driver::set_title(const wchar_t* title)
