@@ -29,6 +29,15 @@ namespace ftw7_conemu
 {
 namespace display
 {
+namespace
+{
+
+void error_callback(int /*error*/, const char* description)
+{
+    FTW7_LOG_ERROR << L"glfw: " << description;
+}
+
+}
 
 opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_handle*/, const ftw7_core::emulation::settings& /*settings*/)
     : m_glfw_initialized(false),
@@ -38,8 +47,11 @@ opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_ha
     // TODO: unhardcode resolutions
     // TODO: windowed/fullscreen mode support
     // TODO: proper init/cleanup code.
+    // TODO: set up keyboar callback and quit on escape, somehow
+    glfwSetErrorCallback(error_callback);
     glfwInit();
     m_window = glfwCreateWindow(640, 400, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr, nullptr);
+    glfwMakeContextCurrent(m_window);
 }
 
 opengl_display_driver::~opengl_display_driver()
@@ -49,8 +61,8 @@ opengl_display_driver::~opengl_display_driver()
 
 bool opengl_display_driver::handle_messages()
 {
-    // TODO: handle glfw messages and stuff
-    return true;
+    glfwPollEvents();
+    return !glfwWindowShouldClose(m_window);
 }
 
 void opengl_display_driver::render(const CHAR_INFO* /*buffer*/)
