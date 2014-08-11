@@ -197,14 +197,18 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
             return ftw7_conemu::emulation::true_WriteConsoleOutputA(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
         }
 
+        // TODO: should probably handle this a bit more gracefully.
+        //       In principle we should blit whatever we can from the source buffer to the destination buffer.
+        //       Also, we should in principle update lpWriteRegion with "the actual rectangle that was used".
+        //       Thing is, I'm not entirely sure about the logic of SMALL_RECT. Who's right? The 80 or the 79 people?
         if (!((dwBufferSize.X == 80) &&
             (dwBufferSize.Y == 50) &&
             (dwBufferCoord.X == 0) &&
             (dwBufferCoord.Y == 0) &&
             (lpWriteRegion->Left == 0) &&
             (lpWriteRegion->Top == 0) &&
-            (lpWriteRegion->Right == 80) &&
-            (lpWriteRegion->Bottom == 50)))
+            ((lpWriteRegion->Right == 80) || (lpWriteRegion->Right==79)) &&
+            ((lpWriteRegion->Bottom == 50) || (lpWriteRegion->Bottom==49))))
         {
             std::wostringstream msg;
             msg << L"unsupported blit size. dwBufferSize=" << dwBufferSize
