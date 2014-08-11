@@ -18,8 +18,12 @@
  */
 #include <Windows.h>
 #include "GLFW/glfw3.h"
+#include "ftw7_version.h"
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
 #include "ftw7_core/log/log.hpp"
+#include "ftw7_core/windows/string.hpp"
+
+#define FTW7_OPENGL_DISPLAY_DRIVER_NAME PACKAGE_STRING " OpenGL display driver"
 
 namespace ftw7_conemu
 {
@@ -27,8 +31,15 @@ namespace display
 {
 
 opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_handle*/, const ftw7_core::emulation::settings& /*settings*/)
+    : m_glfw_initialized(false),
+    m_window(nullptr)
 {
     // TODO: initialize glfw, or die on error
+    // TODO: unhardcode resolutions
+    // TODO: windowed/fullscreen mode support
+    // TODO: proper init/cleanup code.
+    glfwInit();
+    m_window = glfwCreateWindow(640, 400, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr, nullptr);
 }
 
 opengl_display_driver::~opengl_display_driver()
@@ -47,9 +58,11 @@ void opengl_display_driver::render(const CHAR_INFO* /*buffer*/)
     // TODO: render and swap buffers
 }
 
-void opengl_display_driver::set_title(const wchar_t* /*title*/)
+void opengl_display_driver::set_title(const wchar_t* title)
 {
-    // TODO: set the title
+    // TODO: GLFW says that the title is UTF8, so what wstring_to_multibyte returns is actually wrong.
+    const auto narrow_title = ftw7_core::windows::wstring_to_multibyte(title);
+    glfwSetWindowTitle(m_window, narrow_title.c_str());
 }
 
 }

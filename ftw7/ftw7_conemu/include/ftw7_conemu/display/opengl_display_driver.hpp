@@ -23,6 +23,8 @@
 #include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_conemu/display/display_driver.hpp"
 
+struct GLFWwindow;
+
 namespace ftw7_conemu
 {
 namespace display
@@ -39,6 +41,9 @@ public:
 private:
     opengl_display_driver(const opengl_display_driver&) = delete;
     opengl_display_driver& operator = (const opengl_display_driver&) = delete;
+
+    bool m_glfw_initialized;
+    GLFWwindow* m_window;
 };
 
 }
