@@ -15,9 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
+# Compile GLFW only.
 set (GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
 set (GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
 set (GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
 set (GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
+
+# Include prologue header, so that GLFW can use real functions and not hooks.
+add_definitions (-DFTW7_COMPILING_GLFW)
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /FI${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include/ftw7_conemu/emulation/hooked_functions.h")
 
 add_subdirectory (glfw)
