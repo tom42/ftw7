@@ -19,6 +19,7 @@
 #ifndef FTW7_CORE_WINDOWS_STRING_HPP_INCLUDED
 #define FTW7_CORE_WINDOWS_STRING_HPP_INCLUDED
 
+#include <Windows.h>
 #include <string>
 
 namespace ftw7_core
@@ -27,7 +28,7 @@ namespace windows
 {
 
 std::wstring multibyte_to_wstring(const char* s);
-std::string wstring_to_multibyte(const wchar_t* s);
+std::string wstring_to_multibyte(UINT code_page, const wchar_t* s);
 
 }
 }

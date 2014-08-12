@@ -102,7 +102,7 @@ error_t parse_option_stub(int key, char* arg, struct argp_state* state)
     }
     catch (const ftw7_core::wruntime_error& e)
     {
-        argp_failure(state, EXIT_FAILURE, 0, wstring_to_multibyte(e.wwhat()).c_str());
+        argp_failure(state, EXIT_FAILURE, 0, wstring_to_multibyte(CP_ACP, e.wwhat()).c_str());
     }
     catch (const std::exception& e)
     {

@@ -48,10 +48,10 @@ std::wstring multibyte_to_wstring(const char* s)
     return std::wstring(&buf[0]);
 }
 
-std::string wstring_to_multibyte(const wchar_t* s)
+std::string wstring_to_multibyte(UINT code_page, const wchar_t* s)
 {
     // Find number of bytes required in output buffer
-    int n_bytes = WideCharToMultiByte(CP_ACP, 0, s, -1, nullptr, 0, nullptr, nullptr);
+    int n_bytes = WideCharToMultiByte(code_page, 0, s, -1, nullptr, 0, nullptr, nullptr);
     if (n_bytes <= 0)
     {
         auto error = GetLastError();
@@ -60,7 +60,7 @@ std::string wstring_to_multibyte(const wchar_t* s)
 
     // Allocate buffer and perform conversion
     std::vector<char> buf(n_bytes);
-    int result = WideCharToMultiByte(CP_ACP, 0, s, -1, &buf[0], n_bytes, nullptr, nullptr);
+    int result = WideCharToMultiByte(code_page, 0, s, -1, &buf[0], n_bytes, nullptr, nullptr);
     if (result <= 0)
     {
         auto error = GetLastError();

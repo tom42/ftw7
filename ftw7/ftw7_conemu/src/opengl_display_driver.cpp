@@ -119,8 +119,8 @@ void opengl_display_driver::render(const CHAR_INFO* /*buffer*/)
 
 void opengl_display_driver::set_title(const wchar_t* title)
 {
-    // TODO: GLFW says that the title is UTF8, so what wstring_to_multibyte returns is actually wrong.
-    const auto narrow_title = ftw7_core::windows::wstring_to_multibyte(title);
+    // The GLFW documentation states that glfwSetWindowTitle's title argument is an UTF8 encoded string.
+    const auto narrow_title = ftw7_core::windows::wstring_to_multibyte(CP_UTF8, title);
     glfwSetWindowTitle(m_window, narrow_title.c_str());
 }
 
