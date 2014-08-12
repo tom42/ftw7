@@ -41,6 +41,8 @@ extern "C" {
  */
 #ifdef FTW7_COMPILING_GLFW
 #include "internal.h"
+// TODO: Hackage. Anyway, at this point we can stop using xheaders and write a generator instead.
+#define ShowWindow true_ShowWindow
 #else
 #include <Windows.h>
 #endif
