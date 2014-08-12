@@ -61,6 +61,10 @@ opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_ha
     m_window = glfwCreateWindow(640, 400, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr, nullptr);
     glfwMakeContextCurrent(m_window);
     glfwSetKeyCallback(m_window, key_callback);
+
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(m_window);
 }
 
 opengl_display_driver::~opengl_display_driver()
