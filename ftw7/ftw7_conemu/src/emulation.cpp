@@ -146,8 +146,6 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     try
     {
-        // TODO: also, what happens if setwindowtext fails? I mean...not sure we should throw because of this.
-        //       We should probably return FALSE then, no?
         FTW7_TRACE_API_CALL(lpConsoleTitle);
         if (!lpConsoleTitle)
         {
