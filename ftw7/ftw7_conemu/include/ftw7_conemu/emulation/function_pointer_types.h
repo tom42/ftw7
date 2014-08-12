@@ -16,16 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FTW7_CONEMU_EMULATION_HOOKS_HPP_INCLUDED
-#define FTW7_CONEMU_EMULATION_HOOKS_HPP_INCLUDED
+#ifndef FTW7_CONEMU_EMULATION_FUNCTION_POINTER_TYPES_H_INCLUDED
+#define FTW7_CONEMU_EMULATION_FUNCTION_POINTER_TYPES_H_INCLUDED
 
 #include <Windows.h>
-#include "ftw7_conemu/emulation/function_pointer_types.h"
 
-// Create declarations for the variables that hold the addresses of the true functions.
-// This yields declarations such as: extern SetConsoleTitleA_ptr_t true_SetConsoleTitleA;
-#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) extern procname##_ptr_t true_##procname;
-#include "ftw7_conemu/emulation/hooked_functions.x"
-#undef FTW7_CONEMU_XHOOKED_FUNCTION
+// kernel32
+typedef BOOL (WINAPI* AllocConsole_ptr_t)(void);
+typedef BOOL (WINAPI* SetConsoleActiveScreenBuffer_ptr_t)(HANDLE);
+typedef BOOL (WINAPI* SetConsoleTitleA_ptr_t)(LPCSTR);
+typedef BOOL (WINAPI* SetConsoleTitleW_ptr_t)(LPCWSTR);
+typedef BOOL (WINAPI* WriteConsoleOutputA_ptr_t)(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT);
+
+// user32
+typedef int (WINAPI* ShowCursor_ptr_t)(BOOL);
+typedef BOOL (WINAPI* ShowWindow_ptr_t)(HWND, int);
 
 #endif
