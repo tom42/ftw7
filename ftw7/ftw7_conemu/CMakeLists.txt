@@ -23,7 +23,7 @@ set (
   src/gdi_display_driver.cpp
   src/main.cpp
   src/opengl_display_driver.cpp
-  src/true_functions.cpp
+  src/true_functions.c
   src/vga8x8.cpp
 )
 

@@ -19,6 +19,10 @@
 #ifndef FTW7_CONEMU_EMULATION_HOOKED_FUNCTIONS_H_INCLUDED
 #define FTW7_CONEMU_EMULATION_HOOKED_FUNCTIONS_H_INCLUDED
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Hack for GLFW:
  *
@@ -66,5 +70,9 @@ typedef BOOL(WINAPI* ShowWindow_ptr_t)(HWND, int);
 #define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) extern procname##_ptr_t true_##procname;
 #include "hooked_functions.x"
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

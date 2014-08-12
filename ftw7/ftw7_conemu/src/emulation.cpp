@@ -259,16 +259,16 @@ BOOL WINAPI ftw7_ShowWindow(HWND hWnd, int nCmdShow)
 {
     try
     {
+        // Some demos try to maximize the console window themselves using ShowWindow.
+        // We want to keep this under the user's and display driver's control, though.
         FTW7_TRACE_API_CALL(hWnd, nCmdShow);
-        // TODO: check if they want to fiddle with our own window. If so, forbid id. If not, don't (currently we're always a no-op)
-        // TODO: document what we're doing this for (trauma demos)        
+        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": faked. This is a no-op.";
     }
     catch (...)
     {
         FTW7_HANDLE_API_EXCEPTION();
     }
-    // TODO: temporary hack to get glfw up and running
-    return true_ShowWindow(hWnd, nCmdShow);
+    return TRUE;
 }
 
 
