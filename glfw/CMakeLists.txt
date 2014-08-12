@@ -14,3 +14,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
+
+set (GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
+set (GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
+set (GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
+set (GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
+
+add_subdirectory (glfw)
