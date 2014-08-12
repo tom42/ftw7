@@ -81,7 +81,10 @@ GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
         SendMessageW(glfwGetWin32Window(window), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
 
         glfwMakeContextCurrent(window);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        if (settings.fullscreen)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        }
         glfwSetKeyCallback(window, key_callback);
         glfwSwapInterval(1);
 
