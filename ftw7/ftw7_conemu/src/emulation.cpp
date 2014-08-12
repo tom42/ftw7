@@ -217,12 +217,12 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
         }
 
         // TODO: concurrency?
-        display_driver->render(lpBuffer);
         if (!display_driver->handle_messages())
         {
             FTW7_LOG_INFO << L"Exiting (exit requested by display driver)";
             ExitProcess(ftw7_core::emulation::error_code::no_error);
         }
+        display_driver->render(lpBuffer);
     }
     catch (...)
     {

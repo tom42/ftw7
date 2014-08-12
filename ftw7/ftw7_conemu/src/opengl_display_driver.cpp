@@ -25,6 +25,7 @@
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/windows/string.hpp"
+#include "ftw7_core/wexcept.hpp"
 #include "resource.h"
 
 #define FTW7_OPENGL_DISPLAY_DRIVER_NAME PACKAGE_STRING " OpenGL display driver"
@@ -49,39 +50,106 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
     }
 }
 
+GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+{
+    GLFWwindow* window = nullptr;
+    try
+    {
+        if (settings.fullscreen)
+        {
+            auto monitor = glfwGetPrimaryMonitor();
+            if (!monitor)
+            {
+                throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
+            }
+            window = glfwCreateWindow(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, monitor, nullptr);
+        }
+        else
+        {
+            window = glfwCreateWindow(settings.window_width, settings.window_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr, nullptr);
+        }        
+        if (!window)
+        {
+            throw ftw7_core::wruntime_error(L"glfwCreateWindow failed");
+        }
+
+        // GLFW's mechanism of setting the icon doesn't work, since it assumes that
+        // the Window has been created in an EXE rather than a DLL and uses GetModuleHandle(NULL)
+        // as the first argument to LoadIconW.
+        auto icon = LoadIconW(emulation_dll_module_handle, MAKEINTRESOURCEW(IDI_FTW7));
+        SendMessageW(glfwGetWin32Window(window), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon));
+        SendMessageW(glfwGetWin32Window(window), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
+
+        glfwMakeContextCurrent(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetKeyCallback(window, key_callback);
+        glfwSwapInterval(1);
+
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers(window); 
+        return window;
+    }
+    catch (...)
+    {
+        if (window)
+        {
+            glfwDestroyWindow(window);
+        }
+        throw;
+    }
 }
 
-opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& /*settings*/)
+}
+
+opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
     : m_glfw_initialized(false),
     m_window(nullptr)
 {
-    // TODO: initialize glfw, or die on error
-    // TODO: unhardcode resolutions
-    // TODO: windowed/fullscreen mode support
-    // TODO: proper init/cleanup code.
-    // TODO: set up keyboar callback and quit on escape, somehow
-    glfwSetErrorCallback(error_callback);
-    glfwInit();
-    m_window = glfwCreateWindow(640, 400, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr, nullptr);
-
-    // GLFW's mechanism of setting the icon doesn't work, since it assumes that
-    // the Window has been created in an EXE rather than a DLL and uses GetModuleHandle(NULL)
-    // as the first argument to LoadIconW.
-    auto icon = LoadIconW(emulation_dll_module_handle, MAKEINTRESOURCEW(IDI_FTW7));
-    SendMessageW(glfwGetWin32Window(m_window), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon));
-    SendMessageW(glfwGetWin32Window(m_window), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
-
-    glfwMakeContextCurrent(m_window);
-    glfwSetKeyCallback(m_window, key_callback);
-
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(m_window);
+    try
+    {
+        glfwSetErrorCallback(error_callback);
+        if (!glfwInit())
+        {
+            throw ftw7_core::wruntime_error(L"glfwInit failed");
+        }
+        m_glfw_initialized = true;
+        m_window = create_window(emulation_dll_module_handle, settings);
+    }
+    catch (...)
+    {
+        close();
+        throw;
+    }
 }
 
 opengl_display_driver::~opengl_display_driver()
 {
-    // TODO: clean up
+    close();
+}
+
+void opengl_display_driver::close()
+{
+    close_window();
+    close_glfw();
+}
+
+void opengl_display_driver::close_window()
+{
+    if (m_window)
+    {
+        glfwDestroyWindow(m_window);
+        m_window = nullptr;
+    }
+}
+
+void opengl_display_driver::close_glfw()
+{
+    if (m_glfw_initialized)
+    {
+        glfwTerminate();
+        m_glfw_initialized = false;
+    }
 }
 
 bool opengl_display_driver::handle_messages()

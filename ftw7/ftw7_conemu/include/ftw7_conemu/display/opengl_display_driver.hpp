@@ -42,6 +42,10 @@ private:
     opengl_display_driver(const opengl_display_driver&) = delete;
     opengl_display_driver& operator = (const opengl_display_driver&) = delete;
 
+    void close();
+    void close_window();
+    void close_glfw();
+
     bool m_glfw_initialized;
     GLFWwindow* m_window;
 };

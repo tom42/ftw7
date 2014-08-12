@@ -37,6 +37,8 @@ void settings::initialize(settings& settings)
     settings.fullscreen = false;
     settings.window_width = 640;
     settings.window_height = 400;
+    settings.screen_width = 640;
+    settings.screen_height = 480;
 }
 
 error_code settings::check(const settings* settings)

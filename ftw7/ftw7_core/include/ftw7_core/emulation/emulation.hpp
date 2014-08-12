@@ -49,6 +49,8 @@ struct settings
     bool fullscreen;
     int window_width;
     int window_height;
+    int screen_width;
+    int screen_height;
 
     static void initialize(settings& settings);
     static error_code check(const settings* settings);
