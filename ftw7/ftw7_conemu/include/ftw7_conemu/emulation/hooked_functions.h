@@ -19,7 +19,27 @@
 #ifndef FTW7_CONEMU_EMULATION_HOOKED_FUNCTIONS_H_INCLUDED
 #define FTW7_CONEMU_EMULATION_HOOKED_FUNCTIONS_H_INCLUDED
 
+/*
+ * Hack for GLFW:
+ *
+ * GLFW insists in not including Windows.h but defines its own symbols and
+ * messes around with WIN32_LEAN_AND_MEAN. This leads of course to the usual
+ * mess, in this case a ton of annoying warnings about redefinitions of
+ * WIN32_LEAN_AND_MEAN, and thus we came up with the following hack:
+ *
+ * When GLFW is compiled we include its internal.h rather than Windows.h,
+ * and everything compiles without any warnings.
+ *
+ * This should be pretty much OK, since the first thing in the GLFW sources
+ * is the inclusion of internal.h. So if we introduce a prologue header
+ * that includes internal.h before doing anything else, then we shouldn't
+ * have changed anything from the compiler's point of view.
+ */
+#ifdef FTW7_COMPILING_GLFW
+#include "internal.h"
+#else
 #include <Windows.h>
+#endif
 
 
 /******************************************************************************
@@ -44,7 +64,7 @@ typedef BOOL(WINAPI* ShowWindow_ptr_t)(HWND, int);
  * This yields declarations such as: extern SetConsoleTitleA_ptr_t true_SetConsoleTitleA;
  */
 #define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) extern procname##_ptr_t true_##procname;
-#include "ftw7_conemu/emulation/hooked_functions.x"
+#include "hooked_functions.x"
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
 
 #endif
