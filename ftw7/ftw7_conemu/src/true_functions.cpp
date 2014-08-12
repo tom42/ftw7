@@ -18,16 +18,8 @@
  */
 #include "ftw7_conemu/emulation/hooks.hpp"
 
-namespace ftw7_conemu
-{
-namespace emulation
-{
-
 // Define the variables that hold the addresses of the true API functions.
 // This yields definitions such as: SetConsoleTitleA_ptr_t true_SetConsoleTitleA;
 #define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) procname##_ptr_t true_##procname;
 #include "ftw7_conemu/emulation/hooked_functions.x"
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
-
-}
-}

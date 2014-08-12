@@ -150,7 +150,7 @@ BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
         if (!lpConsoleTitle)
         {
             // Invalid argument. Let Windows deal with it.
-            return ftw7_conemu::emulation::true_SetConsoleTitleA(lpConsoleTitle);
+            return true_SetConsoleTitleA(lpConsoleTitle);
         }
 
         const auto wide_title = ftw7_core::windows::multibyte_to_wstring(lpConsoleTitle);
@@ -172,7 +172,7 @@ BOOL WINAPI ftw7_SetConsoleTitleW(LPCWSTR lpConsoleTitle)
         if (!lpConsoleTitle)
         {
             // Invalid argument. Let Windows deal with it.
-            return ftw7_conemu::emulation::true_SetConsoleTitleW(lpConsoleTitle);
+            return true_SetConsoleTitleW(lpConsoleTitle);
         }
         // TODO: concurrency?
         display_driver->set_title(lpConsoleTitle);
@@ -193,7 +193,7 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
         if (!hConsoleOutput || !lpBuffer || !lpWriteRegion)
         {
             // Invalid argument(s)
-            return ftw7_conemu::emulation::true_WriteConsoleOutputA(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
+            return true_WriteConsoleOutputA(hConsoleOutput, lpBuffer, dwBufferSize, dwBufferCoord, lpWriteRegion);
         }
 
         // TODO: should probably handle this a bit more gracefully.
@@ -268,7 +268,7 @@ BOOL WINAPI ftw7_ShowWindow(HWND hWnd, int nCmdShow)
         FTW7_HANDLE_API_EXCEPTION();
     }
     // TODO: temporary hack to get glfw up and running
-    return ftw7_conemu::emulation::true_ShowWindow(hWnd, nCmdShow);
+    return true_ShowWindow(hWnd, nCmdShow);
 }
 
 

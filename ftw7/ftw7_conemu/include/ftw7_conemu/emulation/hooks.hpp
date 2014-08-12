@@ -21,11 +21,6 @@
 
 #include <Windows.h>
 
-namespace ftw7_conemu
-{
-namespace emulation
-{
-
 // Create function pointer typedefs from functions listed in the xheader.
 // This yields typedefs such as SetConsoleTitleA_ptr_t.
 #define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) typedef decltype(procname)* procname##_ptr_t;
@@ -37,8 +32,5 @@ namespace emulation
 #define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname) extern procname##_ptr_t true_##procname;
 #include "ftw7_conemu/emulation/hooked_functions.x"
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
-
-}
-}
 
 #endif
