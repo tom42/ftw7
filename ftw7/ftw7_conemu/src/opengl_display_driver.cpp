@@ -16,12 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
 #include <Windows.h>
 #include "GLFW/glfw3.h"
+#include "glfw/glfw3native.h"
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/windows/string.hpp"
+#include "resource.h"
 
 #define FTW7_OPENGL_DISPLAY_DRIVER_NAME PACKAGE_STRING " OpenGL display driver"
 
@@ -47,7 +51,7 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 
 }
 
-opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_handle*/, const ftw7_core::emulation::settings& /*settings*/)
+opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& /*settings*/)
     : m_glfw_initialized(false),
     m_window(nullptr)
 {
@@ -59,6 +63,14 @@ opengl_display_driver::opengl_display_driver(HINSTANCE /*emulation_dll_module_ha
     glfwSetErrorCallback(error_callback);
     glfwInit();
     m_window = glfwCreateWindow(640, 400, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr, nullptr);
+
+    // GLFW's mechanism of setting the icon doesn't work, since it assumes that
+    // the Window has been created in an EXE rather than a DLL and uses GetModuleHandle(NULL)
+    // as the first argument to LoadIconW.
+    auto icon = LoadIconW(emulation_dll_module_handle, MAKEINTRESOURCEW(IDI_FTW7));
+    SendMessageW(glfwGetWin32Window(m_window), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon));
+    SendMessageW(glfwGetWin32Window(m_window), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
+
     glfwMakeContextCurrent(m_window);
     glfwSetKeyCallback(m_window, key_callback);
 
