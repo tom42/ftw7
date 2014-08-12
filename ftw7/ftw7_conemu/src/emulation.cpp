@@ -21,7 +21,7 @@
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
 #include "ftw7_conemu/emulation/emulation.hpp"
-#include "ftw7_conemu/emulation/hooks.hpp"
+#include "ftw7_conemu/emulation/hooked_functions.h"
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/mhookpp/mhookpp.hpp"
 #include "ftw7_core/windows/module.hpp"

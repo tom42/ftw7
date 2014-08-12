@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#include "ftw7_conemu/emulation/hooks.hpp"
+#include "ftw7_conemu/emulation/hooked_functions.h"
 
 // Define the variables that hold the addresses of the true API functions.
 // This yields definitions such as: SetConsoleTitleA_ptr_t true_SetConsoleTitleA;
