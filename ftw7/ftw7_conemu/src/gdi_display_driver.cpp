@@ -107,8 +107,8 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
 
     RECT r;
     r.left = r.top = 0;
-    r.right = settings.width;
-    r.bottom = settings.height;
+    r.right = settings.window_width;
+    r.bottom = settings.window_height;
 
     if (!AdjustWindowRectEx(&r, style, FALSE, exStyle))
     {

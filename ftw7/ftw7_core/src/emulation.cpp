@@ -35,8 +35,8 @@ void settings::initialize(settings& settings)
 
     settings.log_level = log::log_level::info;
     settings.fullscreen = false;
-    settings.width = 640;
-    settings.height = 400;
+    settings.window_width = 640;
+    settings.window_height = 400;
 }
 
 error_code settings::check(const settings* settings)

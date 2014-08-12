@@ -45,9 +45,10 @@ struct settings
     size_t size;
     char magic_string[32];
     log::log_level log_level;
+    
     bool fullscreen;
-    int width;
-    int height;
+    int window_width;
+    int window_height;
 
     static void initialize(settings& settings);
     static error_code check(const settings* settings);
