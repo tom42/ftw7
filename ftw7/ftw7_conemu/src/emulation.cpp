@@ -311,6 +311,24 @@ void install_hooks()
 #undef FTW7_CONEMU_XHOOKED_FUNCTION
 }
 
+ftw7_conemu::display::display_driver* create_display_driver(
+    HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+{
+    using ftw7_core::emulation::display_driver_code;
+
+    switch (settings.display_driver_code)
+    {
+    case display_driver_code::gdi:
+        return new display::gdi_display_driver(emulation_dll_module_handle, settings);
+    case display_driver_code::opengl:
+        return new display::opengl_display_driver(emulation_dll_module_handle, settings);
+    default:
+        std::wstringstream msg;
+        msg << L"unknown display driver code: " << settings.display_driver_code;
+        throw ftw7_core::wruntime_error(msg.str());
+    }
+}
+
 }
 
 void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
@@ -318,9 +336,7 @@ void initialize(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulatio
     install_hooks();
     // TODO: need to put away the display driver somewhere.
     // TODO: when do we clean up, btw?
-    // TODO: have a way to select the display driver
-    //display_driver = new display::gdi_display_driver(emulation_dll_module_handle, settings);
-    display_driver = new display::opengl_display_driver(emulation_dll_module_handle, settings);
+    display_driver = create_display_driver(emulation_dll_module_handle, settings);
 }
 
 }

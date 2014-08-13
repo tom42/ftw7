@@ -40,12 +40,19 @@ enum error_code
     error_during_api_call
 };
 
+enum display_driver_code
+{
+    gdi,
+    opengl
+};
+
 struct settings
 {
     size_t size;
     char magic_string[32];
     log::log_level log_level;
     
+    display_driver_code display_driver_code;
     bool fullscreen;
     int window_width;
     int window_height;

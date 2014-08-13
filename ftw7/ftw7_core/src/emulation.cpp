@@ -34,6 +34,7 @@ void settings::initialize(settings& settings)
     strcpy(settings.magic_string, PACKAGE_STRING);
 
     settings.log_level = log::log_level::info;
+    settings.display_driver_code = display_driver_code::opengl;
     settings.fullscreen = false;
     settings.window_width = 640;
     settings.window_height = 400;
