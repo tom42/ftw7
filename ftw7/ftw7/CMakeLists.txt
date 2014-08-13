@@ -23,6 +23,7 @@ set (
 
 include_directories ("${PROJECT_SOURCE_DIR}/argp/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
+include_directories ("${Boost_INCLUDE_DIRS}")
 add_executable (ftw7 ${ftw7_sources})
 target_link_libraries (ftw7 argp ftw7_core)
 

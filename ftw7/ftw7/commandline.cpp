@@ -18,6 +18,7 @@
  */
 #include <algorithm>
 #include <stdexcept>
+#include <boost/lexical_cast.hpp>
 #include "argp/argp.h"
 #include "commandline.hpp"
 #include "ftw7_core/log/log.hpp"
@@ -38,7 +39,10 @@ using ftw7_core::windows::wstring_to_multibyte;
 
 enum
 {
+    OPT_SCREEN_HEIGHT = 'h',
+    OPT_SCREEN_WIDTH = 'w',
     force_the_following_options_out_of_the_ascii_range = 256,
+    OPT_FULLSCREEN,
     OPT_LOG_LEVEL,
     OPT_NO_WAIT,
     OPT_SEPARATE_CONSOLE,
@@ -65,6 +69,19 @@ void parse_log_level(char* arg, struct argp_state* state, command_line_arguments
     }
 }
 
+template <typename T>
+void parse_number(T& target, const char* arg, struct argp_state* state, const char* description)
+{
+    try
+    {
+        target = boost::lexical_cast<T>(arg);
+    }
+    catch (const boost::bad_lexical_cast&)
+    {
+        argp_failure(state, EXIT_FAILURE, 0, "bad %s `%s'", description, arg);
+    }
+}
+
 error_t parse_option(int key, char* arg, struct argp_state* state)
 {
     auto& args = *static_cast<command_line_arguments*>(state->input);
@@ -79,11 +96,20 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
             argp_error(state, "No demo given");
         }
         return 0;
+    case OPT_FULLSCREEN:
+        args.demo_settings.emulation_settings.fullscreen = true;
+        return 0;
     case OPT_LOG_LEVEL:
         parse_log_level(arg, state, args);
         return 0;
     case OPT_NO_WAIT:
         args.demo_settings.wait_for_process = false;
+        return 0;
+    case OPT_SCREEN_HEIGHT:
+        parse_number(args.demo_settings.emulation_settings.screen_height, arg, state, "screen height");
+        return 0;
+    case OPT_SCREEN_WIDTH:
+        parse_number(args.demo_settings.emulation_settings.screen_width, arg, state, "screen width");
         return 0;
     case OPT_SEPARATE_CONSOLE:
         args.demo_settings.separate_console = true;
@@ -143,6 +169,10 @@ command_line_arguments parse_command_line(int argc, char* argv[])
 
     const struct argp_option options[] =
     {
+        { 0, 0, 0, 0, "Display options" },
+        { "fullscreen", OPT_FULLSCREEN, 0, 0, "Run in fullscreen mode" },
+        { "screen-width", OPT_SCREEN_WIDTH, "width", 0, "Screen width for fullscreen mode" },
+        { "screen-height", OPT_SCREEN_HEIGHT, "height", 0, "Screen height for fullscreen mode" },
         { 0, 0, 0, 0, "Options mainly useful for development" },
         { "separate-console", OPT_SEPARATE_CONSOLE, 0, 0, "Run demo with a separate console window" },
         { 0, 0, 0, 0, "Miscellaneous options" },
