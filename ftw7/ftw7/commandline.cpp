@@ -106,9 +106,11 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         args.demo_settings.wait_for_process = false;
         return 0;
     case OPT_SCREEN_HEIGHT:
+        // TODO: reject negative numbers?
         parse_number(args.demo_settings.emulation_settings.screen_height, arg, state, "screen height");
         return 0;
     case OPT_SCREEN_WIDTH:
+        // TODO: reject negative numbers?
         parse_number(args.demo_settings.emulation_settings.screen_width, arg, state, "screen width");
         return 0;
     case OPT_SEPARATE_CONSOLE:
