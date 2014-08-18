@@ -139,6 +139,34 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     return hwnd;
 }
 
+DISPLAY_DEVICE find_primary_display_adapter()
+{
+    for (DWORD adapter_index = 0;;)
+    {
+        DISPLAY_DEVICE adapter;
+        memset(&adapter, 0, sizeof(adapter));
+        adapter.cb = sizeof(adapter);
+        if (!EnumDisplayDevicesW(nullptr, adapter_index, &adapter, 0))
+        {
+            break;
+        }
+        ++adapter_index;
+
+        // Ignore pseudo and inactive adapters.
+        if ((adapter.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) ||
+            !(adapter.StateFlags & DISPLAY_DEVICE_ACTIVE))
+        {
+            continue;
+        }
+
+        if (adapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
+        {
+            return adapter;
+        }
+    }
+    throw ftw7_core::wruntime_error(L"could not find primary display adapter");
+}
+
 }
 
 gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
