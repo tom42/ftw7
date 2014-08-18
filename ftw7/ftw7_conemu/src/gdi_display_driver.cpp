@@ -101,13 +101,46 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     return wc;
 }
 
+DEVMODEW get_current_display_settings()
+{
+    DEVMODEW dm;
+    memset(&dm, 0, sizeof(dm));
+    dm.dmSize = sizeof(dm);
+    if (!EnumDisplaySettingsW(nullptr, ENUM_CURRENT_SETTINGS, &dm))
+    {
+        // EnumDisplaySettingsW doesn't use SetLastError().
+        // Therefore throw a wruntime_error, not a windows_error.
+        throw ftw7_core::wruntime_error(L"could not query current display settings");
+    }
+    return dm;
+}
+
 unique_hwnd create_fullscreen_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
     const DWORD ex_style = WS_EX_TOPMOST;
     const DWORD style = WS_POPUP | WS_VISIBLE;
 
-    // TODO: change display settings here
-    // TODO: do it only if required (e.g. we aren't at 640x480 already)
+    auto current_settings = get_current_display_settings();
+    FTW7_LOG_DEBUG << L"Current display resolution: " << current_settings.dmPelsWidth << L'x' << current_settings.dmPelsHeight;
+    if ((current_settings.dmPelsWidth != static_cast<DWORD>(settings.screen_width)) ||
+        (current_settings.dmPelsHeight != static_cast<DWORD>(settings.screen_height)))
+    {
+        FTW7_LOG_DEBUG << "Changing display resolution to " << settings.screen_width << L'x' << settings.screen_height;
+
+        DEVMODEW dm;
+        memset(&dm, 0, sizeof(dm));
+        dm.dmSize = sizeof(dm);
+        dm.dmPelsWidth = settings.screen_width;
+        dm.dmPelsHeight = settings.screen_height;
+        dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+        if (DISP_CHANGE_SUCCESSFUL != ChangeDisplaySettingsW(&dm, CDS_FULLSCREEN))
+        {
+            // ChangeDisplaySettingsW doesn't use SetLastError().
+            // Therefore throw a wruntime_error, not a windows_error.
+            throw ftw7_core::wruntime_error(L"Could not set display mode");
+        }
+    }
+
     // TODO: also need to adjust blitting code!
 
     unique_hwnd hwnd(CreateWindowEx(
