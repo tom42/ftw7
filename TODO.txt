@@ -4,6 +4,9 @@
     * SetConsoleCursorInfo
     * SetConsoleMode
     * SetConsoleScreenBufferSize
+* display driver handling is a mess
+  * Somewhere there's a factory function that creates display drivers from display driver codes
+  * commandline.cpp contains code to map from strings to display driver codes.
 * string.cpp: some stuff in there could do with some unit testing, and also optimizing (string lengths are determined multiple times)
 * Log output to console: this is sometimes tricky.
   * Console applications work out of the box.

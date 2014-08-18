@@ -42,6 +42,7 @@ enum
     OPT_SCREEN_HEIGHT = 'h',
     OPT_SCREEN_WIDTH = 'w',
     force_the_following_options_out_of_the_ascii_range = 256,
+    OPT_DRIVER,
     OPT_FULLSCREEN,
     OPT_LOG_LEVEL,
     OPT_NO_WAIT,
@@ -51,7 +52,7 @@ enum
 const char doc[] = "Fullscreen Textmode Demo Viewer for Windows 7";
 const char args_doc[] = "DEMO [-- DEMO COMMAND LINE ARGUMENTS]";
 
-void parse_log_level(char* arg, struct argp_state* state, command_line_arguments& args)
+void parse_log_level(const char* arg, const argp_state* state, command_line_arguments& args)
 {
     using namespace ftw7_core::log;
 
@@ -70,7 +71,7 @@ void parse_log_level(char* arg, struct argp_state* state, command_line_arguments
 }
 
 template <typename T>
-void parse_number(T& target, const char* arg, struct argp_state* state, const char* description)
+void parse_number(T& target, const char* arg, const argp_state* state, const char* description)
 {
     try
     {
@@ -82,7 +83,24 @@ void parse_number(T& target, const char* arg, struct argp_state* state, const ch
     }
 }
 
-error_t parse_option(int key, char* arg, struct argp_state* state)
+ftw7_core::emulation::display_driver_code parse_driver(const char* arg, const argp_state* state)
+{
+    if (!strcmp(arg, "gdi"))
+    {
+        return ftw7_core::emulation::display_driver_code::gdi;
+    }
+    else if (!strcmp(arg, "opengl"))
+    {
+        return ftw7_core::emulation::display_driver_code::opengl;
+    }
+    else
+    {
+        argp_failure(state, EXIT_FAILURE, 0, "bad driver `%s'", arg);
+        return ftw7_core::emulation::display_driver_code::gdi;
+    }
+}
+
+error_t parse_option(int key, const char* arg, const argp_state* state)
 {
     auto& args = *static_cast<command_line_arguments*>(state->input);
     switch (key)
@@ -95,6 +113,9 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
         {
             argp_error(state, "No demo given");
         }
+        return 0;
+    case OPT_DRIVER:
+        args.demo_settings.emulation_settings.display_driver_code = parse_driver(arg, state);
         return 0;
     case OPT_FULLSCREEN:
         args.demo_settings.emulation_settings.fullscreen = true;
@@ -121,7 +142,7 @@ error_t parse_option(int key, char* arg, struct argp_state* state)
     }
 }
 
-error_t parse_option_stub(int key, char* arg, struct argp_state* state)
+error_t parse_option_stub(int key, char* arg, argp_state* state)
 {
     // Don't let exceptions propagate into argp.
     try
@@ -169,9 +190,10 @@ command_line_arguments parse_command_line(int argc, char* argv[])
     // even if they might not be required because the help is not displayed.
     const auto log_level_doc = create_log_level_doc();
 
-    const struct argp_option options[] =
+    const argp_option options[] =
     {
         { 0, 0, 0, 0, "Display options" },
+        { "driver", OPT_DRIVER, "driver", 0, "Specify display driver. Available drivers are `gdi' and `opengl' (default)" },
         { "fullscreen", OPT_FULLSCREEN, 0, 0, "Run in fullscreen mode" },
         { "screen-width", OPT_SCREEN_WIDTH, "width", 0, "Screen width for fullscreen mode" },
         { "screen-height", OPT_SCREEN_HEIGHT, "height", 0, "Screen height for fullscreen mode" },
@@ -182,7 +204,7 @@ command_line_arguments parse_command_line(int argc, char* argv[])
         { "no-wait", OPT_NO_WAIT, 0, 0, "Do not wait for the demo to terminate" },
         { 0 }
     };
-    const struct argp argp = { options, parse_option_stub, args_doc, doc };
+    const argp argp = { options, parse_option_stub, args_doc, doc };
 
     command_line_arguments args;
     argp_parse(&argp, argc, argv, 0, nullptr, &args);
