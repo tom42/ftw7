@@ -19,6 +19,7 @@
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "ftw7_conemu/display/vga8x8.hpp"
+#include "ftw7_conemu/emulation/hooked_functions.h"
 #include "ftw7_core/windows/windows_error.hpp"
 #include "resource.h"
 
@@ -100,9 +101,36 @@ WNDCLASSEXW create_wndclassexw(HINSTANCE emulation_dll_module_handle)
     return wc;
 }
 
-unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+unique_hwnd create_fullscreen_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
-    const DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
+    const DWORD ex_style = WS_EX_TOPMOST;
+    const DWORD style = WS_POPUP | WS_VISIBLE;
+
+    // TODO: change display settings here
+    // TODO: do it only if required (e.g. we aren't at 640x480 already)
+    // TODO: also need to adjust blitting code!
+
+    unique_hwnd hwnd(CreateWindowEx(
+        ex_style,
+        FTW7_GDI_DISPLAY_DRIVER_NAME,
+        FTW7_GDI_DISPLAY_DRIVER_NAME,
+        style,
+        0,
+        0,
+        settings.screen_width,
+        settings.screen_height,
+        HWND_DESKTOP,
+        nullptr,
+        emulation_dll_module_handle,
+        nullptr));
+    // TODO: handle window creation failure
+    true_ShowCursor(FALSE);
+    return hwnd;
+}
+
+unique_hwnd create_windowed_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+{
+    const DWORD ex_style = WS_EX_OVERLAPPEDWINDOW;
     const DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
 
     RECT r;
@@ -110,7 +138,7 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     r.right = settings.window_width;
     r.bottom = settings.window_height;
 
-    if (!AdjustWindowRectEx(&r, style, FALSE, exStyle))
+    if (!AdjustWindowRectEx(&r, style, FALSE, ex_style))
     {
         const auto error = GetLastError();
         throw ftw7_core::windows::windows_error(L"AdjustWindowRectEx failed", error);
@@ -119,7 +147,7 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     // Note: we may get a window smaller than requested if Windows thinks it
     // can't fit the window onto the desktop.
     unique_hwnd hwnd(CreateWindowEx(
-        exStyle,
+        ex_style,
         FTW7_GDI_DISPLAY_DRIVER_NAME,
         FTW7_GDI_DISPLAY_DRIVER_NAME,
         style,
@@ -137,6 +165,15 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
         throw ftw7_core::windows::windows_error(L"CreateWindowEx failed", error);
     }
     return hwnd;
+}
+
+unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+{
+    if (settings.fullscreen)
+    {
+        return create_fullscreen_window(emulation_dll_module_handle, settings);
+    }
+    return create_windowed_window(emulation_dll_module_handle, settings);
 }
 
 }
