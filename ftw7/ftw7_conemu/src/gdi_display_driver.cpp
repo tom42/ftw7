@@ -123,7 +123,11 @@ unique_hwnd create_fullscreen_window(HINSTANCE emulation_dll_module_handle, cons
         nullptr,
         emulation_dll_module_handle,
         nullptr));
-    // TODO: handle window creation failure
+    if (!hwnd)
+    {
+        const auto error = GetLastError();
+        throw ftw7_core::windows::windows_error(L"CreateWindowEx failed", error);
+    }
     true_ShowCursor(FALSE);
     return hwnd;
 }
