@@ -49,6 +49,7 @@ private:
     ftw7_core::windows::unique_hwnd m_hwnd;
     ftw7_core::windows::unique_hdc m_hdc;
     std::vector<uint32_t> m_renderbuffer;
+    const bool m_fullscreen;
 };
 
 }

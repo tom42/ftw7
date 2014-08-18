@@ -219,7 +219,8 @@ gdi_display_driver::gdi_display_driver(HINSTANCE emulation_dll_module_handle, co
     : m_wc(create_wndclassexw(emulation_dll_module_handle)),
     m_hwnd(create_window(emulation_dll_module_handle, settings)),
     m_hdc(m_hwnd.get()),
-    m_renderbuffer(RENDER_BUFFER_WIDTH * RENDER_BUFFER_HEIGHT)
+    m_renderbuffer(RENDER_BUFFER_WIDTH * RENDER_BUFFER_HEIGHT),
+    m_fullscreen(settings.fullscreen)
 {
 }
 
@@ -295,7 +296,21 @@ void gdi_display_driver::render(const CHAR_INFO* buffer)
         throw ftw7_core::windows::windows_error(L"GetClientRect failed", error);
     }
 
-    if (!StretchDIBits(m_hdc.get(), 0, 0, rect.right, rect.bottom, 0, 0, RENDER_BUFFER_WIDTH, RENDER_BUFFER_HEIGHT, &m_renderbuffer[0], &bmi, DIB_RGB_COLORS, SRCCOPY))
+    // Windowed mode: scale to fit
+    int xdest = 0;
+    int ydest = 0;
+    int dest_width = rect.right;
+    int dest_height = rect.bottom;
+    if (m_fullscreen)
+    {
+        // Fullscreen mode: center on screen
+        xdest = (rect.right - RENDER_BUFFER_WIDTH) / 2;
+        ydest = (rect.bottom - RENDER_BUFFER_HEIGHT) / 2;
+        dest_width = RENDER_BUFFER_WIDTH;
+        dest_height = RENDER_BUFFER_HEIGHT;
+    }
+
+    if (!StretchDIBits(m_hdc.get(), xdest, ydest, dest_width, dest_height, 0, 0, RENDER_BUFFER_WIDTH, RENDER_BUFFER_HEIGHT, &m_renderbuffer[0], &bmi, DIB_RGB_COLORS, SRCCOPY))
     {
         const auto error = GetLastError();
         throw ftw7_core::windows::windows_error(L"StretchDIBits failed", error);
