@@ -139,11 +139,11 @@ unique_hwnd create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     return hwnd;
 }
 
-DISPLAY_DEVICE find_primary_display_adapter()
+DISPLAY_DEVICEW find_primary_display_adapter()
 {
     for (DWORD adapter_index = 0;;)
     {
-        DISPLAY_DEVICE adapter;
+        DISPLAY_DEVICEW adapter;
         memset(&adapter, 0, sizeof(adapter));
         adapter.cb = sizeof(adapter);
         if (!EnumDisplayDevicesW(nullptr, adapter_index, &adapter, 0))
