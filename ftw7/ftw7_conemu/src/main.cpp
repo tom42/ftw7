@@ -78,6 +78,11 @@ extern "C" int __stdcall ftw7_conemu_initialize(const ftw7_core::emulation::sett
 
         ftw7_conemu::emulation::initialize(emulation_dll_module_handle, *settings);
 
+        if (settings->no_error_dialogs)
+        {
+            FTW7_LOG_INFO << L"Disabling error dialogs (requested by launcher)";
+            SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+        }
         return no_error;
     }
     catch (const ftw7_core::wruntime_error& e)

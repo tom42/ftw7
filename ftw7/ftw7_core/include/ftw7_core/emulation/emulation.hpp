@@ -50,7 +50,9 @@ struct settings
 {
     size_t size;
     char magic_string[32];
+
     log::log_level log_level;
+    bool no_error_dialogs;
     
     display_driver_code display_driver_code;
     bool fullscreen;
