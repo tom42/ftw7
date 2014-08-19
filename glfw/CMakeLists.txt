@@ -27,5 +27,5 @@ set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /FI${PROJECT_BINARY_DIR}/hooked_functions.h
 
 add_subdirectory (glfw)
 
-# Ensure generated ftw7 sources are built before GLFW.
-add_dependencies (glfw ftw7_generated_sources)
+# Ensure generated ftw7 headers are built before GLFW.
+add_dependencies (glfw ftw7_generated_headers)

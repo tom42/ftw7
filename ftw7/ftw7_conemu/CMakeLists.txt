@@ -16,6 +16,7 @@
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
 set (hooked_functions_h "${FTW7_GENERATED_SOURCES_DIR}/hooked_functions.h")
+set (true_functions_c "${FTW7_GENERATED_SOURCES_DIR}/true_functions.c")
 
 set (
   ftw7_conemu_sources
@@ -25,8 +26,8 @@ set (
   src/gdi_display_driver.cpp
   src/main.cpp
   src/opengl_display_driver.cpp
-  src/true_functions.c
   src/vga8x8.cpp
+  "${true_functions_c}"
 )
 
 add_custom_command (
@@ -35,8 +36,14 @@ add_custom_command (
   DEPENDS codegenerator
 )
 
+add_custom_command (
+  OUTPUT "${true_functions_c}"
+  COMMAND codegenerator true_functions_c > "${true_functions_c}"
+  DEPENDS codegenerator
+)
+
 add_custom_target (
-  ftw7_generated_sources
+  ftw7_generated_headers
   SOURCES
   "${hooked_functions_h}"
 )
@@ -46,5 +53,5 @@ include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 include_directories ("${PROJECT_SOURCE_DIR}/mhook")
 include_directories ("${PROJECT_SOURCE_DIR}/glfw/glfw/include")
 add_library (ftw7_conemu SHARED ${ftw7_conemu_sources})
-add_dependencies (ftw7_conemu ftw7_generated_sources)
+add_dependencies (ftw7_conemu ftw7_generated_headers)
 target_link_libraries (ftw7_conemu ftw7_core glfw mhook opengl32)

@@ -41,7 +41,7 @@ const hooked_function hooked_functions[] =
 };
 const size_t n_hooked_functions = sizeof(hooked_functions) / sizeof(hooked_functions[0]);
 
-void generate_hooked_functions_header(std::ostream& os)
+void generate_hooked_functions_h(std::ostream& os)
 {
     // TODO: proper header guard (ideally generated from output filename...)
     os << "/* Generated source code. Do not modify. */" << std::endl;
@@ -108,6 +108,18 @@ void generate_hooked_functions_header(std::ostream& os)
     os << "#endif" << std::endl;
 }
 
+void generate_true_functions_c(std::ostream& os)
+{
+    os << "/* Generated source code. Do not modify. */" << std::endl;
+    os << "#include \"hooked_functions.h\"" << std::endl;
+    os << std::endl;
+
+    for (size_t i = 0; i < n_hooked_functions; ++i)
+    {
+        os << hooked_functions[i].procname << "_ptr_t true_" << hooked_functions[i].procname << ";" << std::endl;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     try
@@ -117,14 +129,18 @@ int main(int argc, char* argv[])
             std::stringstream message;
             message << "Wrong arguments" << std::endl;
             message << "Usage: " << argv[0] << " <output_type>" << std::endl;
-            message << "<output_type> can be: hooked_functions_h" << std::endl;
+            message << "<output_type> can be: hooked_functions_h, true_functions_c" << std::endl;
             message << "Output is written to stdout";
             throw std::runtime_error(message.str());
         }
         std::cout.exceptions(std::ostream::badbit | std::ostream::eofbit | std::ostream::failbit);
         if (!strcmp(argv[1], "hooked_functions_h"))
         {
-            generate_hooked_functions_header(std::cout);
+            generate_hooked_functions_h(std::cout);
+        }
+        else if (!strcmp(argv[1], "true_functions_c"))
+        {
+            generate_true_functions_c(std::cout);
         }
         else
         {
