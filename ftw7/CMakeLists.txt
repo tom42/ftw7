@@ -60,6 +60,7 @@ if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
+add_subdirectory (codegenerator)
 add_subdirectory (ftw7_core)
 add_subdirectory (ftw7_conemu)
 add_subdirectory (ftw7)
