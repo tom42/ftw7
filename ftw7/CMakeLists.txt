@@ -41,9 +41,9 @@ set (PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
 set (PACKAGE_VERSION "0.0.1")
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/ftw7_version.h.in"
-    "${PROJECT_BINARY_DIR}/ftw7_version.h"
+    "${FTW7_GENERATED_SOURCES_DIR}/ftw7_version.h"
 )
-include_directories ("${PROJECT_BINARY_DIR}")
+include_directories ("${FTW7_GENERATED_SOURCES_DIR}")
 
 if (MSVC)
   # Set warning level to 4 (/W4)

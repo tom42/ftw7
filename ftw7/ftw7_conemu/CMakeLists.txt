@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
+set (hooked_functions_h "${FTW7_GENERATED_SOURCES_DIR}/hooked_functions.h")
+
 set (
   ftw7_conemu_sources
   src/emulation.cpp
@@ -25,6 +27,13 @@ set (
   src/opengl_display_driver.cpp
   src/true_functions.c
   src/vga8x8.cpp
+  "${hooked_functions_h}"
+)
+
+add_custom_command (
+  OUTPUT "${hooked_functions_h}"
+  COMMAND codegenerator > "${hooked_functions_h}"
+  DEPENDS codegenerator
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")

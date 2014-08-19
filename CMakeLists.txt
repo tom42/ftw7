@@ -19,6 +19,8 @@ cmake_minimum_required (VERSION 3.0.0)
 project (ftw7)
 enable_testing ()
 
+set (FTW7_GENERATED_SOURCES_DIR "${PROJECT_BINARY_DIR}")
+
 add_definitions (-DUNICODE)
 add_definitions (-D_UNICODE)
 

@@ -23,6 +23,6 @@ set (GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
 
 # Include prologue header, so that GLFW can use real functions and not hooks.
 add_definitions (-DFTW7_COMPILING_GLFW)
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /FI${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include/ftw7_conemu/emulation/hooked_functions.h")
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /FI${PROJECT_BINARY_DIR}/hooked_functions.h")
 
 add_subdirectory (glfw)

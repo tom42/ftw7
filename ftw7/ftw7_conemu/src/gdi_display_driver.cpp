@@ -19,8 +19,8 @@
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/gdi_display_driver.hpp"
 #include "ftw7_conemu/display/vga8x8.hpp"
-#include "ftw7_conemu/emulation/hooked_functions.h"
 #include "ftw7_core/windows/windows_error.hpp"
+#include "hooked_functions.h"
 #include "resource.h"
 
 #define WIDEN2(x) L ## x
