@@ -31,7 +31,7 @@ set (
 
 add_custom_command (
   OUTPUT "${hooked_functions_h}"
-  COMMAND codegenerator > "${hooked_functions_h}"
+  COMMAND codegenerator hooked_functions_h > "${hooked_functions_h}"
   DEPENDS codegenerator
 )
 

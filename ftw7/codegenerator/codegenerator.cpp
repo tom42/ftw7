@@ -18,6 +18,7 @@
  */
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 struct hooked_function
@@ -31,6 +32,7 @@ const hooked_function hooked_functions[] =
 {
     { "kernel32",   "AllocConsole",                 "typedef BOOL(WINAPI* AllocConsole_ptr_t)(void);" },
     { "kernel32",   "SetConsoleActiveScreenBuffer", "typedef BOOL(WINAPI* SetConsoleActiveScreenBuffer_ptr_t)(HANDLE);" },
+    { "kernel32",   "SetConsoleCursorInfo",         "typedef BOOL(WINAPI* SetConsoleCursorInfo_ptr_t)(HANDLE, const CONSOLE_CURSOR_INFO*);" },
     { "kernel32",   "SetConsoleTitleA",             "typedef BOOL(WINAPI* SetConsoleTitleA_ptr_t)(LPCSTR);" },
     { "kernel32",   "SetConsoleTitleW",             "typedef BOOL(WINAPI* SetConsoleTitleW_ptr_t)(LPCWSTR);" },
     { "kernel32",   "WriteConsoleOutputA",          "typedef BOOL(WINAPI* WriteConsoleOutputA_ptr_t)(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT);" },
@@ -106,17 +108,33 @@ void generate_hooked_functions_header(std::ostream& os)
     os << "#endif" << std::endl;
 }
 
-int main(int /*argc*/, char* /*argv*/[])
+int main(int argc, char* argv[])
 {
     try
     {
+        if (argc != 2)
+        {
+            std::stringstream message;
+            message << "Wrong arguments" << std::endl;
+            message << "Usage: " << argv[0] << " <output_type>" << std::endl;
+            message << "<output_type> can be: hooked_functions_h" << std::endl;
+            message << "Output is written to stdout";
+            throw std::runtime_error(message.str());
+        }
         std::cout.exceptions(std::ostream::badbit | std::ostream::eofbit | std::ostream::failbit);
-        generate_hooked_functions_header(std::cout);
+        if (!strcmp(argv[1], "hooked_functions_h"))
+        {
+            generate_hooked_functions_header(std::cout);
+        }
+        else
+        {
+            throw std::runtime_error(std::string("bad output type: ") + argv[1]);
+        }
         return EXIT_SUCCESS;
     }
     catch (const std::exception& e)
     {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << argv[0] << ": " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 }
