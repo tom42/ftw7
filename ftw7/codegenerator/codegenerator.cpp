@@ -119,7 +119,7 @@ void generate_install_hooks_ipp(std::ostream& os)
 
     os << "    // The DLLs we're intercepting functions from are all used by the emulation DLL itself." << std::endl;
     os << "    // Therefore we can just get their module handles using get_module_handle." << std::endl;
-    os << "    // This funcion throws on error, but that should not happen." << std::endl;
+    os << "    // This function throws on error, but that should not happen." << std::endl;
     os << "    const auto kernel32 = get_module_handle(L\"kernel32\");" << std::endl;
     os << "    const auto user32 = get_module_handle(L\"user32\");" << std::endl;
     os << std::endl;

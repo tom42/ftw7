@@ -142,6 +142,22 @@ BOOL WINAPI ftw7_SetConsoleActiveScreenBuffer(HANDLE hConsoleOutput)
     return TRUE;
 }
 
+BOOL WINAPI ftw7_SetConsoleCursorInfo(HANDLE hConsoleOutput, const CONSOLE_CURSOR_INFO* lpConsoleCursorInfo)
+{
+    try
+    {
+        // Demos messing around with the cursor are annoying when using ftw7
+        // from the command line, so we make SetConsoleCursorInfo a no-op.
+        FTW7_TRACE_API_CALL(hConsoleOutput, lpConsoleCursorInfo);
+        FTW7_LOG_DEBUG << __FUNCTIONW__ << L": faked. This is a no-op.";
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return TRUE;
+}
+
 BOOL WINAPI ftw7_SetConsoleTitleA(LPCSTR lpConsoleTitle)
 {
     try
@@ -283,33 +299,7 @@ namespace emulation
 namespace
 {
 
-void install_hooks()
-{
-    using ftw7_core::windows::get_module_handle;
-    using ftw7_core::mhookpp::set_hook;
-
-    // The DLLs we're intercepting functions from are all used by the emulation DLL itself.
-    // Therefore we can just get their module handles using get_module_handle.
-    // This funcion throws on error, but that should not happen.
-    const auto kernel32 = get_module_handle(L"kernel32");
-    const auto user32 = get_module_handle(L"user32");
-
-    // TODO: possibly need to divide up hooking into an early stage where
-    //       we hook a small subset of functions only (e.g. WriteConsoleA and WriteConsoleW,
-    //       those we need for logging). We can then hook those, which should definitely
-    //       be around. We can then go on set up the logging already with the hooks in place
-    //       and know that if some logging code uses WriteConsoleOutputA it can use the true version of it)
-
-    // Hook all functions listed in the xheader.
-#define FTW7_CONEMU_XHOOKED_FUNCTION(dllname, procname)                     \
-    {                                                                       \
-        FTW7_LOG_DEBUG << L"Hooking function " << #procname                 \
-            << L" (" << #dllname << L", " << dllname << L')';               \
-        set_hook(dllname, #procname, &true_##procname, ftw7_##procname);    \
-    }
-#include "ftw7_conemu/emulation/hooked_functions.x"
-#undef FTW7_CONEMU_XHOOKED_FUNCTION
-}
+#include "install_hooks.ipp"
 
 ftw7_conemu::display::display_driver* create_display_driver(
     HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)

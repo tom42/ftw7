@@ -16,6 +16,7 @@
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
 set (hooked_functions_h "${FTW7_GENERATED_SOURCES_DIR}/hooked_functions.h")
+set (install_hooks_ipp "${FTW7_GENERATED_SOURCES_DIR}/install_hooks.ipp")
 set (true_functions_c "${FTW7_GENERATED_SOURCES_DIR}/true_functions.c")
 
 set (
@@ -37,6 +38,12 @@ add_custom_command (
 )
 
 add_custom_command (
+  OUTPUT "${install_hooks_ipp}"
+  COMMAND codegenerator install_hooks_ipp > "${install_hooks_ipp}"
+  DEPENDS codegenerator
+)
+
+add_custom_command (
   OUTPUT "${true_functions_c}"
   COMMAND codegenerator true_functions_c > "${true_functions_c}"
   DEPENDS codegenerator
@@ -46,6 +53,7 @@ add_custom_target (
   ftw7_generated_headers
   SOURCES
   "${hooked_functions_h}"
+  "${install_hooks_ipp}"
 )
 
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")
