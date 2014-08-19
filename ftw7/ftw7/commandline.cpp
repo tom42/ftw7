@@ -45,6 +45,7 @@ enum
     OPT_DRIVER,
     OPT_FULLSCREEN,
     OPT_LOG_LEVEL,
+    OPT_NO_ERROR_DIALOGS,
     OPT_NO_WAIT,
     OPT_SEPARATE_CONSOLE,
 };
@@ -122,6 +123,9 @@ error_t parse_option(int key, const char* arg, const argp_state* state)
         return 0;
     case OPT_LOG_LEVEL:
         parse_log_level(arg, state, args);
+        return 0;
+    case OPT_NO_ERROR_DIALOGS:
+        args.demo_settings.emulation_settings.no_error_dialogs = true;
         return 0;
     case OPT_NO_WAIT:
         args.demo_settings.wait_for_process = false;
@@ -201,6 +205,7 @@ command_line_arguments parse_command_line(int argc, char* argv[])
         { "separate-console", OPT_SEPARATE_CONSOLE, 0, 0, "Run demo with a separate console window" },
         { 0, 0, 0, 0, "Miscellaneous options" },
         { "log-level", OPT_LOG_LEVEL, "level", 0, log_level_doc.c_str() },
+        { "no-error-dialogs", OPT_NO_ERROR_DIALOGS, 0, 0, "Do not show OS error dialogs on demo crash" },
         { "no-wait", OPT_NO_WAIT, 0, 0, "Do not wait for the demo to terminate" },
         { 0 }
     };
