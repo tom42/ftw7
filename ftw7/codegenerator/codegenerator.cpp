@@ -108,6 +108,34 @@ void generate_hooked_functions_h(std::ostream& os)
     os << "#endif" << std::endl;
 }
 
+void generate_install_hooks_ipp(std::ostream& os)
+{
+    os << "/* Generated source code. Do not modify. */" << std::endl;
+    os << "void install_hooks()" << std::endl;
+    os << "{" << std::endl;
+    os << "    using ftw7_core::windows::get_module_handle;" << std::endl;
+    os << "    using ftw7_core::mhookpp::set_hook;" << std::endl;
+    os << std::endl;
+
+    os << "    // The DLLs we're intercepting functions from are all used by the emulation DLL itself." << std::endl;
+    os << "    // Therefore we can just get their module handles using get_module_handle." << std::endl;
+    os << "    // This funcion throws on error, but that should not happen." << std::endl;
+    os << "    const auto kernel32 = get_module_handle(L\"kernel32\");" << std::endl;
+    os << "    const auto user32 = get_module_handle(L\"user32\");" << std::endl;
+    os << std::endl;
+
+    for (size_t i = 0; i < n_hooked_functions; ++i)
+    {
+        os << "    set_hook(" << hooked_functions[i].dllname << ", " <<
+            "\"" << hooked_functions[i].procname << "\", " <<
+            "&true_" << hooked_functions[i].procname << ", " <<
+            "ftw7_" << hooked_functions[i].procname << ");" << std::endl;
+    }
+
+    os << "}" << std::endl;
+    os << std::endl;
+}
+
 void generate_true_functions_c(std::ostream& os)
 {
     os << "/* Generated source code. Do not modify. */" << std::endl;
@@ -120,6 +148,26 @@ void generate_true_functions_c(std::ostream& os)
     }
 }
 
+void generate(const char* output_type, std::ostream& os)
+{
+    if (!strcmp(output_type, "hooked_functions_h"))
+    {
+        generate_hooked_functions_h(os);
+    }
+    else if (!strcmp(output_type, "install_hooks_ipp"))
+    {
+        generate_install_hooks_ipp(os);
+    }
+    else if (!strcmp(output_type, "true_functions_c"))
+    {
+        generate_true_functions_c(os);
+    }
+    else
+    {
+        throw std::runtime_error(std::string("bad output type: ") + output_type);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     try
@@ -129,23 +177,12 @@ int main(int argc, char* argv[])
             std::stringstream message;
             message << "Wrong arguments" << std::endl;
             message << "Usage: " << argv[0] << " <output_type>" << std::endl;
-            message << "<output_type> can be: hooked_functions_h, true_functions_c" << std::endl;
+            message << "<output_type> can be: hooked_functions_h, install_hooks_ipp, true_functions_c" << std::endl;
             message << "Output is written to stdout";
             throw std::runtime_error(message.str());
         }
         std::cout.exceptions(std::ostream::badbit | std::ostream::eofbit | std::ostream::failbit);
-        if (!strcmp(argv[1], "hooked_functions_h"))
-        {
-            generate_hooked_functions_h(std::cout);
-        }
-        else if (!strcmp(argv[1], "true_functions_c"))
-        {
-            generate_true_functions_c(std::cout);
-        }
-        else
-        {
-            throw std::runtime_error(std::string("bad output type: ") + argv[1]);
-        }
+        generate(argv[1], std::cout);
         return EXIT_SUCCESS;
     }
     catch (const std::exception& e)
