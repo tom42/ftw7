@@ -1,3 +1,7 @@
+* Fix build process:
+  * Clean build fails the first time, because GLFW needs hooked_functions.h, which
+    is a generated source built as part of ftw7_conemu. hooked_functions.h needs
+	to somehow become a dependency of GLFW
 * Here's a list of functions prototype I is hooking. Check them and implement them if it makes sense.
   * kernel32
     * CreateConsoleScreenBuffer
