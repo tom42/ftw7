@@ -80,7 +80,7 @@ void generate_hooked_functions_h(std::ostream& os)
     for (size_t i = 0; i < n_hooked_functions; ++i)
     {
         os << "#define " << hooked_functions[i].procname << " true_" <<
-            hooked_functions[i].procname << ";" << std::endl;
+            hooked_functions[i].procname << std::endl;
     }
     os << "#endif" << std::endl;
     os << std::endl;
@@ -126,6 +126,7 @@ void generate_install_hooks_ipp(std::ostream& os)
 
     for (size_t i = 0; i < n_hooked_functions; ++i)
     {
+        os << "    FTW7_LOG_DEBUG << L\"Hooking function " << hooked_functions[i].procname << " (" << hooked_functions[i].dllname << ")\";" << std::endl;
         os << "    set_hook(" << hooked_functions[i].dllname << ", " <<
             "\"" << hooked_functions[i].procname << "\", " <<
             "&true_" << hooked_functions[i].procname << ", " <<
@@ -133,7 +134,6 @@ void generate_install_hooks_ipp(std::ostream& os)
     }
 
     os << "}" << std::endl;
-    os << std::endl;
 }
 
 void generate_true_functions_c(std::ostream& os)
