@@ -27,7 +27,6 @@ set (
   src/opengl_display_driver.cpp
   src/true_functions.c
   src/vga8x8.cpp
-  "${hooked_functions_h}"
 )
 
 add_custom_command (
@@ -36,9 +35,16 @@ add_custom_command (
   DEPENDS codegenerator
 )
 
+add_custom_target (
+  ftw7_generated_sources
+  SOURCES
+  "${hooked_functions_h}"
+)
+
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_conemu/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 include_directories ("${PROJECT_SOURCE_DIR}/mhook")
 include_directories ("${PROJECT_SOURCE_DIR}/glfw/glfw/include")
 add_library (ftw7_conemu SHARED ${ftw7_conemu_sources})
+add_dependencies (ftw7_conemu ftw7_generated_sources)
 target_link_libraries (ftw7_conemu ftw7_core glfw mhook opengl32)
