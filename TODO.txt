@@ -1,3 +1,25 @@
+* Fixage, hopefully to be applied somewhen:
+  * Cernunnos:
+    * Somehow manages to interfere with the opengl display driver.
+	* Fucks up console logging, but then, we should probably not rely on the console for logging.
+  * Clockwerck
+    * Spurious crashes at end of demo. That's why --no-error-dialogs has been implemented
+  * Display drivers: a horrible mess they are, that's what they are.
+  * Whoops:
+    "No window classes registered by a DLL are unregistered when the DLL is unloaded.
+    A DLL must explicitly unregister its classes when it is unloaded."
+    => Well...that's when the DLL is dynamically unloaded using FreeLibrary.
+    => Window classes are unregistered when a process terminates. There's
+       some blog entry from raymond chen on that subject.
+    => Document this somewhere in the gdi display driver and be done with it.
+  * Some logging facility
+    * What we have is probably already pretty good
+    * Add a mechanism to add certain messages only once
+      * Doesn't need to be all THAT thread-safe =)
+* Damit:
+  * Features for a reimplementation
+    * logging (to file. The emulation DLL should leave the console alone, for our own sanity)
+      * Log demo duration
 * Here's a list of functions prototype I is hooking. Check them and implement them if it makes sense.
   * kernel32
     * CreateConsoleScreenBuffer
