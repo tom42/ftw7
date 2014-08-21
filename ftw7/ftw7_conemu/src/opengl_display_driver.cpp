@@ -23,6 +23,7 @@
 #include "glfw/glfw3native.h"
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
+#include "ftw7_conemu/display/vga8x8.hpp"
 #include "ftw7_core/log/log.hpp"
 #include "ftw7_core/windows/string.hpp"
 #include "ftw7_core/wexcept.hpp"
@@ -36,6 +37,27 @@ namespace display
 {
 namespace
 {
+
+// TODO: not every driver should supply its own palette
+const GLfloat palette[] =
+{
+    0x00 / 255.0f, 0x00 / 255.0f, 0x00 / 255.0f, 1,
+    0x00 / 255.0f, 0x00 / 255.0f, 0xaa / 255.0f, 1,
+    0x00 / 255.0f, 0xaa / 255.0f, 0x00 / 255.0f, 1,
+    0x00 / 255.0f, 0xaa / 255.0f, 0xaa / 255.0f, 1,
+    0xaa / 255.0f, 0x00 / 255.0f, 0x00 / 255.0f, 1,
+    0xaa / 255.0f, 0x00 / 255.0f, 0xaa / 255.0f, 1,
+    0xaa / 255.0f, 0x55 / 255.0f, 0x00 / 255.0f, 1,
+    0xaa / 255.0f, 0xaa / 255.0f, 0xaa / 255.0f, 1,
+    0x55 / 255.0f, 0x55 / 255.0f, 0x55 / 255.0f, 1,
+    0x55 / 255.0f, 0x55 / 255.0f, 0xff / 255.0f, 1,
+    0x55 / 255.0f, 0xff / 255.0f, 0x55 / 255.0f, 1,
+    0x55 / 255.0f, 0xff / 255.0f, 0xff / 255.0f, 1,
+    0xff / 255.0f, 0x55 / 255.0f, 0x55 / 255.0f, 1,
+    0xff / 255.0f, 0x55 / 255.0f, 0xff / 255.0f, 1,
+    0xff / 255.0f, 0xff / 255.0f, 0x55 / 255.0f, 1,
+    0xff / 255.0f, 0xff / 255.0f, 0xff / 255.0f, 1,
+};
 
 void error_callback(int /*error*/, const char* description)
 {
@@ -87,6 +109,57 @@ GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
         }
         glfwSetKeyCallback(window, key_callback);
         glfwSwapInterval(1);
+
+        // TODO: here be nastiness for bnz:
+        // * No resources are cleaned up
+        // * No error codes are checked
+        // * Texture dimensions and whatnot are hardcoded
+        const GLsizei char_width = 8;
+        const GLsizei char_height = 8;
+        const GLsizei texture_width = 16 * char_width;
+        const GLsizei texture_height = 16 * char_height;
+        unsigned char texture_data[texture_width * texture_height * 4];
+        const unsigned char* src = vga8x8;
+        for (size_t row = 0; row < 16; ++row)
+        {
+            for (size_t column = 0; column < 16; ++column)
+            {
+                unsigned char* texel = texture_data + (row * char_height * texture_width + column * char_width) * 4;
+                for (size_t y = 0; y < char_height; ++y)
+                {
+                    unsigned char byte = *src++;
+                    for (size_t x = 0; x < char_width; ++x)
+                    {
+                        if (byte & 128)
+                        {
+                            // Foreground color
+                            *texel++ = 255;
+                            *texel++ = 255;
+                            *texel++ = 255;
+                            *texel++ = 255;
+                        }
+                        else
+                        {
+                            // Background color
+                            *texel++ = 0;
+                            *texel++ = 0;
+                            *texel++ = 0;
+                            *texel++ = 0;
+                        }
+                        byte <<= 1;
+                    }
+                    texel += (texture_width - char_width) * 4;
+                }
+            }
+        }
+
+        GLuint texture_id;
+        glGenTextures(1, &texture_id);
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -161,30 +234,83 @@ bool opengl_display_driver::handle_messages()
     return !glfwWindowShouldClose(m_window);
 }
 
-void opengl_display_driver::render(const CHAR_INFO* /*buffer*/)
+void opengl_display_driver::render(const CHAR_INFO* buffer)
 {
-    // TODO: real rendering code
-    float ratio;
+    // TODO: more nastyness for bnz (hardcoded shite and whatnot, and all in immediate mode since that's all I ever learnt)
     int width, height;
-
     glfwGetFramebufferSize(m_window, &width, &height);
-    ratio = width / (float)height;
     glViewport(0, 0, width, height);
+
+    glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    glOrtho(0, 640, 400, 0, -1, 1);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glRotatef((float)glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.f, 0.f, 0.f);
-    glVertex3f(-0.6f, -0.4f, 0.f);
-    glColor3f(0.f, 1.f, 0.f);
-    glVertex3f(0.6f, -0.4f, 0.f);
-    glColor3f(0.f, 0.f, 1.f);
-    glVertex3f(0.f, 0.6f, 0.f);
+
+    // 1st pass: background colors
+    const CHAR_INFO* p = buffer;
+    glBegin(GL_QUADS);
+    for (int row = 0; row < 50; ++row)
+    {
+        for (int column = 0; column < 80; ++column)
+        {
+            size_t bgcolor_index = (p->Attributes >> 4) & 15;
+            glColor4fv(&palette[bgcolor_index * 4]);
+            glVertex2i(column * 8 + 8, row * 8 + 0);
+            glVertex2i(column * 8 + 0, row * 8 + 0);
+            glVertex2i(column * 8 + 0, row * 8 + 8);
+            glVertex2i(column * 8 + 8, row * 8 + 8);
+            ++p;
+        }
+    }
     glEnd();
+
+    // 2nd pass: foreground colors
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBegin(GL_QUADS);
+    p = buffer;
+    for (int row = 0; row < 50; ++row)
+    {
+        for (int column = 0; column < 80; ++column)
+        {
+            size_t fgcolor_index = p->Attributes & 15;
+
+            // c = character code.
+            const size_t c = static_cast<unsigned char>(p->Char.AsciiChar);
+            const size_t cx = c & 15;
+            const size_t cy = c / 16;
+            float x0 = (cx * 8) / 128.0f;
+            float y0 = (cy * 8) / 128.0f;
+            float x1 = (cx * 8 + 8) / 128.0f;
+            float y1 = (cy * 8 + 8) / 128.0f;
+
+            glColor4fv(&palette[fgcolor_index * 4]);
+
+            glTexCoord2f(x1, y0);
+            glVertex2i(column * 8 + 8, row * 8 + 0);
+
+            glTexCoord2f(x0, y0);
+            glVertex2i(column * 8 + 0, row * 8 + 0);
+
+            glTexCoord2f(x0, y1);
+            glVertex2i(column * 8 + 0, row * 8 + 8);
+
+            glTexCoord2f(x1, y1);
+            glVertex2i(column * 8 + 8, row * 8 + 8);
+
+            ++p;
+        }
+    }
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+
     glfwSwapBuffers(m_window);
 }
 
