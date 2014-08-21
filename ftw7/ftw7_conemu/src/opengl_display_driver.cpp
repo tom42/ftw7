@@ -244,12 +244,13 @@ void opengl_display_driver::render(const CHAR_INFO* buffer)
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // TODO: this is all hackery that assumes a 4:3 resolution.
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, 640, 400, 0, -1, 1);
-
+    glOrtho(0, 640, 480, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glTranslatef(0, (480 - 400) / 2, 0);
 
     // 1st pass: background colors
     const CHAR_INFO* p = buffer;
