@@ -36,6 +36,7 @@ const hooked_function hooked_functions[] =
     { "kernel32",   "SetConsoleTitleA",             "typedef BOOL(WINAPI* SetConsoleTitleA_ptr_t)(LPCSTR);" },
     { "kernel32",   "SetConsoleTitleW",             "typedef BOOL(WINAPI* SetConsoleTitleW_ptr_t)(LPCWSTR);" },
     { "kernel32",   "WriteConsoleOutputA",          "typedef BOOL(WINAPI* WriteConsoleOutputA_ptr_t)(HANDLE, const CHAR_INFO*, COORD, COORD, PSMALL_RECT);" },
+    { "user32",     "GetAsyncKeyState",             "typedef SHORT (WINAPI* GetAsyncKeyState_ptr_t)(int);" },
     { "user32",     "ShowCursor",                   "typedef int (WINAPI* ShowCursor_ptr_t)(BOOL);" },
     { "user32",     "ShowWindow",                   "typedef BOOL(WINAPI* ShowWindow_ptr_t)(HWND, int);" },
 };

@@ -251,6 +251,26 @@ BOOL WINAPI ftw7_WriteConsoleOutputA(
 // user32
 ////////////////////////////////////////////////////////////////////////////////
 
+SHORT WINAPI ftw7_GetAsyncKeyState(int vKey)
+{
+    try
+    {
+        // Some demos, e.g. Cernunnos, exit by polling the escape key using
+        // GetAsyncKeyState. This is annoying when watching demos while
+        // doing other work at the same time on the same machine since
+        // hitting escape will terminate the demo even when its window
+        // doesn't have the keyboard focus.
+        // I can't be having with that kind of thing, so we simply pretend
+        // for any key that it isn't pressed.
+        FTW7_TRACE_API_CALL(vKey);
+    }
+    catch (...)
+    {
+        FTW7_HANDLE_API_EXCEPTION();
+    }
+    return 0;
+}
+
 int WINAPI ftw7_ShowCursor(BOOL bShow)
 {
     static std::atomic<int> display_counter(0);
