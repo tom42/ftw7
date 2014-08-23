@@ -84,6 +84,10 @@ GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
             {
                 throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
             }
+            if (settings.refresh_rate)
+            {
+                glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);
+            }
             window = glfwCreateWindow(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, monitor, nullptr);
         }
         else

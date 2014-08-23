@@ -1,5 +1,11 @@
+* Clean up opengl and gdi display drivers:
+  * Variable Window width/height
+  * Screen width/screen height
+  * Fullscreen mode
+  * Refresh rate
+  * Color depth (?)
+  * Alt+Enter for fullscreen/windowed mode switching
 * drivers/interface:
-  * Definitely need a way to set the refresh rate
   * Attempt to get at the monitor thingy using glfw
   * Do a simple fix for cernunnos: don't think there are too many other
     demos that pull off shit like that

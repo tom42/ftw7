@@ -60,6 +60,7 @@ struct settings
     int window_height;
     int screen_width;
     int screen_height;
+    int refresh_rate;
 
     static void initialize(settings& settings);
     static error_code check(const settings* settings);

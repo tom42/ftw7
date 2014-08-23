@@ -47,6 +47,7 @@ enum
     OPT_LOG_LEVEL,
     OPT_NO_ERROR_DIALOGS,
     OPT_NO_WAIT,
+    OPT_REFRESH_RATE,
     OPT_SEPARATE_CONSOLE,
 };
 
@@ -130,6 +131,10 @@ error_t parse_option(int key, const char* arg, const argp_state* state)
     case OPT_NO_WAIT:
         args.demo_settings.wait_for_process = false;
         return 0;
+    case OPT_REFRESH_RATE:
+        // TODO: reject negative numbers?
+        parse_number(args.demo_settings.emulation_settings.refresh_rate, arg, state, "refresh rate");
+        return 0;
     case OPT_SCREEN_HEIGHT:
         // TODO: reject negative numbers?
         parse_number(args.demo_settings.emulation_settings.screen_height, arg, state, "screen height");
@@ -199,6 +204,7 @@ command_line_arguments parse_command_line(int argc, char* argv[])
         { 0, 0, 0, 0, "Display options" },
         { "driver", OPT_DRIVER, "driver", 0, "Specify display driver. Available drivers are `gdi' and `opengl' (default)" },
         { "fullscreen", OPT_FULLSCREEN, 0, 0, "Run in fullscreen mode" },
+        { "refresh-rate", OPT_REFRESH_RATE, "rate", 0, "Display refresh rate for fullscreen mode" },
         { "screen-width", OPT_SCREEN_WIDTH, "width", 0, "Screen width for fullscreen mode" },
         { "screen-height", OPT_SCREEN_HEIGHT, "height", 0, "Screen height for fullscreen mode" },
         { 0, 0, 0, 0, "Options mainly useful for development" },

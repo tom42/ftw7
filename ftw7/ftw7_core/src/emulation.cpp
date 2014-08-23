@@ -42,6 +42,7 @@ void settings::initialize(settings& settings)
     settings.window_height = 400;
     settings.screen_width = 640;
     settings.screen_height = 480;
+    settings.refresh_rate = 0;
 }
 
 error_code settings::check(const settings* settings)
