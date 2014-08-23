@@ -22,6 +22,7 @@
 #include <Windows.h>
 #include <cstring>
 #include <vector>
+#include "ftw7_core/wexcept.hpp"
 
 namespace ftw7_core
 {
@@ -49,6 +50,22 @@ std::vector<DISPLAY_DEVICEW> get_display_adapters(UnaryPredicate predicate)
         }
     }
     return adapters;
+}
+
+inline std::vector<DISPLAY_DEVICEW> get_active_physical_display_adapters()
+{
+    return get_display_adapters(
+        [](const DISPLAY_DEVICEW& d){ return !(d.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) && (d.StateFlags & DISPLAY_DEVICE_ACTIVE); });
+}
+
+inline DISPLAY_DEVICEW get_primary_display_adapter()
+{
+    auto adapters = get_display_adapters([](const DISPLAY_DEVICEW& d){ return d.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE; });
+    if (adapters.size() != 1)
+    {
+        throw ftw7_core::wruntime_error(L"could not get primary display adapter");
+    }
+    return adapters[0];
 }
 
 }
