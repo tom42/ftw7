@@ -73,16 +73,18 @@ void parse_log_level(const char* arg, const argp_state* state, command_line_argu
 }
 
 template <typename T>
-void parse_number(T& target, const char* arg, const argp_state* state, const char* description)
+void parse_non_negative_number(T& target, const char* arg, const argp_state* state, const char* description)
 {
     try
     {
         target = boost::lexical_cast<T>(arg);
+        if (target >= 0)
+        {
+            return;
+        }
     }
-    catch (const boost::bad_lexical_cast&)
-    {
-        argp_failure(state, EXIT_FAILURE, 0, "bad %s `%s'", description, arg);
-    }
+    catch (const boost::bad_lexical_cast&) {}
+    argp_failure(state, EXIT_FAILURE, 0, "bad %s `%s'", description, arg);
 }
 
 ftw7_core::emulation::display_driver_code parse_driver(const char* arg, const argp_state* state)
@@ -132,16 +134,13 @@ error_t parse_option(int key, const char* arg, const argp_state* state)
         args.demo_settings.wait_for_process = false;
         return 0;
     case OPT_REFRESH_RATE:
-        // TODO: reject negative numbers?
-        parse_number(args.demo_settings.emulation_settings.refresh_rate, arg, state, "refresh rate");
+        parse_non_negative_number(args.demo_settings.emulation_settings.refresh_rate, arg, state, "refresh rate");
         return 0;
     case OPT_SCREEN_HEIGHT:
-        // TODO: reject negative numbers?
-        parse_number(args.demo_settings.emulation_settings.screen_height, arg, state, "screen height");
+        parse_non_negative_number(args.demo_settings.emulation_settings.screen_height, arg, state, "screen height");
         return 0;
     case OPT_SCREEN_WIDTH:
-        // TODO: reject negative numbers?
-        parse_number(args.demo_settings.emulation_settings.screen_width, arg, state, "screen width");
+        parse_non_negative_number(args.demo_settings.emulation_settings.screen_width, arg, state, "screen width");
         return 0;
     case OPT_SEPARATE_CONSOLE:
         args.demo_settings.separate_console = true;
