@@ -2,6 +2,7 @@
 .gitignore          text
 COPYING             text
 Doxyfile.in         text
+README.1st          text
 *.c                 text
 *.cmake             text
 *.cmake.in          text

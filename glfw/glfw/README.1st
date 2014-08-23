@@ -1,0 +1,5 @@
+This is NOT an official version of GLFW, but one that has been modified
+to suit the needs of FTW7.
+
+* Based on GLFW 3.0.4
+* Added support for glfwGetWin32Monitor
