@@ -44,10 +44,11 @@ const size_t n_hooked_functions = sizeof(hooked_functions) / sizeof(hooked_funct
 
 void generate_hooked_functions_h(std::ostream& os)
 {
-    // TODO: proper header guard (ideally generated from output filename...)
+    const char header_guard[] = "FTW7_HOOKED_FUNCTIONS_H_INCLUDED";
+
     os << "/* Generated source code. Do not modify. */" << std::endl;
-    os << "#ifndef FTW7_RULEZ_H_INCLUDED" << std::endl;
-    os << "#define FTW7_RULEZ_H_INCLUDED" << std::endl;
+    os << "#ifndef " << header_guard << std::endl;
+    os << "#define " << header_guard << std::endl;
     os << std::endl;
 
     // Hack for GLFW:
