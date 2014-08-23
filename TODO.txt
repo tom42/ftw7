@@ -6,7 +6,7 @@
   * Color depth (?)
   * Alt+Enter for fullscreen/windowed mode switching
 * drivers/interface:
-  * Attempt to get at the monitor thingy using glfw
+  * On the work notebook, ChangeDisplaySettingsEx in fact DOES work => Test this again, perhaps we can make the GDI driver work too.
   * Do a simple fix for cernunnos: don't think there are too many other
     demos that pull off shit like that
 * Fixage, hopefully to be applied somewhen:
