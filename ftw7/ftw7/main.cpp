@@ -39,11 +39,27 @@ void print_error(const char* program_name, const std::basic_string<char_type>& m
 
 void list_displays()
 {
-    // TODO: dump also monitor information
-    auto displays = ftw7_core::windows::get_active_physical_display_adapters();
+    const auto displays = ftw7_core::windows::get_active_physical_display_adapters();
     for (const auto& d : displays)
     {
-        std::wcout << d.DeviceName << std::endl;
+        std::wcout << d.DeviceName;
+        const auto monitors = ftw7_core::windows::get_monitors(d.DeviceName);
+        if (monitors.size() > 0)
+        {
+            std::wcout << L": ";
+            for (auto monitor = monitors.begin(); monitor != monitors.end(); ++monitor)
+            {
+                if (monitor != monitors.begin())
+                {
+                    std::wcout << L", ";
+                }
+                // TODO: test on work notebook. We might want to trim this string,
+                //       since apparently some manufacturers have trailing spaces
+                //       in there, which looks irritating.
+                std::wcout << monitor->DeviceString;
+            }
+        }
+        std::wcout << std::endl;
     }
 }
 

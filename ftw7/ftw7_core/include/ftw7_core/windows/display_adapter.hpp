@@ -68,6 +68,25 @@ inline DISPLAY_DEVICEW get_primary_display_adapter()
     return adapters[0];
 }
 
+inline std::vector<DISPLAY_DEVICEW> get_monitors(const wchar_t* adapter_name)
+{
+    std::vector<DISPLAY_DEVICEW> monitors;
+    DWORD monitor_index = 0;
+    for (;;)
+    {
+        DISPLAY_DEVICEW monitor;
+        memset(&monitor, 0, sizeof(monitor));
+        monitor.cb = sizeof(monitor);
+        if (!EnumDisplayDevicesW(adapter_name, monitor_index, &monitor, 0))
+        {
+            break;
+        }
+        ++monitor_index;
+        monitors.push_back(monitor);
+    }
+    return monitors;
+}
+
 }
 }
 

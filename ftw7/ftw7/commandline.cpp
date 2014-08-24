@@ -205,7 +205,7 @@ command_line_arguments parse_command_line(int argc, char* argv[])
     const argp_option options[] =
     {
         { 0, 0, 0, 0, "Info options" },
-        { "list-displays", OPT_LIST_DISPLAYS, 0, 0, "List active display adapters and exit" },
+        { "list-displays", OPT_LIST_DISPLAYS, 0, 0, "List active display adapters and their monitors and exit" },
         { 0, 0, 0, 0, "Display options" },
         { "driver", OPT_DRIVER, "driver", 0, "Specify display driver. Available drivers are `gdi' and `opengl' (default)" },
         { "fullscreen", OPT_FULLSCREEN, 0, 0, "Run in fullscreen mode" },
