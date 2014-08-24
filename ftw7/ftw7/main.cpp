@@ -21,6 +21,9 @@
 #include "commandline.hpp"
 #include "ftw7_core/demo.hpp"
 #include "ftw7_core/wexcept.hpp"
+#include "ftw7_core/windows/display_adapter.hpp"
+
+using namespace ftw7;
 
 template <typename char_type>
 void print_error(const char* program_name, const char_type* message)
@@ -34,12 +37,32 @@ void print_error(const char* program_name, const std::basic_string<char_type>& m
     print_error(program_name, message.c_str());
 }
 
+void list_displays()
+{
+    // TODO: dump also monitor information
+    auto displays = ftw7_core::windows::get_active_physical_display_adapters();
+    for (const auto& d : displays)
+    {
+        std::wcout << d.DeviceName << std::endl;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     try
     {
         auto args = ftw7::parse_command_line(argc, argv);
-        ftw7_core::run_demo(args.demo_command_line, args.demo_settings);
+        switch (args.action)
+        {
+        case action::list_displays:
+            list_displays();
+            break;
+        case action::run_demo:
+            ftw7_core::run_demo(args.demo_command_line, args.demo_settings);
+            break;
+        default:
+            throw std::logic_error("unknown command line action");
+        }
         return EXIT_SUCCESS;
     }
     catch (const std::logic_error& e)

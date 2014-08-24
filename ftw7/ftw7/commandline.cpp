@@ -44,6 +44,7 @@ enum
     force_the_following_options_out_of_the_ascii_range = 256,
     OPT_DRIVER,
     OPT_FULLSCREEN,
+    OPT_LIST_DISPLAYS,
     OPT_LOG_LEVEL,
     OPT_NO_ERROR_DIALOGS,
     OPT_NO_WAIT,
@@ -124,6 +125,9 @@ error_t parse_option(int key, const char* arg, const argp_state* state)
     case OPT_FULLSCREEN:
         args.demo_settings.emulation_settings.fullscreen = true;
         return 0;
+    case OPT_LIST_DISPLAYS:
+        args.action = action::list_displays;
+        return 0;
     case OPT_LOG_LEVEL:
         parse_log_level(arg, state, args);
         return 0;
@@ -200,6 +204,8 @@ command_line_arguments parse_command_line(int argc, char* argv[])
 
     const argp_option options[] =
     {
+        { 0, 0, 0, 0, "Info options" },
+        { "list-displays", OPT_LIST_DISPLAYS, 0, 0, "List active display adapters and exit" },
         { 0, 0, 0, 0, "Display options" },
         { "driver", OPT_DRIVER, "driver", 0, "Specify display driver. Available drivers are `gdi' and `opengl' (default)" },
         { "fullscreen", OPT_FULLSCREEN, 0, 0, "Run in fullscreen mode" },

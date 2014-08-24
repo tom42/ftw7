@@ -26,9 +26,18 @@
 namespace ftw7
 {
 
+enum class action
+{
+    list_displays,
+    run_demo
+};
+
 class command_line_arguments
 {
 public:
+    command_line_arguments() : action(action::run_demo) {}
+
+    action action;
     std::vector<std::wstring> demo_command_line;
     ftw7_core::demo_settings demo_settings;
 };
