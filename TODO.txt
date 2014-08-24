@@ -30,7 +30,6 @@
 * Damit:
   * Features for a reimplementation
     * logging (to file. The emulation DLL should leave the console alone, for our own sanity)
-      * Log demo duration
 * Here's a list of functions prototype I is hooking. Check them and implement them if it makes sense.
   * kernel32
     * CreateConsoleScreenBuffer
