@@ -48,8 +48,10 @@ enum display_driver_code
 
 struct settings
 {
+    static const size_t magic_string_size = 32;
+
     size_t size;
-    char magic_string[32];
+    char magic_string[magic_string_size];
 
     log::log_level log_level;
     bool no_error_dialogs;
