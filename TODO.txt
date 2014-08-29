@@ -1,3 +1,13 @@
+* display drivers: stop tinkering around
+  * What kind of display modes should we support?
+    * windowed
+	* fullscreen window
+	* real fullscreen (orly?)
+  * Scaling modes?
+    * Stretch to fit, maintaining aspect ratio
+	* No scaling (center on screen)
+	* Scale by integer amount and center
+  * Attempt to emulate real vga output? (Ninth column)
 * Clean up opengl and gdi display drivers:
   * Variable Window width/height
   * Screen width/screen height
