@@ -276,6 +276,7 @@ void opengl_display_driver::render(const CHAR_INFO* buffer)
     glClear(GL_COLOR_BUFFER_BIT);
 
     // TODO: this is all hackery that assumes a 4:3 resolution.
+    // TODO: this really needs fixage, since it looks totally shit in windowed mode at 640x400
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, 640, 480, 0, -1, 1);
