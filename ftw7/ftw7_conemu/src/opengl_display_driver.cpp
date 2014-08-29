@@ -72,6 +72,17 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
     }
 }
 
+GLFWmonitor* find_monitor(const ftw7_core::emulation::settings& /*settings*/)
+{
+    auto monitor = glfwGetPrimaryMonitor();
+    if (!monitor)
+    {
+        throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
+    }
+    // TODO: search alternate monitor if requested
+    return monitor;
+}
+
 GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
     GLFWwindow* window = nullptr;
@@ -79,11 +90,7 @@ GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     {
         if (settings.fullscreen)
         {
-            auto monitor = glfwGetPrimaryMonitor();
-            if (!monitor)
-            {
-                throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
-            }
+            auto monitor = find_monitor(settings);
             if (settings.refresh_rate)
             {
                 glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);
