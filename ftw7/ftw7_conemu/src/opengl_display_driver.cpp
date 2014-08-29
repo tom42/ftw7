@@ -72,15 +72,35 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
     }
 }
 
-GLFWmonitor* find_monitor(const ftw7_core::emulation::settings& /*settings*/)
+GLFWmonitor* find_monitor(const wchar_t* display_name)
 {
-    auto monitor = glfwGetPrimaryMonitor();
-    if (!monitor)
+    if (!display_name)
     {
-        throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
+        auto monitor = glfwGetPrimaryMonitor();
+        if (!monitor)
+        {
+            throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
+        }
+        return monitor;
     }
-    // TODO: search alternate monitor if requested
-    return monitor;
+
+
+    int n_monitors;
+    auto monitors = glfwGetMonitors(&n_monitors);
+    if (!monitors)
+    {
+        throw ftw7_core::wruntime_error(L"glfwGetMonitors failed");
+    }
+    for (int i = 0; i < n_monitors; ++i)
+    {
+        if (!wcscmp(glfwGetWin32Monitor(monitors[i]), display_name))
+        {
+            return monitors[i];
+        }
+    }
+
+    // TODO: throw something useful (some error message: display not found: 'display_name');
+    throw "yikes";
 }
 
 GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
@@ -90,7 +110,7 @@ GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
     {
         if (settings.fullscreen)
         {
-            auto monitor = find_monitor(settings);
+            auto monitor = find_monitor(nullptr); // TODO: use display name from settings
             if (settings.refresh_rate)
             {
                 glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);
