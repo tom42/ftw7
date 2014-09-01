@@ -53,9 +53,6 @@ void list_displays()
                 {
                     std::wcout << L", ";
                 }
-                // TODO: test on work notebook. We might want to trim this string,
-                //       since apparently some manufacturers have trailing spaces
-                //       in there, which looks irritating.
                 std::wcout << monitor->DeviceString;
             }
         }
