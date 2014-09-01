@@ -22,6 +22,7 @@
 #include <Windows.h>
 #include "ftw7_core/emulation/emulation.hpp"
 #include "ftw7_conemu/display/display_driver.hpp"
+#include "ftw7_conemu/display/glfwpp.hpp"
 
 struct GLFWwindow;
 
@@ -44,9 +45,8 @@ private:
 
     void close();
     void close_window();
-    void close_glfw();
 
-    bool m_glfw_initialized;
+    glfw m_glfw;
     GLFWwindow* m_window;
 };
 

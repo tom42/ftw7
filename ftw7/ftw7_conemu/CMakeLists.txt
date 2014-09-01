@@ -25,6 +25,7 @@ set (
   src/ftw7_conemu.def
   src/ftw7_conemu.rc
   src/gdi_display_driver.cpp
+  src/glfwpp.cpp
   src/main.cpp
   src/opengl_display_driver.cpp
   src/vga8x8.cpp

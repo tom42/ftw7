@@ -59,11 +59,6 @@ const GLfloat palette[] =
     0xff / 255.0f, 0xff / 255.0f, 0xff / 255.0f, 1,
 };
 
-void error_callback(int /*error*/, const char* description)
-{
-    FTW7_LOG_ERROR << L"glfw: " << description;
-}
-
 void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
 {
     if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
@@ -210,17 +205,10 @@ GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core
 }
 
 opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
-    : m_glfw_initialized(false),
-    m_window(nullptr)
+    : m_window(nullptr)
 {
     try
     {
-        glfwSetErrorCallback(error_callback);
-        if (!glfwInit())
-        {
-            throw ftw7_core::wruntime_error(L"glfwInit failed");
-        }
-        m_glfw_initialized = true;
         m_window = create_window(emulation_dll_module_handle, settings);
     }
     catch (...)
@@ -238,7 +226,6 @@ opengl_display_driver::~opengl_display_driver()
 void opengl_display_driver::close()
 {
     close_window();
-    close_glfw();
 }
 
 void opengl_display_driver::close_window()
@@ -247,15 +234,6 @@ void opengl_display_driver::close_window()
     {
         glfwDestroyWindow(m_window);
         m_window = nullptr;
-    }
-}
-
-void opengl_display_driver::close_glfw()
-{
-    if (m_glfw_initialized)
-    {
-        glfwTerminate();
-        m_glfw_initialized = false;
     }
 }
 
