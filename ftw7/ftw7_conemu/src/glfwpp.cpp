@@ -96,6 +96,11 @@ monitor glfw::get_primary_monitor() const
     return monitor(glfw_monitor);
 }
 
+void glfw::window_hint(int target, int hint) const
+{
+    glfwWindowHint(target, hint);
+}
+
 }
 }
 }

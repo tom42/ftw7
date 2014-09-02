@@ -98,7 +98,7 @@ GLFWwindow* create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_module
             auto monitor = find_monitor(glfw, LR"(\\.\DISPLAY2)"); // TODO: use display name from settings
             if (settings.refresh_rate)
             {
-                glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);
+                glfw.window_hint(GLFW_REFRESH_RATE, settings.refresh_rate);
             }
             window = glfwCreateWindow(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, monitor.get(), nullptr);
         }

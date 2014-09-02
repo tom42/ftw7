@@ -50,6 +50,8 @@ public:
     std::vector<monitor> get_monitors() const;
     monitor get_primary_monitor() const;
 
+    void window_hint(int target, int hint) const;
+
 private:
     glfw(const glfw&) = delete;
     glfw& operator = (const glfw&) = delete;
