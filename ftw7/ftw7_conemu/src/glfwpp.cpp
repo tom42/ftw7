@@ -27,6 +27,8 @@ namespace display
 
 glfw::glfw()
 {
+    // TODO: initialize glfw and install the error handler thingy. Throw on error.
+    // TODO: singletonize this one way or another?
     // TODO: set up error callback, somehow
     //       Note: error messages are UTF8, so we have to convert them before sticking them into error messages.
     //       Also, note that we need to store them ourselves!
@@ -39,6 +41,17 @@ glfw::glfw()
 glfw::~glfw()
 {
     glfwTerminate();
+}
+
+GLFWmonitor* glfw::get_primary_monitor() const
+{
+    // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message???
+    auto monitor = glfwGetPrimaryMonitor();
+    if (!monitor)
+    {
+        throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
+    }
+    return monitor;
 }
 
 }

@@ -67,16 +67,12 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
     }
 }
 
-GLFWmonitor* find_monitor(const wchar_t* display_name)
+// TODO: make this a class member to get access to glfw object
+GLFWmonitor* find_monitor(const glfw& glfw, const wchar_t* display_name)
 {
     if (!display_name)
     {
-        auto monitor = glfwGetPrimaryMonitor();
-        if (!monitor)
-        {
-            throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
-        }
-        return monitor;
+        return glfw.get_primary_monitor();
     }
 
 
@@ -98,14 +94,15 @@ GLFWmonitor* find_monitor(const wchar_t* display_name)
     throw "yikes";
 }
 
-GLFWwindow* create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+// TODO: make this a class member to get access to the glfw object
+GLFWwindow* create_window(const glfw& glfw, HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
     GLFWwindow* window = nullptr;
     try
     {
         if (settings.fullscreen)
         {
-            auto monitor = find_monitor(nullptr); // TODO: use display name from settings
+            auto monitor = find_monitor(glfw, nullptr); // TODO: use display name from settings
             if (settings.refresh_rate)
             {
                 glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);
@@ -209,7 +206,7 @@ opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_hand
 {
     try
     {
-        m_window = create_window(emulation_dll_module_handle, settings);
+        m_window = create_window(m_glfw, emulation_dll_module_handle, settings);
     }
     catch (...)
     {

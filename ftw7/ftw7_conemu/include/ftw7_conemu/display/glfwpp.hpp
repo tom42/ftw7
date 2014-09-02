@@ -19,6 +19,9 @@
 #ifndef FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 #define FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 
+// TODO: should in primciple wrap this, too
+struct GLFWmonitor;
+
 namespace ftw7_conemu
 {
 namespace display
@@ -27,12 +30,11 @@ namespace display
 class glfw
 {
 public:
-    // TODO: initialize glfw and install the error handler thingy. Throw on error.
-    // TODO: singletonize this one way or another?
     glfw();
-
-    // TODO: shut down glfw
     ~glfw();
+
+    GLFWmonitor* get_primary_monitor() const;
+
 private:
     glfw(const glfw&) = delete;
     glfw& operator = (const glfw&) = delete;
