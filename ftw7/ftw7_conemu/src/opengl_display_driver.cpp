@@ -68,7 +68,7 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 }
 
 // TODO: make this a class member to get access to glfw object
-GLFWmonitor* find_monitor(const glfw& glfw, const wchar_t* display_name)
+GLFWmonitor* find_monitor(const glfw::glfw& glfw, const wchar_t* display_name)
 {
     if (!display_name)
     {
@@ -95,7 +95,7 @@ GLFWmonitor* find_monitor(const glfw& glfw, const wchar_t* display_name)
 }
 
 // TODO: make this a class member to get access to the glfw object
-GLFWwindow* create_window(const glfw& glfw, HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+GLFWwindow* create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
     GLFWwindow* window = nullptr;
     try

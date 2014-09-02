@@ -46,7 +46,7 @@ private:
     void close();
     void close_window();
 
-    glfw m_glfw;
+    glfw::glfw m_glfw;
     GLFWwindow* m_window;
 };
 

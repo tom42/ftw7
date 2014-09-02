@@ -24,6 +24,8 @@ namespace ftw7_conemu
 {
 namespace display
 {
+namespace glfw
+{
 
 glfw::glfw()
 {
@@ -54,5 +56,6 @@ GLFWmonitor* glfw::get_primary_monitor() const
     return monitor;
 }
 
+}
 }
 }

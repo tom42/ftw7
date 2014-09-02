@@ -26,6 +26,8 @@ namespace ftw7_conemu
 {
 namespace display
 {
+namespace glfw
+{
 
 class glfw
 {
@@ -40,6 +42,7 @@ private:
     glfw& operator = (const glfw&) = delete;
 };
 
+}
 }
 }
 
