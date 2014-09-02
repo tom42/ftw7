@@ -19,7 +19,6 @@
 #ifndef FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 #define FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 
-// TODO: should in primciple wrap this, too
 struct GLFWmonitor;
 
 namespace ftw7_conemu
@@ -29,13 +28,23 @@ namespace display
 namespace glfw
 {
 
+class monitor
+{
+public:
+    monitor(GLFWmonitor* monitor) : m_monitor(monitor) {}
+    GLFWmonitor* get() { return m_monitor; }
+private:
+    // GLFWmonitors are owned by the GLFW library, not the monitor class.
+    GLFWmonitor* m_monitor;
+};
+
 class glfw
 {
 public:
     glfw();
     ~glfw();
 
-    GLFWmonitor* get_primary_monitor() const;
+    monitor get_primary_monitor() const;
 
 private:
     glfw(const glfw&) = delete;

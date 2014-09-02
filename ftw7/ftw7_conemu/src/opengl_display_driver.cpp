@@ -68,7 +68,7 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 }
 
 // TODO: make this a class member to get access to glfw object
-GLFWmonitor* find_monitor(const glfw::glfw& glfw, const wchar_t* display_name)
+glfw::monitor find_monitor(const glfw::glfw& glfw, const wchar_t* display_name)
 {
     if (!display_name)
     {
@@ -107,7 +107,7 @@ GLFWwindow* create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_module
             {
                 glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);
             }
-            window = glfwCreateWindow(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, monitor, nullptr);
+            window = glfwCreateWindow(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, monitor.get(), nullptr);
         }
         else
         {

@@ -45,15 +45,15 @@ glfw::~glfw()
     glfwTerminate();
 }
 
-GLFWmonitor* glfw::get_primary_monitor() const
+monitor glfw::get_primary_monitor() const
 {
     // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message???
-    auto monitor = glfwGetPrimaryMonitor();
-    if (!monitor)
+    auto glfw_monitor = glfwGetPrimaryMonitor();
+    if (!glfw_monitor)
     {
         throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
     }
-    return monitor;
+    return glfw_monitor;
 }
 
 }
