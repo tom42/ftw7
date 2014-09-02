@@ -45,15 +45,34 @@ glfw::~glfw()
     glfwTerminate();
 }
 
+std::vector<monitor> glfw::get_monitors() const
+{
+    int n_monitors;
+    auto glfw_monitors = glfwGetMonitors(&n_monitors);
+    if (!glfw_monitors)
+    {
+        // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message?
+        throw ftw7_core::wruntime_error(L"glfwGetMonitors failed");
+    }
+
+    std::vector<monitor> monitors;
+    monitors.reserve(n_monitors);
+    for (int i = 0; i < n_monitors; ++i)
+    {
+        monitors.push_back(monitor(glfw_monitors[i]));
+    }
+    return monitors;
+}
+
 monitor glfw::get_primary_monitor() const
 {
-    // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message???
+    // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message?
     auto glfw_monitor = glfwGetPrimaryMonitor();
     if (!glfw_monitor)
     {
         throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
     }
-    return glfw_monitor;
+    return monitor(glfw_monitor);
 }
 
 }

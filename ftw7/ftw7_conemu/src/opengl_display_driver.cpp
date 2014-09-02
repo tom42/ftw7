@@ -86,7 +86,7 @@ glfw::monitor find_monitor(const glfw::glfw& glfw, const wchar_t* display_name)
     {
         if (!wcscmp(glfwGetWin32Monitor(monitors[i]), display_name))
         {
-            return monitors[i];
+            return glfw::monitor(monitors[i]);
         }
     }
 

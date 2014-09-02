@@ -19,6 +19,8 @@
 #ifndef FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 #define FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 
+#include <vector>
+
 struct GLFWmonitor;
 
 namespace ftw7_conemu
@@ -31,7 +33,7 @@ namespace glfw
 class monitor
 {
 public:
-    monitor(GLFWmonitor* monitor) : m_monitor(monitor) {}
+    explicit monitor(GLFWmonitor* monitor) : m_monitor(monitor) {}
     GLFWmonitor* get() { return m_monitor; }
 private:
     // GLFWmonitors are owned by the GLFW library, not the monitor class.
@@ -44,6 +46,7 @@ public:
     glfw();
     ~glfw();
 
+    std::vector<monitor> get_monitors() const;
     monitor get_primary_monitor() const;
 
 private:
