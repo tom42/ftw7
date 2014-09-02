@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
+#define GLFW_EXPOSE_NATIVE_WIN32    // TODO: remove
+#define GLFW_EXPOSE_NATIVE_WGL      // TODO: remove
 #include <Windows.h>
 #include "GLFW/glfw3.h"
-#include "glfw/glfw3native.h"
+#include "glfw/glfw3native.h"       // TODO: remove
 #include "ftw7_version.h"
 #include "ftw7_conemu/display/opengl_display_driver.hpp"
 #include "ftw7_conemu/display/vga8x8.hpp"
@@ -75,18 +75,11 @@ glfw::monitor find_monitor(const glfw::glfw& glfw, const wchar_t* display_name)
         return glfw.get_primary_monitor();
     }
 
-
-    int n_monitors;
-    auto monitors = glfwGetMonitors(&n_monitors);
-    if (!monitors)
+    for (auto monitor : glfw.get_monitors())
     {
-        throw ftw7_core::wruntime_error(L"glfwGetMonitors failed");
-    }
-    for (int i = 0; i < n_monitors; ++i)
-    {
-        if (!wcscmp(glfwGetWin32Monitor(monitors[i]), display_name))
+        if (!wcscmp(monitor.display_name(), display_name))
         {
-            return glfw::monitor(monitors[i]);
+            return monitor;
         }
     }
 
@@ -102,7 +95,7 @@ GLFWwindow* create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_module
     {
         if (settings.fullscreen)
         {
-            auto monitor = find_monitor(glfw, nullptr); // TODO: use display name from settings
+            auto monitor = find_monitor(glfw, LR"(\\.\DISPLAY2)"); // TODO: use display name from settings
             if (settings.refresh_rate)
             {
                 glfwWindowHint(GLFW_REFRESH_RATE, settings.refresh_rate);

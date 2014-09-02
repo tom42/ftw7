@@ -16,7 +16,14 @@
 * You should have received a copy of the GNU General Public License
 * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
 */
+
+// Include Windows.h before GLFW/glfw3native.h to avoid warnings about
+// redefinitions of the APIENTRY macro.
+#include <Windows.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
 #include "GLFW/glfw3.h"
+#include "GLFW/glfw3native.h"
 #include "ftw7_conemu/display/glfwpp.hpp"
 #include "ftw7_core/wexcept.hpp"
 
@@ -26,6 +33,20 @@ namespace display
 {
 namespace glfw
 {
+
+////////////////////////////////////////////////////////////////////////////////
+// monitor
+////////////////////////////////////////////////////////////////////////////////
+
+const wchar_t* monitor::display_name()
+{
+    return glfwGetWin32Monitor(m_monitor);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// glfw
+////////////////////////////////////////////////////////////////////////////////
 
 glfw::glfw()
 {
