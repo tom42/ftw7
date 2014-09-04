@@ -66,7 +66,7 @@ public:
     std::vector<monitor> get_monitors() const;
     monitor get_primary_monitor() const;
 
-	window create_window() const;
+	window create_window(int width, int height, const char* title) const;
     void window_hint(int target, int hint) const;
 
 	void poll_events() const;

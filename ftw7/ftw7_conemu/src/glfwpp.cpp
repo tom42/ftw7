@@ -114,10 +114,10 @@ monitor glfw::get_primary_monitor() const
     return monitor(glfw_monitor);
 }
 
-window glfw::create_window() const
+window glfw::create_window(int width, int height, const char* title) const
 {
 	// TODO: error handling
-	auto glfw_window = glfwCreateWindow(320, 240, "the title", nullptr, nullptr); // TODO: unhardcode args!
+	auto glfw_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	return window(glfw_window);
 }
 
