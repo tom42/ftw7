@@ -45,6 +45,17 @@ const wchar_t* monitor::display_name()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// window
+////////////////////////////////////////////////////////////////////////////////
+
+window::window(GLFWwindow* window) : m_window(window) {}
+
+window::~window()
+{
+	// TODO: destroy window
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // glfw
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -94,6 +105,13 @@ monitor glfw::get_primary_monitor() const
         throw ftw7_core::wruntime_error(L"glfwGetPrimaryMonitor failed");
     }
     return monitor(glfw_monitor);
+}
+
+window glfw::create_window() const
+{
+	// TODO: error handling
+	auto glfw_window = glfwCreateWindow(320, 240, "the title", nullptr, nullptr); // TODO: unhardcode args!
+	return window(glfw_window);
 }
 
 void glfw::window_hint(int target, int hint) const

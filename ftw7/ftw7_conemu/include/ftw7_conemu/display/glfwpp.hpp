@@ -22,6 +22,7 @@
 #include <vector>
 
 struct GLFWmonitor;
+struct GLFWwindow;
 
 namespace ftw7_conemu
 {
@@ -41,6 +42,18 @@ private:
     GLFWmonitor* m_monitor;
 };
 
+class window
+{
+public:
+	explicit window(GLFWwindow* window);
+	~window();
+private:
+	// TODO: make noncopyable
+	// TODO: move constructor
+	// TODO: destroy window on descturcitn
+	GLFWwindow* m_window;
+};
+
 class glfw
 {
 public:
@@ -50,6 +63,7 @@ public:
     std::vector<monitor> get_monitors() const;
     monitor get_primary_monitor() const;
 
+	window create_window() const;
     void window_hint(int target, int hint) const;
 
 private:
