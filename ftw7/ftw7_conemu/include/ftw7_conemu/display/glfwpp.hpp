@@ -47,6 +47,9 @@ class window
 public:
 	explicit window(GLFWwindow* window);
 	~window();
+
+	bool should_close() const;
+
 private:
 	// TODO: make noncopyable
 	// TODO: move constructor
@@ -65,6 +68,8 @@ public:
 
 	window create_window() const;
     void window_hint(int target, int hint) const;
+
+	void poll_events() const;
 
 private:
     glfw(const glfw&) = delete;
