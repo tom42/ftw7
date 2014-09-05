@@ -20,6 +20,7 @@
 // Include Windows.h before GLFW/glfw3native.h to avoid warnings about
 // redefinitions of the APIENTRY macro.
 #include <Windows.h>
+#include <stdexcept>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
 #include "GLFW/glfw3.h"
@@ -49,14 +50,23 @@ const wchar_t* monitor::display_name()
 // window
 ////////////////////////////////////////////////////////////////////////////////
 
+window::window(GLFWwindow* window)
+    : m_window(window)
+{
+    if (!window)
+    {
+        throw std::invalid_argument("window must not be null");
+    }
+}
+
 bool window::should_close() const
 {
-    // TODO: what do we do if m_window is null?
     return glfwWindowShouldClose(m_window.get()) != 0;
 }
 
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
 {
+    // glfwDestroyWindow allows closing of null pointers, so we don't need any checks here.
     glfwDestroyWindow(window);
 }
 

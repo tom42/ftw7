@@ -46,7 +46,7 @@ private:
 class window
 {
 public:
-    explicit window(GLFWwindow* window) : m_window(window) {}
+    explicit window(GLFWwindow* window);
     bool should_close() const;
 private:
     // Having a class member of type std::unique_ptr automatically makes us non-copyable.
