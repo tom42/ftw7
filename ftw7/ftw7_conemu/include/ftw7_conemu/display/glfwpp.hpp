@@ -51,6 +51,8 @@ public:
     bool should_close() const;
 
 private:
+    window& operator = (const window&) = delete;
+
     // TODO: make noncopyable
     // TODO: move constructor
     GLFWwindow* m_window;
