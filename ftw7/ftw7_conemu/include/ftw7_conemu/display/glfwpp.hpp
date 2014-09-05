@@ -35,7 +35,7 @@ namespace glfw
 class monitor
 {
 public:
-    explicit monitor(GLFWmonitor* monitor) : m_monitor(monitor) {}
+    explicit monitor(GLFWmonitor* monitor);
     const wchar_t* display_name();
     GLFWmonitor* get() { return m_monitor; }
 private:

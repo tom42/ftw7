@@ -39,9 +39,17 @@ namespace glfw
 // monitor
 ////////////////////////////////////////////////////////////////////////////////
 
+monitor::monitor(GLFWmonitor* monitor)
+    : m_monitor(monitor)
+{
+    if (!monitor)
+    {
+        throw std::invalid_argument("monitor must not be null");
+    }
+}
+
 const wchar_t* monitor::display_name()
 {
-    // TODO: what do we do if m_monitor is null?
     return glfwGetWin32Monitor(m_monitor);
 }
 
