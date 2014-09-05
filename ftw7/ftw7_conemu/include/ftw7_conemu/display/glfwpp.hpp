@@ -42,6 +42,7 @@ private:
     GLFWmonitor* m_monitor;
 };
 
+// TODO: consider using a unique_ptr here: http://flamingdangerzone.com/cxx11/2012/08/15/rule-of-zero.html
 class window
 {
 public:
