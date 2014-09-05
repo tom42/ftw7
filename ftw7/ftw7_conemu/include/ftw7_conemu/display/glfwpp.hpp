@@ -45,16 +45,15 @@ private:
 class window
 {
 public:
-	explicit window(GLFWwindow* window);
-	~window();
+    explicit window(GLFWwindow* window);
+    ~window();
 
-	bool should_close() const;
+    bool should_close() const;
 
 private:
-	// TODO: make noncopyable
-	// TODO: move constructor
-	// TODO: destroy window on descturcitn
-	GLFWwindow* m_window;
+    // TODO: make noncopyable
+    // TODO: move constructor
+    GLFWwindow* m_window;
 };
 
 class glfw
@@ -66,10 +65,10 @@ public:
     std::vector<monitor> get_monitors() const;
     monitor get_primary_monitor() const;
 
-	window create_window(int width, int height, const char* title) const;
+    window create_window(int width, int height, const char* title) const;
     void window_hint(int target, int hint) const;
 
-	void poll_events() const;
+    void poll_events() const;
 
 private:
     glfw(const glfw&) = delete;

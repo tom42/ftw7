@@ -40,7 +40,7 @@ namespace glfw
 
 const wchar_t* monitor::display_name()
 {
-	// TODO: what do we do if m_monitor is null?
+    // TODO: what do we do if m_monitor is null?
     return glfwGetWin32Monitor(m_monitor);
 }
 
@@ -53,13 +53,13 @@ window::window(GLFWwindow* window) : m_window(window) {}
 
 window::~window()
 {
-	// TODO: destroy window
+    glfwDestroyWindow(m_window);
 }
 
 bool window::should_close() const
 {
-	// TODO: what do we do if m_window is null?
-	return glfwWindowShouldClose(m_window) != 0;
+    // TODO: what do we do if m_window is null?
+    return glfwWindowShouldClose(m_window) != 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,9 +116,9 @@ monitor glfw::get_primary_monitor() const
 
 window glfw::create_window(int width, int height, const char* title) const
 {
-	// TODO: error handling
-	auto glfw_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-	return window(glfw_window);
+    // TODO: error handling
+    auto glfw_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    return window(glfw_window);
 }
 
 void glfw::window_hint(int target, int hint) const
@@ -128,7 +128,7 @@ void glfw::window_hint(int target, int hint) const
 
 void glfw::poll_events() const
 {
-	glfwPollEvents();
+    glfwPollEvents();
 }
 
 }
