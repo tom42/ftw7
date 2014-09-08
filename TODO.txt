@@ -1,3 +1,6 @@
+* This is interesting: http://blogs.msdn.com/b/oldnewthing/archive/2014/08/22/10551964.aspx
+  * Possibly we can simply call OpenThread on the main thread and this should ensure that the thread ID is preserved until we CloseThread again.
+    That would be incredibly useful for thread checking. Yay?
 * ftw7_conemu.dll
   * consider linking the C/C++ runtime statically. We won't have ANY DLL location problems that way, since we're already statically linking GLFW.
 * display drivers: stop tinkering around
