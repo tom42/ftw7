@@ -21,6 +21,7 @@
 
 #include <Windows.h>
 #include <memory>
+#include <utility>
 #include <vector>
 
 struct GLFWmonitor;
@@ -50,6 +51,7 @@ public:
     explicit window(GLFWwindow* window = nullptr) throw();
     window(window&& other) throw();
     window& operator=(window&& other) throw();
+    std::pair<int, int> framebuffer_size();
     void make_context_current();
     bool should_close();
     void swap_buffers();

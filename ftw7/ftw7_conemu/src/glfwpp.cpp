@@ -74,6 +74,13 @@ window& window::operator=(window&& other)
     return *this;
 }
 
+std::pair<int, int> window::framebuffer_size()
+{
+    int width, height;
+    glfwGetFramebufferSize(get_glfw_window(), &width, &height);
+    return std::make_pair(width, height);
+}
+
 void window::make_context_current()
 {
     glfwMakeContextCurrent(get_glfw_window());
