@@ -38,8 +38,8 @@ class monitor
 {
 public:
     explicit monitor(GLFWmonitor* monitor);
-    const wchar_t* display_name();
-    GLFWmonitor* get() { return m_monitor; }
+    const wchar_t* display_name() const;
+    GLFWmonitor* get() const { return m_monitor; }
 private:
     // GLFWmonitors are owned by the GLFW library, not the monitor class.
     GLFWmonitor* m_monitor;

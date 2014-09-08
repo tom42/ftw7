@@ -48,7 +48,7 @@ monitor::monitor(GLFWmonitor* monitor)
     }
 }
 
-const wchar_t* monitor::display_name()
+const wchar_t* monitor::display_name() const
 {
     return glfwGetWin32Monitor(m_monitor);
 }
