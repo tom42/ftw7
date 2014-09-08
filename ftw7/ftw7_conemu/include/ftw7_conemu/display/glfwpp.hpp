@@ -46,12 +46,14 @@ private:
 class window
 {
 public:
-    explicit window(GLFWwindow* window);
+    explicit window(GLFWwindow* window) throw();
+    window(window&& other) throw();
     bool should_close() const;
 private:
-    // Having a class member of type std::unique_ptr automatically makes us non-copyable.
-    // Moreover we can let the compiler generate a move constructor and a move assignment operator.
-    // See http://flamingdangerzone.com/cxx11/2012/08/15/rule-of-zero.html.
+    window(const window&) = delete;
+    window& operator = (const window&) = delete;
+    GLFWwindow* get_glfw_window() const;
+
     struct GLFWwindow_deleter
     {
         void operator()(GLFWwindow* window);

@@ -61,21 +61,31 @@ const wchar_t* monitor::display_name()
 window::window(GLFWwindow* window)
     : m_window(window)
 {
-    if (!window)
-    {
-        throw std::invalid_argument("window must not be null");
-    }
+}
+
+window::window(window&& other)
+    : m_window(other.m_window.release())
+{
 }
 
 bool window::should_close() const
 {
-    return glfwWindowShouldClose(m_window.get()) != 0;
+    return glfwWindowShouldClose(get_glfw_window()) != 0;
 }
 
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
 {
     // glfwDestroyWindow allows closing of null pointers, so we don't need any checks here.
     glfwDestroyWindow(window);
+}
+
+GLFWwindow* window::get_glfw_window() const
+{
+    if (!m_window)
+    {
+        throw std::logic_error("m_window is null");
+    }
+    return m_window.get();
 }
 
 
