@@ -96,6 +96,7 @@ glfw::window create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_modul
             glfw.window_hint(GLFW_REFRESH_RATE, settings.refresh_rate);
         }
         window = glfw.create_window(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, &monitor);
+        window.input_mode(GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
     else
     {
@@ -110,11 +111,6 @@ glfw::window create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_modul
     SendMessageW(window.win32_window(), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
 
     window.make_context_current();
-    if (settings.fullscreen)
-    {
-        // TODO: make this possible again
-//            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-    }
     // TODO: make this possible again
     //glfwSetKeyCallback(window, key_callback);
     glfwSwapInterval(1);

@@ -81,6 +81,11 @@ std::pair<int, int> window::framebuffer_size()
     return std::make_pair(width, height);
 }
 
+void window::input_mode(int mode, int value)
+{
+    glfwSetInputMode(get_glfw_window(), mode, value);
+}
+
 void window::make_context_current()
 {
     glfwMakeContextCurrent(get_glfw_window());
