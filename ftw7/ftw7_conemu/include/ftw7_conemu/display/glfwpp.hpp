@@ -19,6 +19,7 @@
 #ifndef FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 #define FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 
+#include <Windows.h>
 #include <memory>
 #include <vector>
 
@@ -50,6 +51,7 @@ public:
     window(window&& other) throw();
     window& operator=(window&& other) throw();
     bool should_close();
+    HWND win32_window();
 private:
     window(const window&) = delete;
     window& operator = (const window&) = delete;

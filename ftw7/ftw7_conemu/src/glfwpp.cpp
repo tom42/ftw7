@@ -79,6 +79,11 @@ bool window::should_close()
     return glfwWindowShouldClose(get_glfw_window()) != 0;
 }
 
+HWND window::win32_window()
+{
+    return glfwGetWin32Window(get_glfw_window());
+}
+
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
 {
     // glfwDestroyWindow allows closing of null pointers, so we don't need any checks here.
