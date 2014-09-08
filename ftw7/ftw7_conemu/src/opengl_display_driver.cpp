@@ -95,13 +95,11 @@ glfw::window create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_modul
         {
             glfw.window_hint(GLFW_REFRESH_RATE, settings.refresh_rate);
         }
-        // TODO: add possibility for fullscreen mode!
-        ////window = glfwCreateWindow(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, monitor.get(), nullptr);
-        window = glfw.create_window(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME);
+        window = glfw.create_window(settings.screen_width, settings.screen_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, &monitor);
     }
     else
     {
-        window = glfw.create_window(settings.window_width, settings.window_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME);
+        window = glfw.create_window(settings.window_width, settings.window_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr);
     }        
 
     // GLFW's mechanism of setting the icon doesn't work, since it assumes that

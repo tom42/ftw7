@@ -174,10 +174,11 @@ monitor glfw::get_primary_monitor() const
     return monitor(glfw_monitor);
 }
 
-window glfw::create_window(int width, int height, const char* title) const
+window glfw::create_window(int width, int height, const char* title, const monitor* monitor) const
 {
     // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message?
-    auto glfw_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    auto glfw_monitor = monitor ? monitor->get() : nullptr;
+    auto glfw_window = glfwCreateWindow(width, height, title, glfw_monitor, nullptr);
     if (!glfw_window)
     {
         throw ftw7_core::wruntime_error(L"glfwCreateWindow failed");
