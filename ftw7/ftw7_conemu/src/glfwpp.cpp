@@ -74,9 +74,19 @@ window& window::operator=(window&& other)
     return *this;
 }
 
+void window::make_context_current()
+{
+    glfwMakeContextCurrent(get_glfw_window());
+}
+
 bool window::should_close()
 {
     return glfwWindowShouldClose(get_glfw_window()) != 0;
+}
+
+void window::swap_buffers()
+{
+    return glfwSwapBuffers(get_glfw_window());
 }
 
 HWND window::win32_window()

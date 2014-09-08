@@ -50,7 +50,9 @@ public:
     explicit window(GLFWwindow* window = nullptr) throw();
     window(window&& other) throw();
     window& operator=(window&& other) throw();
+    void make_context_current();
     bool should_close();
+    void swap_buffers();
     HWND win32_window();
 private:
     window(const window&) = delete;
