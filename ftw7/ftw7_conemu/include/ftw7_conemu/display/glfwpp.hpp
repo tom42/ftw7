@@ -46,13 +46,14 @@ private:
 class window
 {
 public:
-    explicit window(GLFWwindow* window) throw();
+    explicit window(GLFWwindow* window = nullptr) throw();
     window(window&& other) throw();
-    bool should_close() const;
+    window& operator=(window&& other) throw();
+    bool should_close();
 private:
     window(const window&) = delete;
     window& operator = (const window&) = delete;
-    GLFWwindow* get_glfw_window() const;
+    GLFWwindow* get_glfw_window();
 
     struct GLFWwindow_deleter
     {

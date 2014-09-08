@@ -68,7 +68,13 @@ window::window(window&& other)
 {
 }
 
-bool window::should_close() const
+window& window::operator=(window&& other)
+{
+    m_window.reset(other.m_window.release());
+    return *this;
+}
+
+bool window::should_close()
 {
     return glfwWindowShouldClose(get_glfw_window()) != 0;
 }
@@ -79,7 +85,7 @@ void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
     glfwDestroyWindow(window);
 }
 
-GLFWwindow* window::get_glfw_window() const
+GLFWwindow* window::get_glfw_window()
 {
     if (!m_window)
     {
