@@ -96,6 +96,11 @@ void window::swap_buffers()
     return glfwSwapBuffers(get_glfw_window());
 }
 
+void window::title(const char* title)
+{
+    glfwSetWindowTitle(get_glfw_window(), title);
+}
+
 HWND window::win32_window()
 {
     return glfwGetWin32Window(get_glfw_window());

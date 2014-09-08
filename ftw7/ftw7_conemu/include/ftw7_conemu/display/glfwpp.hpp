@@ -55,6 +55,7 @@ public:
     void make_context_current();
     bool should_close();
     void swap_buffers();
+    void title(const char* title);
     HWND win32_window();
 private:
     window(const window&) = delete;

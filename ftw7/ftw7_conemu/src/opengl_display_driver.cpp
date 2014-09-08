@@ -305,9 +305,7 @@ void opengl_display_driver::set_title(const wchar_t* title)
 {
     // The GLFW documentation states that glfwSetWindowTitle's title argument is an UTF8 encoded string.
     const auto narrow_title = ftw7_core::windows::wstring_to_multibyte(CP_UTF8, title);
-
-    // TODO: make this possible again
-//    glfwSetWindowTitle(m_window, narrow_title.c_str());
+    m_window.title(narrow_title.c_str());
 }
 
 }
