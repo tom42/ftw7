@@ -113,7 +113,7 @@ glfw::window create_window(glfw::glfw& glfw, HINSTANCE emulation_dll_module_hand
     window.make_context_current();
     // TODO: make this possible again
     //glfwSetKeyCallback(window, key_callback);
-    glfwSwapInterval(1);
+    glfw.swap_interval(1);
 
     // TODO: here be nastiness for bnz:
     // * No resources are cleaned up

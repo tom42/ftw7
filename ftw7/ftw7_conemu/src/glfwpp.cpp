@@ -201,6 +201,11 @@ void glfw::poll_events()
     glfwPollEvents();
 }
 
+void glfw::swap_interval(int interval)
+{
+    glfwSwapInterval(interval);
+}
+
 }
 }
 }

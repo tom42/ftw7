@@ -83,6 +83,7 @@ public:
     void window_hint(int target, int hint);
 
     void poll_events();
+    void swap_interval(int interval);
 
 private:
     glfw(const glfw&) = delete;
