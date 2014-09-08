@@ -35,16 +35,12 @@ class opengl_display_driver : public display_driver
 {
 public:
     opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings);
-    virtual ~opengl_display_driver();
     bool handle_messages() override;
     void render(const CHAR_INFO* buffer) override;
     void set_title(const wchar_t* title) override;
 private:
     opengl_display_driver(const opengl_display_driver&) = delete;
     opengl_display_driver& operator = (const opengl_display_driver&) = delete;
-
-    void close();
-    void close_window();
 
     glfw::glfw m_glfw;
     glfw::window m_window;

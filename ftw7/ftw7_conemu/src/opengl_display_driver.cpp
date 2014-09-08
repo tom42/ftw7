@@ -181,37 +181,9 @@ glfw::window create_window(const glfw::glfw& glfw, HINSTANCE emulation_dll_modul
 }
 
 opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
-    : m_window(nullptr)
+    : m_window(nullptr) // TODO: can we remove this??? If not, make it so it can be removed?
 {
-    try
-    {
-        m_window = create_window(m_glfw, emulation_dll_module_handle, settings);
-    }
-    catch (...)
-    {
-        close();
-        throw;
-    }
-}
-
-opengl_display_driver::~opengl_display_driver()
-{
-    close();
-}
-
-void opengl_display_driver::close()
-{
-    close_window();
-}
-
-void opengl_display_driver::close_window()
-{
-    // TODO: we don't need this anymore, right?
-    /*if (m_window)
-    {
-        glfwDestroyWindow(m_window);
-        m_window = nullptr;
-    }*/
+    m_window = create_window(m_glfw, emulation_dll_module_handle, settings);
 }
 
 bool opengl_display_driver::handle_messages()
