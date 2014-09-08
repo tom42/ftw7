@@ -3,12 +3,12 @@
 * display drivers: stop tinkering around
   * What kind of display modes should we support?
     * windowed
-	* fullscreen window
-	* real fullscreen (orly?)
+    * fullscreen window
+    * real fullscreen (orly?)
   * Scaling modes?
     * Stretch to fit, maintaining aspect ratio
-	* No scaling (center on screen)
-	* Scale by integer amount and center
+    * No scaling (center on screen)
+    * Scale by integer amount and center
   * Attempt to emulate real vga output? (Ninth column)
 * Clean up opengl and gdi display drivers:
   * Variable Window width/height
@@ -22,9 +22,11 @@
   * Do a simple fix for cernunnos: don't think there are too many other
     demos that pull off shit like that
 * Fixage, hopefully to be applied somewhen:
+  * Litterae Finis:
+    * Can still quit if ESC is pressed and the console window is active: find out what API function to intercept and make it a no-op
   * Cernunnos:
     * Somehow manages to interfere with the opengl display driver.
-	* Fucks up console logging, but then, we should probably not rely on the console for logging.
+    * Fucks up console logging, but then, we should probably not rely on the console for logging.
   * Clockwerck
     * Spurious crashes at end of demo. That's why --no-error-dialogs has been implemented
   * Display drivers: a horrible mess they are, that's what they are.
@@ -56,13 +58,13 @@
   * Console applications work out of the box.
   * Magrathea: Succeeds with the following steps
     * Pass the launcher's process ID to the emulation DLL
-	* Inside the emulation DLL
-	  * Use AttachConsole to attach to the parent process' console
-	  * Use WriteConsole(W) to write to the console
-	  * Be careful, though: MSDN says:
-	    "WriteConsole fails if it is used with a standard handle that is redirected to a file.
-		If an application processes multilingual output that can be redirected, determine whether
-		the output handle is a console handle (one method is to call the GetConsoleMode function
-		and check whether it succeeds). If the handle is a console handle, call WriteConsole.
-		If the handle is not a console handle, the output is redirected and you should call
-		WriteFile to perform the I/O."...oh well.
+    * Inside the emulation DLL
+      * Use AttachConsole to attach to the parent process' console
+      * Use WriteConsole(W) to write to the console
+      * Be careful, though: MSDN says:
+        "WriteConsole fails if it is used with a standard handle that is redirected to a file.
+        If an application processes multilingual output that can be redirected, determine whether
+        the output handle is a console handle (one method is to call the GetConsoleMode function
+        and check whether it succeeds). If the handle is a console handle, call WriteConsole.
+        If the handle is not a console handle, the output is redirected and you should call
+        WriteFile to perform the I/O."...oh well.
