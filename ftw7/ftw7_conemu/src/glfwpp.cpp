@@ -149,7 +149,7 @@ glfw::~glfw()
     glfwTerminate();
 }
 
-std::vector<monitor> glfw::get_monitors() const
+std::vector<monitor> glfw::get_monitors()
 {
     int n_monitors;
     auto glfw_monitors = glfwGetMonitors(&n_monitors);
@@ -168,7 +168,7 @@ std::vector<monitor> glfw::get_monitors() const
     return monitors;
 }
 
-monitor glfw::get_primary_monitor() const
+monitor glfw::get_primary_monitor()
 {
     // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message?
     auto glfw_monitor = glfwGetPrimaryMonitor();
@@ -179,7 +179,7 @@ monitor glfw::get_primary_monitor() const
     return monitor(glfw_monitor);
 }
 
-window glfw::create_window(int width, int height, const char* title, const monitor* monitor) const
+window glfw::create_window(int width, int height, const char* title, const monitor* monitor)
 {
     // TODO: better error handling: can we get at the last error fired by glfw and include that in the exception message?
     auto glfw_monitor = monitor ? monitor->get() : nullptr;
@@ -191,12 +191,12 @@ window glfw::create_window(int width, int height, const char* title, const monit
     return window(glfw_window);
 }
 
-void glfw::window_hint(int target, int hint) const
+void glfw::window_hint(int target, int hint)
 {
     glfwWindowHint(target, hint);
 }
 
-void glfw::poll_events() const
+void glfw::poll_events()
 {
     glfwPollEvents();
 }

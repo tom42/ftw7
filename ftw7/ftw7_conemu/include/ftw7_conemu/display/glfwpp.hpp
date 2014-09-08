@@ -76,13 +76,13 @@ public:
     glfw();
     ~glfw();
 
-    std::vector<monitor> get_monitors() const;
-    monitor get_primary_monitor() const;
+    std::vector<monitor> get_monitors();
+    monitor get_primary_monitor();
 
-    window create_window(int width, int height, const char* title, const monitor* monitor) const;
-    void window_hint(int target, int hint) const;
+    window create_window(int width, int height, const char* title, const monitor* monitor);
+    void window_hint(int target, int hint);
 
-    void poll_events() const;
+    void poll_events();
 
 private:
     glfw(const glfw&) = delete;
