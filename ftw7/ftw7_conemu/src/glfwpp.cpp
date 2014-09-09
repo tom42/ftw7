@@ -111,6 +111,11 @@ HWND window::win32_window()
     return glfwGetWin32Window(get_glfw_window());
 }
 
+void window::window_user_pointer(void* pointer)
+{
+    glfwSetWindowUserPointer(get_glfw_window(), pointer);
+}
+
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
 {
     // glfwDestroyWindow allows closing of null pointers, so we don't need any checks here.

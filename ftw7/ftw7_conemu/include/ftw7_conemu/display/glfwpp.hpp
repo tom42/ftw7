@@ -58,6 +58,7 @@ public:
     void swap_buffers();
     void title(const char* title);
     HWND win32_window();
+    void window_user_pointer(void* pointer);
 private:
     window(const window&) = delete;
     window& operator = (const window&) = delete;
