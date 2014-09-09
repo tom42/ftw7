@@ -67,7 +67,6 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 }
 
 opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
-    : m_window(nullptr) // TODO: can we remove this??? If not, make it so it can be removed?
 {
     m_window = create_window(emulation_dll_module_handle, settings);
 }
