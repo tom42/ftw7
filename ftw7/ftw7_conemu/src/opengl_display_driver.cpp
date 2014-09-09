@@ -190,7 +190,7 @@ glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module
     glfw::window window;
     if (settings.fullscreen)
     {
-        auto monitor = find_monitor(LR"(\\.\DISPLAY2)"); // TODO: use display name from settings
+        auto monitor = find_monitor(nullptr); // TODO: use display name from settings
         if (settings.refresh_rate)
         {
             m_glfw.window_hint(GLFW_REFRESH_RATE, settings.refresh_rate);
