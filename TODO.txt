@@ -1,3 +1,12 @@
+* key callbacks
+  * Should make window::user_pointer private
+  * Should use std::function to model key callbacks at glfw::window level
+  * Problem: when we move a window, the user pointer we set is not valid anymore
+    => user pointer must be set inside ctors! Ouch? At least I think this is what's just bitten us.
+    * Consider this:
+      * We construct a window. It sets the user pointer to point at it.
+      * The window gets moved. The user pointer is left where it is, but ownership of the GLFWwindow* is transferred.
+      => We have now a new glfw::window instance, which holds a GLFWwindow* whose user pointer contains the address of another glfw::window instance that doesn't exist anymore. BAD. VERY BAD.
 * This is interesting: http://blogs.msdn.com/b/oldnewthing/archive/2014/08/22/10551964.aspx
   * Possibly we can simply call OpenThread on the main thread and this should ensure that the thread ID is preserved until we CloseThread again.
     That would be incredibly useful for thread checking. Yay?
