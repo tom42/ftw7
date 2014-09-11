@@ -60,17 +60,17 @@ const wchar_t* monitor::display_name() const
 
 window::window(GLFWwindow* window)
 {
-    set_glfw_window(window);
+    set_glfw_window(window, key_callback_t());
 }
 
 window::window(window&& other)
 {
-    set_glfw_window(other.m_window.release());
+    set_glfw_window(other.m_window.release(), other.m_key_callback);
 }
 
 window& window::operator=(window&& other)
 {
-    set_glfw_window(other.m_window.release());
+    set_glfw_window(other.m_window.release(), other.m_key_callback);
     return *this;
 }
 
@@ -86,11 +86,12 @@ void window::input_mode(int mode, int value)
     glfwSetInputMode(get_glfw_window(), mode, value);
 }
 
-void window::key_callback(const key_callback_t& /*callback*/)
+void window::key_callback(const key_callback_t& callback)
 {
-    // TODO: tuck away callback
-    // TODO: if callback is empty, remove it (from the glfwwindow and the window ipnstance)
-    glfwSetKeyCallback(get_glfw_window(), key_callback_stub);
+    // If callback stores a callable target, install the GLFW key callback stub.
+    // If callback does not store a callable target, remove the GLFW key callback stub.
+    glfwSetKeyCallback(get_glfw_window(), callback ? key_callback_stub : nullptr);
+    m_key_callback = callback;
 }
 
 void window::make_context_current()
@@ -127,21 +128,23 @@ GLFWwindow* window::get_glfw_window()
     return m_window.get();
 }
 
-void window::set_glfw_window(GLFWwindow* window)
+// TODO: should rename this (initialize or somesuch...)
+void window::set_glfw_window(GLFWwindow* window, const key_callback_t& new_key_callback)
 {
     m_window.reset(window);
-    if (window)
+    if (window) // TODO: verify we need this check...in principle we should NEVER allow creation window with an internal pointer that is null, no???
     {
         glfwSetWindowUserPointer(window, this);
+        key_callback(new_key_callback);
     }
 }
 
-void window::key_callback_stub(GLFWwindow* w, int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
+void window::key_callback_stub(GLFWwindow* w, int key, int scancode, int action, int mods)
 {
-    // TODO: what do we do if user pointer is null?
-    // TODO: what do we do if key callback is empty?
+    // TODO: what do we do if user pointer is null? => throw logic_error or somesuch
+    // TODO: what do we do if key callback is empty? => throw better exception than what we get from std::function ("bad function call")
     auto window_instance = static_cast<window*>(glfwGetWindowUserPointer(w));
-    if (window_instance) {} // TODO: actual call to real key callback....
+    window_instance->m_key_callback(*window_instance, key, scancode, action, mods);
 }
 
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)

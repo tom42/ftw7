@@ -68,7 +68,7 @@ private:
     window& operator = (const window&) = delete;
 
     GLFWwindow* get_glfw_window();
-    void set_glfw_window(GLFWwindow* window) throw();
+    void set_glfw_window(GLFWwindow* window, const key_callback_t& new_key_callback) throw();
 
     static void key_callback_stub(GLFWwindow* w, int key, int scancode, int action, int mods);
 
