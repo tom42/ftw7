@@ -104,6 +104,11 @@ bool window::should_close()
     return glfwWindowShouldClose(get_glfw_window()) != 0;
 }
 
+void window::should_close(bool value)
+{
+    glfwSetWindowShouldClose(get_glfw_window(), value ? GL_TRUE : GL_FALSE);
+}
+
 void window::swap_buffers()
 {
     return glfwSwapBuffers(get_glfw_window());

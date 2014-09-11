@@ -60,6 +60,7 @@ public:
     void key_callback(const key_callback_t& callback);
     void make_context_current();
     bool should_close();
+    void should_close(bool value);
     void swap_buffers();
     void title(const char* title);
     HWND win32_window();

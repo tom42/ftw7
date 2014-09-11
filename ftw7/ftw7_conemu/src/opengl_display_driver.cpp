@@ -56,13 +56,13 @@ const GLfloat palette[] =
     0xff / 255.0f, 0xff / 255.0f, 0xff / 255.0f, 1,
 };
 
-void key_callback(glfw::window&, int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
+// TODO: make this a class member...
+void key_callback(glfw::window& window, int key, int /*scancode*/, int action, int /*mods*/)
 {
-    // TODO: make closing on escape work again (for one thing we should implement window::should_close setter)
-    /*if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+    if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
     {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }*/
+        window.should_close(true);
+    }
 }
 
 }
