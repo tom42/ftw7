@@ -123,7 +123,10 @@ GLFWwindow* window::get_glfw_window()
 void window::set_glfw_window(GLFWwindow* window)
 {
     m_window.reset(window);
-    glfwSetWindowUserPointer(window, this);
+    if (window)
+    {
+        glfwSetWindowUserPointer(window, this);
+    }
 }
 
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
