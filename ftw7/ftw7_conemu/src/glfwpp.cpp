@@ -86,6 +86,13 @@ void window::input_mode(int mode, int value)
     glfwSetInputMode(get_glfw_window(), mode, value);
 }
 
+void window::key_callback(const key_callback_t& /*callback*/)
+{
+    // TODO: tuck away callback
+    // TODO: if callback is empty, remove it (from the glfwwindow and the window ipnstance)
+    glfwSetKeyCallback(get_glfw_window(), key_callback_stub);
+}
+
 void window::make_context_current()
 {
     glfwMakeContextCurrent(get_glfw_window());
@@ -127,6 +134,14 @@ void window::set_glfw_window(GLFWwindow* window)
     {
         glfwSetWindowUserPointer(window, this);
     }
+}
+
+void window::key_callback_stub(GLFWwindow* w, int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
+{
+    // TODO: what do we do if user pointer is null?
+    // TODO: what do we do if key callback is empty?
+    auto window_instance = static_cast<window*>(glfwGetWindowUserPointer(w));
+    if (window_instance) {} // TODO: actual call to real key callback....
 }
 
 void window::GLFWwindow_deleter::operator()(GLFWwindow* window)

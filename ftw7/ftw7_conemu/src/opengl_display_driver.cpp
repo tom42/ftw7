@@ -56,12 +56,13 @@ const GLfloat palette[] =
     0xff / 255.0f, 0xff / 255.0f, 0xff / 255.0f, 1,
 };
 
-void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+void key_callback(glfw::window&, int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
 {
-    if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+    // TODO: make closing on escape work again (for one thing we should implement window::should_close setter)
+    /*if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
-    }
+    }*/
 }
 
 }
@@ -212,6 +213,7 @@ glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module
     window.make_context_current();
     // TODO: make this possible again
     //glfwSetKeyCallback(window, key_callback);
+    window.key_callback(key_callback);
     m_glfw.swap_interval(1);
 
     // TODO: here be nastiness for bnz:

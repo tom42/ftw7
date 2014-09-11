@@ -57,6 +57,7 @@ public:
 
     std::pair<int, int> framebuffer_size();
     void input_mode(int mode, int value);
+    void key_callback(const key_callback_t& callback);
     void make_context_current();
     bool should_close();
     void swap_buffers();
