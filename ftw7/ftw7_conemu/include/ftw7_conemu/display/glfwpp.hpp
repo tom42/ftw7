@@ -20,6 +20,7 @@
 #define FTW7_CONEMU_DISPLAY_GLFWPP_HPP_INCLUDED
 
 #include <Windows.h>
+#include <functional>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -48,9 +49,12 @@ private:
 class window
 {
 public:
+    typedef std::function<void(window& window, int key, int scancode, int action, int mods)> key_callback_t;
+
     explicit window(GLFWwindow* window = nullptr) throw();
     window(window&& other) throw();
     window& operator=(window&& other) throw();
+
     std::pair<int, int> framebuffer_size();
     void input_mode(int mode, int value);
     void make_context_current();
@@ -65,11 +69,15 @@ private:
     GLFWwindow* get_glfw_window();
     void set_glfw_window(GLFWwindow* window) throw();
 
+    static void key_callback_stub(GLFWwindow* w, int key, int scancode, int action, int mods);
+
     struct GLFWwindow_deleter
     {
         void operator()(GLFWwindow* window);
     };
+
     std::unique_ptr<GLFWwindow, GLFWwindow_deleter> m_window;
+    key_callback_t m_key_callback;
 };
 
 class glfw
