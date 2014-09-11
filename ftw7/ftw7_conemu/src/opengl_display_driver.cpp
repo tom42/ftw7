@@ -201,7 +201,6 @@ glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module
     {
         window = m_glfw.create_window(settings.window_width, settings.window_height, FTW7_OPENGL_DISPLAY_DRIVER_NAME, nullptr);
     }
-    window.user_pointer(this);
 
     // GLFW's mechanism of setting the icon doesn't work, since it assumes that
     // the Window has been created in an EXE rather than a DLL and uses GetModuleHandle(NULL)

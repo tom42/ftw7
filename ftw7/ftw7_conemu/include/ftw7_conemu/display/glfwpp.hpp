@@ -58,12 +58,12 @@ public:
     void swap_buffers();
     void title(const char* title);
     HWND win32_window();
-    void* user_pointer();
-    void user_pointer(void* pointer);
 private:
     window(const window&) = delete;
     window& operator = (const window&) = delete;
+
     GLFWwindow* get_glfw_window();
+    void set_glfw_window(GLFWwindow* window) throw();
 
     struct GLFWwindow_deleter
     {

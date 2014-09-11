@@ -59,18 +59,18 @@ const wchar_t* monitor::display_name() const
 ////////////////////////////////////////////////////////////////////////////////
 
 window::window(GLFWwindow* window)
-    : m_window(window)
 {
+    set_glfw_window(window);
 }
 
 window::window(window&& other)
-    : m_window(other.m_window.release())
 {
+    set_glfw_window(other.m_window.release());
 }
 
 window& window::operator=(window&& other)
 {
-    m_window.reset(other.m_window.release());
+    set_glfw_window(other.m_window.release());
     return *this;
 }
 
@@ -111,22 +111,6 @@ HWND window::win32_window()
     return glfwGetWin32Window(get_glfw_window());
 }
 
-void* window::user_pointer()
-{
-    return glfwGetWindowUserPointer(get_glfw_window());
-}
-
-void window::user_pointer(void* pointer)
-{
-    glfwSetWindowUserPointer(get_glfw_window(), pointer);
-}
-
-void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
-{
-    // glfwDestroyWindow allows closing of null pointers, so we don't need any checks here.
-    glfwDestroyWindow(window);
-}
-
 GLFWwindow* window::get_glfw_window()
 {
     if (!m_window)
@@ -134,6 +118,18 @@ GLFWwindow* window::get_glfw_window()
         throw std::logic_error("m_window is null");
     }
     return m_window.get();
+}
+
+void window::set_glfw_window(GLFWwindow* window)
+{
+    m_window.reset(window);
+    glfwSetWindowUserPointer(window, this);
+}
+
+void window::GLFWwindow_deleter::operator()(GLFWwindow* window)
+{
+    // glfwDestroyWindow allows closing of null pointers, so we don't need any checks here.
+    glfwDestroyWindow(window);
 }
 
 
