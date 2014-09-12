@@ -146,9 +146,25 @@ void window::set_glfw_window(GLFWwindow* window, const key_callback_t& new_key_c
 
 void window::key_callback_stub(GLFWwindow* w, int key, int scancode, int action, int mods)
 {
-    // TODO: what do we do if user pointer is null? => throw logic_error or somesuch
-    // TODO: what do we do if key callback is empty? => throw better exception than what we get from std::function ("bad function call")
+    // Note: exceptions thrown here go straight up into GLFW.
+    //
+    // In theory this is not very nice, since GLFW is written in C and we shouldn't
+    // propagate exceptions into arbitrary foreign modules anyway.
+    //
+    // In practice this works since MVSC is able to generate C code that can propagate
+    // C++ exceptions, so exceptions thrown here will make their way through GLFW
+    // and eventually arrive somewhere in our own C++ code.
+
     auto window_instance = static_cast<window*>(glfwGetWindowUserPointer(w));
+    if (!window_instance)
+    {
+        throw std::logic_error("glfw::window::key_callback_stub: window user pointer is null");
+    }
+
+    if (!window_instance->m_key_callback)
+    {
+        throw std::logic_error("glfw::window::key_callback_stub: m_key_callback is empty");
+    }
     window_instance->m_key_callback(*window_instance, key, scancode, action, mods);
 }
 
