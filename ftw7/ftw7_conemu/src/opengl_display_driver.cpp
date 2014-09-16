@@ -211,8 +211,6 @@ glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module
     SendMessageW(window.win32_window(), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
 
     window.make_context_current();
-    // TODO: make this possible again
-    //glfwSetKeyCallback(window, key_callback);
     window.key_callback(key_callback);
     m_glfw.swap_interval(1);
 
