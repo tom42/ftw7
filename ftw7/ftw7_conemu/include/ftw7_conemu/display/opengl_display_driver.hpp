@@ -43,6 +43,7 @@ private:
     opengl_display_driver& operator = (const opengl_display_driver&) = delete;
     glfw::monitor find_monitor(const wchar_t* display_name);
     glfw::window create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings);
+    void key_callback(glfw::window& window, int key, int scancode, int action, int mods);
 
     glfw::glfw m_glfw;
     glfw::window m_window;

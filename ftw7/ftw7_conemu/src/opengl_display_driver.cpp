@@ -56,15 +56,6 @@ const GLfloat palette[] =
     0xff / 255.0f, 0xff / 255.0f, 0xff / 255.0f, 1,
 };
 
-// TODO: make this a class member...
-void key_callback(glfw::window& window, int key, int /*scancode*/, int action, int /*mods*/)
-{
-    if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
-    {
-        window.should_close(true);
-    }
-}
-
 }
 
 opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
@@ -187,6 +178,8 @@ glfw::monitor opengl_display_driver::find_monitor(const wchar_t* display_name)
 
 glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
 {
+    using namespace std::placeholders;
+
     glfw::window window;
     if (settings.fullscreen)
     {
@@ -211,7 +204,7 @@ glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module
     SendMessageW(window.win32_window(), WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
 
     window.make_context_current();
-    window.key_callback(key_callback);
+    window.key_callback(std::bind(&opengl_display_driver::key_callback, this, _1, _2, _3, _4, _5));
     m_glfw.swap_interval(1);
 
     // TODO: here be nastiness for bnz:
@@ -269,6 +262,14 @@ glfw::window opengl_display_driver::create_window(HINSTANCE emulation_dll_module
     glClear(GL_COLOR_BUFFER_BIT);
     window.swap_buffers();
     return window;
+}
+
+void opengl_display_driver::key_callback(glfw::window& /*window*/, int key, int /*scancode*/, int action, int /*mods*/)
+{
+    if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+    {
+        m_window.should_close(true);
+    }
 }
 
 }
