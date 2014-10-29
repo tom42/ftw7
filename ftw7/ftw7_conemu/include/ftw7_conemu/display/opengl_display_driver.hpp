@@ -45,6 +45,7 @@ private:
     glfw::window create_window(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings);
     void key_callback(glfw::window& window, int key, int scancode, int action, int mods);
 
+    const bool m_fullscreen;    // TODO: hackage to fix windowed mode for BarZoule
     glfw::glfw m_glfw;
     glfw::window m_window;
 };

@@ -59,6 +59,7 @@ const GLfloat palette[] =
 }
 
 opengl_display_driver::opengl_display_driver(HINSTANCE emulation_dll_module_handle, const ftw7_core::emulation::settings& settings)
+    : m_fullscreen(settings.fullscreen)
 {
     m_window = create_window(emulation_dll_module_handle, settings);
 }
@@ -80,13 +81,24 @@ void opengl_display_driver::render(const CHAR_INFO* buffer)
     glClear(GL_COLOR_BUFFER_BIT);
 
     // TODO: this is all hackery that assumes a 4:3 resolution.
-    // TODO: this really needs fixage, since it looks totally shit in windowed mode at 640x400
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, 640, 480, 0, -1, 1);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, (480 - 400) / 2, 0);
+    if (m_fullscreen)
+    {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, 640, 480, 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glTranslatef(0, (480 - 400) / 2, 0);
+    }
+    else
+    {
+        // TODO: hackage to fix windowed mode for BarZoule
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, 640, 400, 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+    }
 
     // 1st pass: background colors
     const CHAR_INFO* p = buffer;
