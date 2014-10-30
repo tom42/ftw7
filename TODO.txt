@@ -1,10 +1,5 @@
 * Windows XP support
-  * Use the VS 2013 generator with the -T v120_xp option (set toolset). This is able to produce binaries that load on windows xp
-  * Unfortunately, cmake then does not find boost libraries. Possible ways to fix this:
-    * Obtain suitable boost libraries
-    * Have an option to disable building of unit tests
-      * Note that this'd be much simpler if all the ftw7 unit tests were in a separate subdirectory.
-        * Otoh we currently have only one test, so...shrug?
+  * Use the VS 2013 generator with the -T v120_xp option (set toolset). This is able to produce binaries that load on windows xp => Document this somewhere
   * Also we need to solve DLL locating problems.
   * GDI display driver can't set fullscreen mode. It doesn't really say why, tho. This may be a Windows XP mode Problem, though.
   * OpenGL display driver doesn't run at all, but this may be a Windows XP Mode Problem
