@@ -54,6 +54,8 @@ link_directories (${Boost_LIBRARY_DIRS})
 
 add_library (ftw7_core ${ftw7_core_sources})
 
-add_executable (ftw7_core_test ${ftw7_core_test_sources})
-target_link_libraries (ftw7_core_test ftw7_core)
-add_test (ftw7_core_test "${FTW7_SHARED_OUTPUT_DIRECTORY}/ftw7_core_test")
+if (FTW7_BUILD_UNIT_TESTS)
+  add_executable (ftw7_core_test ${ftw7_core_test_sources})
+  target_link_libraries (ftw7_core_test ftw7_core)
+  add_test (ftw7_core_test "${FTW7_SHARED_OUTPUT_DIRECTORY}/ftw7_core_test")
+endif ()

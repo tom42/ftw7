@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
+option (FTW7_BUILD_UNIT_TESTS "Build the ftw7 unit tests" ON)
+
 # Find Boost
 #
 # Currently we're using static libraries, mainly because we then don't have to
@@ -24,7 +26,11 @@
 set (Boost_USE_STATIC_LIBS      ON)
 set (Boost_USE_MULTITHREADED    ON)
 set (Boost_USE_STATIC_RUNTIME   OFF)
-find_package (Boost 1.55.0 COMPONENTS unit_test_framework)
+set (FTW7_BOOST_COMPONENTS)
+if (FTW7_BUILD_UNIT_TESTS)
+  list (APPEND FTW7_BOOST_COMPONENTS unit_test_framework)
+endif ()
+find_package (Boost 1.55.0 COMPONENTS ${FTW7_BOOST_COMPONENTS})
 message (STATUS "Boost_INCLUDE_DIR: ${Boost_INCLUDE_DIR}")
 message (STATUS "Boost_LIBRARY_DIRS: ${Boost_LIBRARY_DIRS}")
 
