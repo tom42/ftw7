@@ -1,3 +1,13 @@
+* Windows XP support
+  * Use the VS 2013 generator with the -T v120_xp option (set toolset). This is able to produce binaries that load on windows xp
+  * Unfortunately, cmake then does not find boost libraries. Possible ways to fix this:
+    * Obtain suitable boost libraries
+    * Have an option to disable building of unit tests
+      * Note that this'd be much simpler if all the ftw7 unit tests were in a separate subdirectory.
+        * Otoh we currently have only one test, so...shrug?
+  * Also we need to solve DLL locating problems.
+  * GDI display driver can't set fullscreen mode. It doesn't really say why, tho. This may be a Windows XP mode Problem, though.
+  * OpenGL display driver doesn't run at all, but this may be a Windows XP Mode Problem
 * glfw wrapper
   * Rename set_glfw_window to initialize and perhaps also document it a bit, since before we had it we had quite an interesting bug
   * Find a solution where we can hide the GLFW API functions from glfw wrapper users altogether?
@@ -7,6 +17,23 @@
     That would be incredibly useful for thread checking. Yay?
 * ftw7_conemu.dll
   * consider linking the C/C++ runtime statically. We won't have ANY DLL location problems that way, since we're already statically linking GLFW.
+  * Or use some SetDllDirectory magick inside the startup code to point windows at the ftw7 binaries.
+    Here's the problem:
+    * We have ftw7.exe, ftw7_conemu.dll and whatnot in one directory, alongside with msvcp120.dll and msvcr120.dll
+    * We have a demo in another directory
+    * ftw7 is loaded and finds its msvcp120.dll etc.
+    * It CreateProcesses the demo, using the demo executable's directory as current directory.
+    * It injects the ftw7_conemu.dll loading code
+    * It runs the demo. The first thing that runs is the injection code
+    * Injection code tries to LoadLibrary ftw7_conemu.dll. Since it's using an absolute path, ftw7_conemu.dll can still be found,
+      but then ftw7_conemu.dll depends on msvcp120.dll and msvcr120.dll, which might not be present in the system directory.
+      Since the current directory is the demo exe directory and not ftw7's directory, the dlls aren't founs even if they're
+      deployed alongside with ftw7.exe => Boom.
+    => Possible solutions
+       * Link VS runtimes statically to ftw7_conemu.dll
+       * Have an installer that puts them into the system directory (orly?)
+       * Deploy them alongside with ftw7 as we did up to now and use SetDllDirectory inside the injection code
+         to get our own DLLs loaded. Should later restore them again.
 * display drivers: stop tinkering around
   * What kind of display modes should we support?
     * windowed
