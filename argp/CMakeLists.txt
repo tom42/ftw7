@@ -87,6 +87,10 @@ set (
 if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_WARNINGS)
 
+  # VS2015: By default, __argc and __argv are macros, which interfere with
+  # function declarations/definitions in argp. Disable this.
+  add_definitions (-D_CRT_DECLARE_GLOBAL_VARIABLES_DIRECTLY)
+
   # Treat warnings as errors, but don't bother raising the warning level.
   # argp won't build without any warnings on /W4
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")
