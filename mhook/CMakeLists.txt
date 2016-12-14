@@ -45,6 +45,11 @@ if (MSVC)
   # Treat warnings as errors, but don't bother raising the warning level.
   # Mhook won't build without any warnings on /W4
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
+
+  # Disable warnings introduced after VS2013.
+  if (MSVC_VERSION GREATER_EQUAL 1900)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wv:18")
+  endif ()
 endif ()
 
 add_library (mhook ${mhook_sources})

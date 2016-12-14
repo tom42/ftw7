@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ftw7.  If not, see <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.7.0)
 project (ftw7)
 enable_testing ()
 
