@@ -21,9 +21,15 @@ set (
   main.cpp
 )
 
+if (MSVC)
+  # Required due to argp usage. Our own code doesn't require this.
+  add_definitions (-D_CRT_DECLARE_GLOBAL_VARIABLES_DIRECTLY)
+endif ()
+
 include_directories ("${PROJECT_SOURCE_DIR}/argp/include")
 include_directories ("${PROJECT_SOURCE_DIR}/ftw7/ftw7_core/include")
 include_directories ("${Boost_INCLUDE_DIRS}")
+
 add_executable (ftw7 ${ftw7_sources})
 target_link_libraries (ftw7 argp ftw7_core)
 
