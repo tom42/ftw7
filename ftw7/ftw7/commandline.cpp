@@ -175,19 +175,19 @@ error_t parse_option_stub(int key, char* arg, argp_state* state)
 std::string create_log_level_doc()
 {
     using namespace ftw7_core::log;
-    std::string doc("Specify log level. Valid log levels are ");
+    std::string d("Specify log level. Valid log levels are ");
 
     for (auto i = log_level_info_begin(); i != log_level_info_end(); ++i)
     {
         if (i != log_level_info_begin())
         {
-            doc += ", ";
+            d += ", ";
         }
-        doc += '`';
-        doc += i->console_display_name;
-        doc += '\'';
+        d += '`';
+        d += i->console_display_name;
+        d += '\'';
     }
-    doc += '.';
+    d += '.';
 
     return doc;
 }
