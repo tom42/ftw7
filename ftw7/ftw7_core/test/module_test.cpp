@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/test/unit_test.hpp>
 #include "ftw7_core/wexcept.hpp"
 #include "ftw7_core/windows/module.hpp"
@@ -29,6 +29,7 @@ namespace
 
 using namespace ftw7_core::windows;
 using boost::algorithm::ends_with;
+using boost::algorithm::to_lower;
 
 BOOST_AUTO_TEST_SUITE(module_test)
 
@@ -45,7 +46,9 @@ BOOST_AUTO_TEST_CASE(get_module_filename_test)
     // Getting the full path right is non-trivial. We don't know where Windows
     // is installed, and on 64 bit systems we'd also have to distinguish between
     // native and WoW64 DLLs.
-    BOOST_CHECK(ends_with(get_module_filename(LoadLibraryW(L"kernel32.dll")), L"\\kernel32.dll"));
+    auto kernel32 = get_module_filename(LoadLibraryW(L"kernel32.dll"));
+    to_lower(kernel32);
+    BOOST_CHECK(ends_with(kernel32, L"\\kernel32.dll"));
 
     // Invalid module handle.
     const std::wstring expected_start(L"could not obtain module file name of module FFFFFFFF: ");
