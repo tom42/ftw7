@@ -17,7 +17,6 @@
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
 #include <limits>
-#include <boost/foreach.hpp>
 #include <boost/mpl/list.hpp>
 #include <boost/test/unit_test.hpp>
 #include "ftw7_core/assembler/detail/object.hpp"
@@ -92,7 +91,7 @@ BOOST_AUTO_TEST_CASE(align_with_invalid_values_test)
     {
         3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 32, 64
     };
-    BOOST_FOREACH(auto alignment, invalid_alignments)
+    for (const auto alignment : invalid_alignments)
     {
         BOOST_CHECK_EXCEPTION(obj.align(alignment), std::invalid_argument,
             check_what_equals("alignment does not match object alignment"));
@@ -121,7 +120,7 @@ BOOST_AUTO_TEST_CASE(link_valid_origin_test)
 {
     object<dword_t> obj(8);
     const dword_t valid_origins[] = {0, 8, 16, 24, 32};
-    BOOST_FOREACH(auto origin, valid_origins)
+    for (const auto origin : valid_origins)
     {
         obj.link(origin);
     }
@@ -134,7 +133,7 @@ BOOST_AUTO_TEST_CASE(link_invalid_origin_test)
     {
         1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17
     };
-    BOOST_FOREACH(auto origin, invalid_origins)
+    for (const auto origin : invalid_origins)
     {
         BOOST_CHECK_EXCEPTION(obj.link(origin), std::invalid_argument,
             check_what_equals("origin does not match object alignment"));

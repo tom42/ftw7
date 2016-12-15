@@ -1,9 +1,5 @@
 * Get stuff compiling again with VS2015
-  * get rid of BOOST_FOREACH in tests: causes warnings, and by now C++ supports foreach
-  * wpath/path: temporarily use experimental <filesystem> support (implements upcoming standard)
   * get rid of boost in production code (simpler hacking when on the road, besides, C++11/17/whatever is good enough)
-* std::experimental::filesystem
-  * Changed get_emulation_dll_path() and get_working_directory() in demo.cpp to new filesystem code, but this isn't tested yet.
 * Windows XP support
   * Use the VS 2013 generator with the -T v120_xp option (set toolset). This is able to produce binaries that load on windows xp => Document this somewhere
   * Also we need to solve DLL locating problems.

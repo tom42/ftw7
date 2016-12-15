@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with ftw7.If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 #include "check_what.hpp"
 #include "test_asm86.hpp"
@@ -31,7 +30,7 @@ BOOST_AUTO_TEST_SUITE(asm86_value_test)
 BOOST_AUTO_TEST_CASE(asm86_32bit_constant_value_test)
 {
     const asm86::address_type origins[] = {0, 0xaaaaaaaa};
-    BOOST_FOREACH(auto origin, origins)
+    for (const auto origin : origins)
     {
         test_asm86 a(1, origin);
         A(mov(eax, 0x01234567), 0xb8, 0x67, 0x45, 0x23, 0x01);
