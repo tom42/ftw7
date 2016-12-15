@@ -43,16 +43,9 @@ public:
 
     ~program_runner()
     {
-        if (mem && !VirtualFree(mem, 0, MEM_RELEASE))
+        if (mem)
         {
-            // Of course we should not throw inside a destructor, but we should
-            // never really get here, since mem ought to be 0 if VirtualAlloc
-            // failed.
-            // On the other hand, if mem is not 0 and we do get here, something
-            // with our code is very wrong and I'd like to know about it.
-            DWORD error = GetLastError();
-            throw std::runtime_error("VirtualFree failed: " +
-                ftw7_core::windows::format_message_from_system(error));
+            VirtualFree(mem, 0, MEM_RELEASE);
         }
     }
 

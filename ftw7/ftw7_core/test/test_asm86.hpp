@@ -65,7 +65,7 @@ private:
         ftw7_core::assembler::bytevector::size_type actual_byte_index = 0;
         BOOST_FOREACH(const expected_instruction& insn, expected_instructions)
         {
-            BOOST_FOREACH(auto expected_byte, insn.opcode)
+            for (const auto expected_byte : insn.opcode)
             {
                 // Use at() to get range checking for free.
                 const auto actual_byte = program.at(actual_byte_index);
