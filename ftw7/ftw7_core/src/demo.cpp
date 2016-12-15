@@ -104,7 +104,7 @@ std::wstring build_command_line_string(const std::vector<std::wstring>& demo_com
 
 std::wstring get_working_directory(const std::wstring& exe_path)
 {
-    return std::tr2::sys::wpath(exe_path).parent_path().external_directory_string();
+    return std::experimental::filesystem::path(exe_path).parent_path().native();
 }
 
 DWORD get_creation_flags(const demo_settings& settings)
@@ -119,9 +119,10 @@ DWORD get_creation_flags(const demo_settings& settings)
 
 std::wstring get_emulation_dll_path()
 {
-    auto directory = std::tr2::sys::wpath(windows::get_module_filename(nullptr)).parent_path();
-    directory /= L"ftw7_conemu.dll";
-    return directory.external_directory_string();
+    // Assumes that the emulation DLL resides in the same directory as the calling process' executable file.
+    auto path = std::experimental::filesystem::path(windows::get_module_filename(nullptr)).parent_path();
+    path /= L"ftw7_conemu.dll";
+    return path.native();
 }
 
 void create_injection_code(assembler::asm86& a, DWORD return_address, const emulation::settings& settings)
