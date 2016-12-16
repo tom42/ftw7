@@ -189,7 +189,7 @@ std::string create_log_level_doc()
     }
     d += '.';
 
-    return doc;
+    return d;
 }
 
 }
