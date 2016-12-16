@@ -114,7 +114,7 @@ error_t parse_option(int key, const char* arg, const argp_state* state)
         args.demo_command_line.push_back(multibyte_to_wstring(arg));
         return 0;
     case ARGP_KEY_END:
-        if (state->arg_num < 1)
+        if ((args.action == action::run_demo) && (state->arg_num < 1))
         {
             argp_error(state, "No demo given");
         }
