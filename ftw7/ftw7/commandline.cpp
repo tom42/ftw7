@@ -18,7 +18,7 @@
  */
 #include <algorithm>
 #include <stdexcept>
-#include <boost/lexical_cast.hpp>
+#include <string>
 #include "argp/argp.h"
 #include "commandline.hpp"
 #include "ftw7_core/log/log.hpp"
@@ -73,18 +73,20 @@ void parse_log_level(const char* arg, const argp_state* state, command_line_argu
     }
 }
 
-template <typename T>
-void parse_non_negative_number(T& target, const char* arg, const argp_state* state, const char* description)
+void parse_non_negative_number(int& target, const char* arg, const argp_state* state, const char* description)
 {
     try
     {
-        target = boost::lexical_cast<T>(arg);
-        if (target >= 0)
+        size_t pos;
+        const auto n = std::stoi(arg, &pos, 10);
+        if ((arg[pos] == 0) && (n >= 0))
         {
+            target = n;
             return;
         }
     }
-    catch (const boost::bad_lexical_cast&) {}
+    catch (const std::invalid_argument&) {}
+    catch (const std::out_of_range&) {}
     argp_failure(state, EXIT_FAILURE, 0, "bad %s `%s'", description, arg);
 }
 
