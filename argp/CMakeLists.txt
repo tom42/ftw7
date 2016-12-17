@@ -89,6 +89,25 @@ set (
   src/getopt1.c
 )
 
+# Adds source files to source groups. Source group names are based on files'
+# directory names, so that e.g. in Visual Studio we get a hierarchy of file
+# filters that reflect the source tree's structure.
+function (ftw7_source_group)
+  foreach (source IN ITEMS ${ARGN})
+    if (IS_ABSOLUTE)
+      message (FATAL_ERROR "ftw7_source_group: absolute paths are not supported: ${source}")
+    endif()
+    get_filename_component (source_path "${source}" DIRECTORY)
+
+    # Visual Studio file filters don't understand Unix path separators.
+    # Convert to native path first.
+    file (TO_NATIVE_PATH "${source_path}" native_path)
+    source_group ("${native_path}" FILES "${source}")
+  endforeach ()
+endfunction ()
+
+ftw7_source_group (${argp_sources})
+
 if (MSVC)
   add_definitions (-D_CRT_SECURE_NO_WARNINGS)
 
@@ -107,9 +126,16 @@ add_library (argp ${argp_sources})
 # Tests
 ################################################################################
 
+set (
+  argp_test_sources
+  src/argp-test.c
+)
+
+ftw7_source_group (${argp_test_sources})
+
 if (MSVC)
   add_definitions (-D_CRT_NONSTDC_NO_WARNINGS)
 endif ()
-add_executable (argp-test src/argp-test.c)
+add_executable (argp-test ${argp_test_sources})
 target_link_libraries (argp-test argp)
 add_test (argp-test argp-test)
