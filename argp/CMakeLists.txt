@@ -69,13 +69,18 @@ add_definitions (-DHAVE_CONFIG_H)
 
 set (
   argp_sources
-  src/argp-ba.c
+  include/argp/argp.h
   src/argp-ba.c
   src/argp-compat.c
+  src/argp-compat.h
   src/argp-eexst.c
   src/argp-fmtstream.c
+  src/argp-fmtstream.h
   src/argp-fs-xinl.c
+  src/argp-getopt.h
+  src/argp-getopt_int.h
   src/argp-help.c
+  src/argp-namefrob.h
   src/argp-parse.c
   src/argp-pv.c
   src/argp-pvh.c
