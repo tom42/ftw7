@@ -38,6 +38,8 @@
     * windowed
     * fullscreen window
     * real fullscreen (orly?)
+    * Why do we internally distinguish between window and screen dimensions?
+      On command line we support setting screen dimensions only. Not sure what I was thinking there. Nothing, probably.
   * Scaling modes?
     * Stretch to fit, maintaining aspect ratio
     * No scaling (center on screen)
