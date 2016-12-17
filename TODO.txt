@@ -2,6 +2,7 @@
   * get rid of boost in production code (simpler hacking when on the road, besides, C++11/17/whatever is good enough)
 * Should try setting up our build process like this: https://rix0r.nl/blog/2015/08/13/cmake-guide/
 * We've got working file filters in argp's CMakeLists.txt: should put this into a library of some sorts and make use of it
+* Think about our horrible wruntime_error or however we called it: can't we just assume/use UTF8 and be done with it?
 * Windows XP support
   * Use the VS 2013 generator with the -T v120_xp option (set toolset). This is able to produce binaries that load on windows xp => Document this somewhere
   * Also we need to solve DLL locating problems.
