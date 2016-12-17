@@ -21,7 +21,6 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <boost/io/ios_state.hpp>
 #include "ftw7_core/assembler/asm86.hpp"
 #include "ftw7_core/demo.hpp"
 #include "ftw7_core/emulation/emulation.hpp"
@@ -34,6 +33,23 @@ namespace ftw7_core
 
 namespace
 {
+
+class ios_flags_saver
+{
+public:
+    explicit ios_flags_saver(std::ios_base& iosbase)
+        : m_iosbase(iosbase), m_flags(iosbase.flags()) { }
+    ~ios_flags_saver()
+    {
+        m_iosbase.flags(m_flags);
+    }
+private:
+    ios_flags_saver(const ios_flags_saver&) = delete;
+    ios_flags_saver& operator = (const ios_flags_saver&) = delete;
+
+    std::ios_base& m_iosbase;
+    const std::ios_base::fmtflags m_flags;
+};
 
 // Quote a command line argument, so that it can be properly processed by CreateProcessW.
 // Straight from here:
@@ -266,7 +282,7 @@ void run_demo(const std::vector<std::wstring>& demo_command_line, const demo_set
         const auto exitcode = process.run_and_wait();
         auto end_time = time(nullptr);
         auto duration_s = difftime(end_time, start_time);
-        boost::io::ios_flags_saver ifs(std::wcout);
+        ios_flags_saver ifs(std::wcout);
         std::wcout << L"Demo ran for " << duration_s << L" seconds (" << format_demo_duration(duration_s) << L')' << std::endl;
         std::wcout << L"Demo terminated with exit code 0x" << std::hex << exitcode << std::endl;
     }
